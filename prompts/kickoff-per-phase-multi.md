@@ -29,8 +29,10 @@ to delegate, verify, and report.
    temp file created with `mktemp` — never a fixed or shared path;
    parallel benchmark runs collide on shared scratch files. Pass it
    verbatim — do not reword, add, or remove anything. Spawn by running
-   exactly this command (it takes several minutes — use a long timeout
-   or run it in the background and wait for it to finish):
+   exactly this command in the FOREGROUND with an explicit long timeout
+   (600000 ms) — it can take ten minutes; never background it and never
+   rely on monitors or completion notifications, which do not survive
+   in this environment:
 
    `cd {{WORKTREE}} && claude -p --model {{SUBAGENT_MODEL}} --permission-mode acceptEdits --allowedTools "Bash" --output-format text < <the temp file>`
 
