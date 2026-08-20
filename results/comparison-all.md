@@ -1,4 +1,4 @@
-# Combo comparison — SpendLog campaign, round 1 + replicates
+# Combo comparison — finance campaign: rounds 1-2, replicates, tiers
 
 Round 1 on the personal-finance specs (2026-08-20): spawn strategy ×
 sub-agent model, main agent held at Sonnet 5, tier-1 SpendLog. Quality
@@ -44,6 +44,59 @@ and mktemp hardening, applied from run one this campaign, held).
   structure matters downstream (it was the higher-tier consistency
   pick last campaign).
 
+## Round 2 — the main-agent axis (tier 1, single Sonnet 5 sub)
+
+| Main agent | Acceptance | Crit | Conf | Minor | Est. $ | Wall-clock |
+|---|---|---|---|---|---|---|
+| **Haiku 4.5** | 16/16 | 0 | **0** | **0** | **$0.66** | **169s** |
+| Sonnet 5 (r1 combo 1 ref) | 15/16 | 1 | 1 | 1 | $1.00 | 229s |
+| Opus 5 | 16/16 | 0 | **0** | **0** | $1.63 | 186s |
+
+**The Haiku-main headline replicates on a second domain**: cheapest
+(beating even the prior campaign's $0.73), fastest, and blind-graded
+fully clean — while the Sonnet-main reference draw happened to be the
+one that shipped the frozen-timestamp critical. Both round-2 mains
+produced 0/0/0 runs: the orchestrator-is-overhead finding now holds
+across two campaigns and two domains at tier 1.
+
+## Tier scaling — round-1 leaders on ExpenseHub and InvoiceDesk
+
+| Run | Tier | Acceptance | Crit | Conf | Minor | Est. $ | Wall-clock |
+|---|---|---|---|---|---|---|---|
+| single Opus 5 | 2 | 24/24 | 0 | **0** | 2 | $2.17 | 278s |
+| Sonnet 5 ×3 per-phase | 2 | 24/24 | 0 | **0** | 2 | $3.27 | 350s |
+| single Opus 5 | 3 | 31/31 | 0 | **0** | 1 | $3.24 | 315s |
+| Sonnet 5 ×4 per-phase | 3 | **30/31** | **1** | 0 | 0 | $5.01 | 540s |
+
+- **Single Opus 5 held clean at every tier** — 16/16, 24/24, 31/31,
+  zero critical/conformance defects across the whole campaign, at
+  roughly two-thirds of per-phase Sonnet's cost and much better
+  wall-clock. The campaign's correctness pick, decisively.
+- **The route-order trap bit per-phase Sonnet at tier 3 — implicitly.**
+  Tier 2's explicit `/expenses/new` plant was dodged by everyone, but
+  at tier 3 the same class arose *across phases*: phase 2 registered
+  the int path route, phase 3 appended `/invoices/new` after it, and
+  the form page 422s at runtime. The in-run per-phase review read the
+  code and missed it; only the held-out suite caught it. This is the
+  sharpest evidence yet that per-phase handoffs create integration
+  seams no single sub-agent sees — and that code review without
+  execution misses route-registration bugs.
+- **The new numeric canary registered across the board, as minors**:
+  all four tier runs let `nan`/`inf` past their positive-amount
+  validation (`nan <= 0` is False — only one tree guarded with
+  `math.isfinite`), and both tier-2 runs shipped un-URL-encoded
+  category links. Outside the roadmap's letter (hence minor), but a
+  consistent, teachable blind spot: agents validate the happy path of
+  "a number", not the pathological floats.
+- **Instrument note**: the tier-3 in-run acceptance counts (29/31,
+  28/31) each included failures from a suite bug — the `money()`
+  helper demanded thousands separators the roadmap never specified
+  (invisible at tiers 1-2 where amounts stay under $1,000). Fixed in
+  commit `0df5f2c` before grading; the grader re-ran the corrected
+  suite. Second campaign in a row where a cross-run "failure" pattern
+  audit found the instrument, not the agents — audit the spec/suite
+  whenever a miss goes cross-configuration.
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase
@@ -84,8 +137,12 @@ and mktemp hardening, applied from run one this campaign, held).
 
 ## Next steps
 
-1. Round 2 (main-agent axis) and tier scaling (ExpenseHub /
-   InvoiceDesk) per PLAN.md — the tier-2 numeric-validation and tier-3
-   money-gate canaries are still unexercised.
-2. Cross-provider: Codex (ready) and opencode (needs `opencode auth
+1. Replicate the tier-3 pair (n=1 each; per-phase Sonnet's critical vs
+   Opus's clean sweep is the campaign's decision-relevant gap).
+2. Axis-cross: Haiku main over the leaders at tiers 2-3 (does the
+   cheap orchestrator survive multi-phase on this domain too?).
+3. Cross-provider: Codex (ready) and opencode (needs `opencode auth
    login`).
+4. Consider promoting the NaN/Infinity guard to the roadmaps' letter
+   (currently a consistent cross-run minor) if it should discriminate
+   rather than lurk.
