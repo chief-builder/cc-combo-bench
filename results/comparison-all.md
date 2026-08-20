@@ -1,4 +1,4 @@
-# Combo comparison — finance campaign: rounds 1-2, replicates, tiers
+# Combo comparison — finance campaign: rounds 1-2, replicates, tiers, axis-cross
 
 Round 1 on the personal-finance specs (2026-08-20): spawn strategy ×
 sub-agent model, main agent held at Sonnet 5, tier-1 SpendLog. Quality
@@ -104,6 +104,31 @@ across two campaigns and two domains at tier 1.
   audit found the instrument, not the agents — audit the spec/suite
   whenever a miss goes cross-configuration.
 
+## Axis-cross — Haiku main over the leaders at tiers 2-3
+
+| Run | Tier | Acceptance | Crit | Conf | Minor | Est. $ | vs Sonnet main | Wall-clock |
+|---|---|---|---|---|---|---|---|---|
+| Haiku main + single Opus | 2 | 24/24 | 0 | **0** | 2 | **$1.21** | −44% ($2.17) | 223s |
+| Haiku main + Sonnet ×3 | 2 | 24/24 | 0 | **0** | 2 | $2.26 | −31% ($3.27) | 370s |
+| Haiku main + single Opus | 3 | 31/31 | 0 | **0** | 2 | **$1.85** | −45% (~$3.3) | 302s |
+| Haiku main + Sonnet ×4 | 3 | **29/31** | **3** | 0 | 4 | $3.70 | −27% (~$5.1) | 589s |
+
+- **Cheap orchestration survives multi-phase on this domain too.** The
+  Haiku main managed every spawn (1, 3, 1, 4) exactly once with no
+  anomalies, and quality tracked the *sub-agent*, not the orchestrator:
+  Opus subs stayed perfect at both tiers, at 44-45% below the
+  Sonnet-main equivalents. **Haiku main + single Opus is the campaign's
+  best cost-quality point at every tier** ($1.21 t2, $1.85 t3, clean).
+- **The per-phase tier-3 route-ordering critical is now 3-for-3**
+  across two different orchestrators (two Sonnet mains, one Haiku
+  main) — orchestrator-independent, definitively a property of the
+  per-phase strategy meeting this spec shape. This draw compounded it
+  with plain import-time timestamp defaults on *both* dataclasses (two
+  C2 criticals) — per-phase Sonnet's worst tier-3 showing of the
+  campaign.
+- The NaN-past-validation minor is now present in 9 of 10 graded
+  tier-2/3 runs.
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase
@@ -144,10 +169,8 @@ across two campaigns and two domains at tier 1.
 
 ## Next steps
 
-1. Axis-cross: Haiku main over the leaders at tiers 2-3 (does the
-   cheap orchestrator survive multi-phase on this domain too?).
-2. Cross-provider: Codex (ready) and opencode (needs `opencode auth
+1. Cross-provider: Codex (ready) and opencode (needs `opencode auth
    login`).
-3. Consider promoting the NaN/Infinity guard to the roadmaps' letter
+2. Consider promoting the NaN/Infinity guard to the roadmaps' letter
    (currently a consistent cross-run minor) if it should discriminate
    rather than lurk.
