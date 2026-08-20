@@ -33,9 +33,9 @@ this fill — the main agent fills them per phase at run time.
 
 | Tier | `{{SPEC_DIR}}` | `{{ACCEPTANCE_SUITE}}` | `{{SMOKE_SCRIPT}}` |
 |---|---|---|---|
-| 1 | specs/tier1-agentclinic | acceptance/tier1/test_spec.py | scripts/smoke_tier1.sh |
-| 2 | specs/tier2-agentboard | acceptance/tier2/test_spec.py | scripts/smoke_tier2.sh |
-| 3 | specs/tier3-agenthelpdesk | acceptance/tier3/test_spec.py | scripts/smoke_tier3.sh |
+| 1 | specs/tier1-spendlog | acceptance/tier1/test_spec.py | scripts/smoke_tier1.sh |
+| 2 | specs/tier2-expensehub | acceptance/tier2/test_spec.py | scripts/smoke_tier2.sh |
+| 3 | specs/tier3-invoicedesk | acceptance/tier3/test_spec.py | scripts/smoke_tier3.sh |
 
 ## Round-1 combo matrix (tier 1)
 

@@ -1,12 +1,10 @@
-"""Tier-2 (AgentBoard) held-out acceptance suite.
+"""Tier-2 (ExpenseHub) held-out acceptance suite.
 
 Run against a combo's implementation, never committed into the worktrees:
 
     APP_DIR=/path/to/combo-worktree .venv/bin/pytest acceptance/tier2/test_spec.py -v
 
-The suite chdirs into APP_DIR (so `templates/` resolves) and imports the
-implementation's `app` and `models` modules from there. Every assertion maps
-to an explicit line in specs/tier2-agentboard/roadmap.md.
+Every assertion maps to an explicit line in specs/tier2-expensehub/roadmap.md.
 """
 
 import importlib
@@ -19,7 +17,7 @@ from urllib.parse import urlsplit
 
 import pytest
 
-TAGLINE = "Better humans are out there."
+TAGLINE = "Know where it all goes."
 FAVICON = "https://www.python.org/static/favicon.ico"
 
 
@@ -37,8 +35,7 @@ def impl():
         "dir": app_dir,
         "app": app,
         "models": models,
-        # captured at import time, before any POST test mutates the list
-        "seeds": list(models.listings),
+        "seeds": list(models.expenses),
     }
 
 
@@ -55,9 +52,12 @@ def home_html(client):
 
 
 def safe_fragment(text):
-    """Longest HTML-escaping-proof substring, for asserting on seed text."""
     runs = re.findall(r"[A-Za-z0-9 .,]+", text)
     return max(runs, key=len).strip()
+
+
+def money(x):
+    return f"${round(x, 2):,.2f}"
 
 
 # Phase 1 — home page and base layout
@@ -87,12 +87,12 @@ def test_favicon_link(home_html):
 
 
 def test_default_title(home_html):
-    assert re.search(r"<title>[^<]*AgentBoard", home_html)
+    assert re.search(r"<title>[^<]*ExpenseHub", home_html)
 
 
 def test_navbar_links(home_html):
     assert re.search(r"href=[\"']/[\"']", home_html)
-    assert re.search(r"href=[\"']/listings[\"']", home_html)
+    assert re.search(r"href=[\"']/expenses[\"']", home_html)
 
 
 def test_app_has_uvicorn_run_block(impl):
@@ -105,162 +105,182 @@ def test_app_has_uvicorn_run_block(impl):
 # Phase 2 — data model and helpers
 
 
-def test_listing_is_dataclass_with_spec_fields(impl):
-    listing_cls = impl["models"].Listing
-    assert is_dataclass(listing_cls)
-    names = {f.name for f in fields(listing_cls)}
-    assert {"id", "title", "human_name", "description", "tags", "posted_at"} <= names
+def test_expense_is_dataclass_with_spec_fields(impl):
+    expense_cls = impl["models"].Expense
+    assert is_dataclass(expense_cls)
+    names = {f.name for f in fields(expense_cls)}
+    assert {"id", "title", "payee", "amount", "category", "notes", "spent_at"} <= names
 
 
-def test_posted_at_defaults_to_aware_utc_now(impl):
-    listing_cls = impl["models"].Listing
-    posted_at_field = listing_cls.__dataclass_fields__["posted_at"]
-    # a plain `= datetime.now(...)` default is a module-load-time constant bug
-    assert posted_at_field.default_factory is not MISSING
-    listing = listing_cls(id=99999, title="T", human_name="H", description="D", tags=[])
-    assert listing.posted_at.utcoffset() == timedelta(0)
+def test_spent_at_defaults_to_aware_utc_now(impl):
+    expense_cls = impl["models"].Expense
+    spent_at_field = expense_cls.__dataclass_fields__["spent_at"]
+    assert spent_at_field.default_factory is not MISSING
+    expense = expense_cls(id=99999, title="T", payee="P", amount=1.0, category="c", notes="")
+    assert expense.spent_at.utcoffset() == timedelta(0)
 
 
-def test_seed_listings(impl):
+def test_seed_expenses(impl):
     seeds = impl["seeds"]
     assert 4 <= len(seeds) <= 6
-    assert {listing.id for listing in seeds} == set(range(1, len(seeds) + 1))
-    distinct_tags = {tag for listing in seeds for tag in listing.tags}
-    assert len(distinct_tags) >= 3
+    assert {e.id for e in seeds} == set(range(1, len(seeds) + 1))
+    assert len({e.category for e in seeds}) >= 3
+    assert all(e.amount > 0 for e in seeds)
 
 
-def test_get_listing_helper(impl):
+def test_get_expense_helper(impl):
     models = impl["models"]
-    assert models.get_listing(1).id == 1
-    assert models.get_listing(999999) is None
+    assert models.get_expense(1).id == 1
+    assert models.get_expense(999999) is None
 
 
-def test_new_listing_id_helper(impl):
+def test_new_expense_id_helper(impl):
     models = impl["models"]
-    assert models.new_listing_id() == max(l.id for l in models.listings) + 1
-    saved = list(models.listings)
-    models.listings.clear()
+    assert models.new_expense_id() == max(e.id for e in models.expenses) + 1
+    saved = list(models.expenses)
+    models.expenses.clear()
     try:
-        assert models.new_listing_id() == 1
+        assert models.new_expense_id() == 1
     finally:
-        models.listings.extend(saved)
+        models.expenses.extend(saved)
 
 
 # Phase 2 — index and detail pages
 
 
-def test_listings_page_shows_heading_and_seeds_newest_first(client, impl):
-    response = client.get("/listings")
+def test_expenses_page_heading_seeds_newest_first_and_total(client, impl):
+    response = client.get("/expenses")
     assert response.status_code == 200
-    assert "Open Listings" in response.text
-    ordered = sorted(impl["seeds"], key=lambda l: l.posted_at, reverse=True)
-    positions = [response.text.find(safe_fragment(l.title)) for l in ordered]
+    assert "All Expenses" in response.text
+    live = impl["models"].expenses
+    assert f"Total: {money(sum(e.amount for e in live))}" in response.text
+    ordered = sorted(impl["seeds"], key=lambda e: e.spent_at, reverse=True)
+    positions = [response.text.find(safe_fragment(e.title)) for e in ordered]
     assert all(p >= 0 for p in positions)
     assert positions == sorted(positions)
 
 
-def test_listing_titles_link_to_detail(client):
-    html = client.get("/listings").text
-    assert re.search(r"href=[\"']/listings/1[\"']", html)
-
-
-def test_tags_rendered_as_badges(client):
-    html = client.get("/listings").text
+def test_expense_titles_link_to_detail_and_badges(client):
+    html = client.get("/expenses").text
+    assert re.search(r"href=[\"']/expenses/1[\"']", html)
     assert re.search(r"class=[\"'][^\"']*\bbadge\b", html)
 
 
 def test_detail_page(client, impl):
-    response = client.get("/listings/1")
+    response = client.get("/expenses/1")
     assert response.status_code == 200
-    assert safe_fragment(impl["seeds"][0].description) in response.text
-    # "Back to listings" link
-    assert re.search(r"href=[\"']/listings[\"']", response.text)
+    expense = impl["models"].get_expense(1)
+    assert safe_fragment(expense.notes) in response.text
+    assert money(expense.amount) in response.text
+    assert re.search(r"href=[\"']/expenses[\"']", response.text)
 
 
 def test_detail_unknown_id_404(client):
-    assert client.get("/listings/999999").status_code == 404
+    assert client.get("/expenses/999999").status_code == 404
 
 
-# Phase 3 — tag filtering
+# Phase 3 — category filtering
 
 
-def _discriminating_tag(seeds):
-    for tag in {t for listing in seeds for t in listing.tags}:
-        with_tag = [l for l in seeds if tag in l.tags]
-        without_tag = [l for l in seeds if tag not in l.tags]
-        if with_tag and without_tag:
-            return tag, with_tag[0], without_tag[0]
-    pytest.fail("seed data must include a tag not shared by all listings, or the roadmap's filter test is impossible")
+def _discriminating_category(seeds):
+    for cat in {e.category for e in seeds}:
+        with_cat = [e for e in seeds if e.category == cat]
+        without_cat = [e for e in seeds if e.category != cat]
+        if with_cat and without_cat:
+            return cat, with_cat, without_cat[0]
+    pytest.fail("seed data must include a category not shared by all expenses")
 
 
-def test_tag_filter_includes_and_excludes(client, impl):
-    tag, included, excluded = _discriminating_tag(impl["seeds"])
-    response = client.get("/listings", params={"tag": tag})
+def test_category_filter_includes_excludes_and_totals(client, impl):
+    cat, included, excluded = _discriminating_category(impl["seeds"])
+    response = client.get("/expenses", params={"category": cat})
     assert response.status_code == 200
-    assert safe_fragment(included.title) in response.text
+    assert safe_fragment(included[0].title) in response.text
     assert safe_fragment(excluded.title) not in response.text
-    assert "Listings tagged" in response.text
+    assert "Expenses in" in response.text
     assert "Show all" in response.text
+    live_filtered = [e for e in impl["models"].expenses if e.category == cat]
+    assert f"Total: {money(sum(e.amount for e in live_filtered))}" in response.text
 
 
-def test_tag_badges_link_to_filter(client):
-    html = client.get("/listings").text
-    assert re.search(r"href=[\"']/listings\?tag=", html)
+def test_category_badges_link_to_filter(client):
+    html = client.get("/expenses").text
+    assert re.search(r"href=[\"']/expenses\?category=", html)
 
 
-# Phase 3 — post a listing
+# Phase 3 — add an expense
 
 
-def test_new_listing_form(client):
-    response = client.get("/listings/new")
+def test_new_expense_form(client):
+    response = client.get("/expenses/new")
     assert response.status_code == 200
     html = response.text
     assert re.search(r"<form[^>]*method=[\"']post[\"']", html, re.IGNORECASE)
-    for field_name in ["title", "human_name", "description", "tags"]:
+    for field_name in ["title", "payee", "amount", "category", "notes"]:
         assert re.search(rf"name=[\"']{field_name}[\"']", html)
     assert "<textarea" in html
-    # the listings page links to the form
-    assert re.search(r"href=[\"']/listings/new[\"']", client.get("/listings").text)
+    assert re.search(r"href=[\"']/expenses/new[\"']", client.get("/expenses").text)
 
 
-def test_post_listing_round_trip_and_tag_parsing(client, impl):
+def test_post_expense_round_trip(client, impl):
     models = impl["models"]
-    expected_id = models.new_listing_id()
+    expected_id = models.new_expense_id()
     response = client.post(
-        "/listings",
+        "/expenses",
         data={
-            "title": "Acceptance Human Wanted",
-            "human_name": "Pat",
-            "description": "Reads every line of output before replying.",
-            "tags": "python, remote , ",
+            "title": "Acceptance suite license",
+            "payee": "Suite Vendor Inc",
+            "amount": "49.99",
+            "category": "software",
+            "notes": "Annual renewal, single seat.",
         },
         follow_redirects=False,
     )
     assert response.status_code == 303
     location = urlsplit(response.headers["location"]).path
-    assert location == f"/listings/{expected_id}"
-    created = models.get_listing(expected_id)
+    assert location == f"/expenses/{expected_id}"
+    created = models.get_expense(expected_id)
     assert created is not None
-    assert created.tags == ["python", "remote"]
+    assert created.amount == 49.99
     page = client.get(location).text
-    assert "Acceptance Human Wanted" in page
-    assert "Reads every line of output before replying." in page
+    assert "Acceptance suite license" in page
+    assert "$49.99" in page
 
 
-def test_post_listing_validation_rerenders_with_422(client, impl):
+def test_post_expense_empty_title_422_preserves_notes(client, impl):
     models = impl["models"]
-    before = len(models.listings)
+    before = len(models.expenses)
     response = client.post(
-        "/listings",
-        data={
-            "title": "   ",
-            "human_name": "Pat",
-            "description": "This text must be preserved on re-render.",
-            "tags": "",
-        },
+        "/expenses",
+        data={"title": "   ", "payee": "P", "amount": "5.00", "category": "food",
+              "notes": "Preserve me on re-render."},
         follow_redirects=False,
     )
     assert response.status_code == 422
     assert "is-invalid" in response.text
-    assert "This text must be preserved on re-render." in response.text
-    assert len(models.listings) == before
+    assert "Preserve me on re-render." in response.text
+    assert len(models.expenses) == before
+
+
+def test_post_expense_non_numeric_amount_422_preserves_raw_text(client, impl):
+    before = len(impl["models"].expenses)
+    response = client.post(
+        "/expenses",
+        data={"title": "T", "payee": "P", "amount": "abc", "category": "food", "notes": ""},
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
+    assert "is-invalid" in response.text
+    assert "abc" in response.text
+    assert len(impl["models"].expenses) == before
+
+
+def test_post_expense_negative_amount_422(client, impl):
+    before = len(impl["models"].expenses)
+    response = client.post(
+        "/expenses",
+        data={"title": "T", "payee": "P", "amount": "-5", "category": "food", "notes": ""},
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
+    assert len(impl["models"].expenses) == before

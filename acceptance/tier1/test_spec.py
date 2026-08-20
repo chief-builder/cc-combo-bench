@@ -1,4 +1,4 @@
-"""Tier-1 (AgentClinic) held-out acceptance suite.
+"""Tier-1 (SpendLog) held-out acceptance suite.
 
 Run against a combo's implementation, never committed into the worktrees:
 
@@ -6,7 +6,7 @@ Run against a combo's implementation, never committed into the worktrees:
 
 The suite chdirs into APP_DIR (so `templates/` resolves) and imports the
 implementation's `app` and `models` modules from there. Every assertion maps
-to an explicit line in specs/tier1-agentclinic/roadmap.md.
+to an explicit line in specs/tier1-spendlog/roadmap.md.
 """
 
 import importlib
@@ -18,7 +18,7 @@ from datetime import timedelta
 
 import pytest
 
-TAGLINE = "Come in. Sit down. Tell us about your human."
+TAGLINE = "Every penny, written down."
 FAVICON = "https://www.python.org/static/favicon.ico"
 
 
@@ -37,7 +37,7 @@ def impl():
         "app": app,
         "models": models,
         # captured at import time, before any POST test mutates the list
-        "seeds": list(models.complaints),
+        "seeds": list(models.entries),
     }
 
 
@@ -57,6 +57,14 @@ def safe_fragment(text):
     """Longest HTML-escaping-proof substring, for asserting on seed text."""
     runs = re.findall(r"[A-Za-z0-9 .,]+", text)
     return max(runs, key=len).strip()
+
+
+def money(x):
+    return f"${round(x, 2):,.2f}"
+
+
+def live_total(models):
+    return round(sum(e.amount for e in models.entries), 2)
 
 
 # Phase 1 — home page and base layout
@@ -86,12 +94,12 @@ def test_favicon_link(home_html):
 
 
 def test_default_title(home_html):
-    assert re.search(r"<title>[^<]*AgentClinic", home_html)
+    assert re.search(r"<title>[^<]*SpendLog", home_html)
 
 
 def test_navbar_links(home_html):
     assert re.search(r"href=[\"']/[\"']", home_html)
-    assert re.search(r"href=[\"']/complaints[\"']", home_html)
+    assert re.search(r"href=[\"']/entries[\"']", home_html)
 
 
 def test_app_has_uvicorn_run_block(impl):
@@ -104,64 +112,69 @@ def test_app_has_uvicorn_run_block(impl):
 # Phase 2 — data model
 
 
-def test_complaint_is_dataclass_with_spec_fields(impl):
-    complaint_cls = impl["models"].Complaint
-    assert is_dataclass(complaint_cls)
-    names = {f.name for f in fields(complaint_cls)}
-    assert {"agent_name", "text", "timestamp"} <= names
+def test_entry_is_dataclass_with_spec_fields(impl):
+    entry_cls = impl["models"].Entry
+    assert is_dataclass(entry_cls)
+    names = {f.name for f in fields(entry_cls)}
+    assert {"description", "amount", "timestamp"} <= names
 
 
 def test_timestamp_defaults_to_aware_utc_now(impl):
-    complaint_cls = impl["models"].Complaint
-    timestamp_field = complaint_cls.__dataclass_fields__["timestamp"]
+    entry_cls = impl["models"].Entry
+    timestamp_field = entry_cls.__dataclass_fields__["timestamp"]
     # a plain `= datetime.now(...)` default is a module-load-time constant bug
     assert timestamp_field.default_factory is not MISSING
-    complaint = complaint_cls(agent_name="A", text="B")
-    assert complaint.timestamp.utcoffset() == timedelta(0)
+    entry = entry_cls(description="X", amount=1.0)
+    assert entry.timestamp.utcoffset() == timedelta(0)
 
 
-def test_seed_complaints(impl):
+def test_seed_entries(impl):
     seeds = impl["seeds"]
     assert 3 <= len(seeds) <= 5
-    assert all(isinstance(s, impl["models"].Complaint) for s in seeds)
+    assert all(isinstance(s, impl["models"].Entry) for s in seeds)
+    assert all(s.amount > 0 for s in seeds)
 
 
-# Phase 2 — complaints board
+# Phase 2 — journal page
 
 
-def test_complaints_page_shows_heading_and_seed(client, impl):
-    response = client.get("/complaints")
+def test_journal_shows_heading_seed_and_total(client, impl):
+    response = client.get("/entries")
     assert response.status_code == 200
-    assert "Complaints Board" in response.text
+    assert "Spending Journal" in response.text
     seed = impl["seeds"][0]
-    assert safe_fragment(seed.text) in response.text
-    assert safe_fragment(seed.agent_name) in response.text
+    assert safe_fragment(seed.description) in response.text
+    assert f"Total spent: {money(live_total(impl['models']))}" in response.text
 
 
-def test_complaints_rendered_as_cards(client):
-    html = client.get("/complaints").text
+def test_amounts_formatted_two_decimals(client, impl):
+    html = client.get("/entries").text
+    assert money(impl["seeds"][0].amount) in html
+
+
+def test_entries_rendered_as_cards(client):
+    html = client.get("/entries").text
     assert re.search(r"class=[\"'][^\"']*\bcard\b", html)
 
 
-def test_complaint_form_present(client):
-    html = client.get("/complaints").text
+def test_entry_form_present(client):
+    html = client.get("/entries").text
     assert re.search(r"<form[^>]*method=[\"']post[\"']", html, re.IGNORECASE)
-    assert re.search(r"name=[\"']agent_name[\"']", html)
-    assert re.search(r"name=[\"']text[\"']", html)
-    assert "<textarea" in html
+    assert re.search(r"name=[\"']description[\"']", html)
+    assert re.search(r"name=[\"']amount[\"']", html)
 
 
-def test_post_complaint_round_trip(client, impl):
-    complaints = impl["models"].complaints
-    before = len(complaints)
+def test_post_entry_round_trip_updates_total(client, impl):
+    models = impl["models"]
+    before = len(models.entries)
     response = client.post(
-        "/complaints",
-        data={"agent_name": "Acceptance Bot", "text": "The held-out suite found my human wanting."},
+        "/entries",
+        data={"description": "Acceptance suite subscription", "amount": "12.34"},
         follow_redirects=False,
     )
     assert response.status_code == 303
-    assert response.headers["location"].endswith("/complaints")
-    assert len(complaints) == before + 1
-    page = client.get("/complaints").text
-    assert "Acceptance Bot" in page
-    assert "The held-out suite found my human wanting." in page
+    assert response.headers["location"].endswith("/entries")
+    assert len(models.entries) == before + 1
+    page = client.get("/entries").text
+    assert "Acceptance suite subscription" in page
+    assert f"Total spent: {money(live_total(models))}" in page

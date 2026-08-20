@@ -1,15 +1,12 @@
-"""Tier-3 (AgentHelpdesk) held-out acceptance suite.
+"""Tier-3 (InvoiceDesk) held-out acceptance suite.
 
 Run against a combo's implementation, never committed into the worktrees:
 
     APP_DIR=/path/to/combo-worktree .venv/bin/pytest acceptance/tier3/test_spec.py -v
 
-The suite chdirs into APP_DIR (so `templates/` resolves) and imports the
-implementation's `app` and `models` modules from there. Every assertion maps
-to an explicit line in specs/tier3-agenthelpdesk/roadmap.md.
-
-Workflow tests create their own tickets rather than mutating the seeds; the
-stats/API tests compute expectations from the live model state at call time.
+Every assertion maps to an explicit line in specs/tier3-invoicedesk/roadmap.md.
+Workflow tests create their own invoices; money assertions compute expectations
+from live model state at call time.
 """
 
 import importlib
@@ -21,9 +18,9 @@ from datetime import datetime, timedelta
 
 import pytest
 
-TAGLINE = "File a ticket. A mediator agent will be with you shortly."
+TAGLINE = "Bill it. Send it. Get paid."
 FAVICON = "https://www.python.org/static/favicon.ico"
-BADGES = {"open": "text-bg-primary", "in_progress": "text-bg-warning", "resolved": "text-bg-success"}
+BADGES = {"draft": "text-bg-secondary", "sent": "text-bg-warning", "paid": "text-bg-success"}
 
 
 @pytest.fixture(scope="session")
@@ -40,9 +37,8 @@ def impl():
         "dir": app_dir,
         "app": app,
         "models": models,
-        # captured at import time, before any POST test mutates the lists
-        "seed_tickets": list(models.tickets),
-        "seed_comments": list(models.comments),
+        "seed_invoices": list(models.invoices),
+        "seed_payments": list(models.payments),
     }
 
 
@@ -59,17 +55,20 @@ def home_html(client):
 
 
 def safe_fragment(text):
-    """Longest HTML-escaping-proof substring, for asserting on seed text."""
     runs = re.findall(r"[A-Za-z0-9 .,]+", text)
     return max(runs, key=len).strip()
 
 
-def create_ticket(client, models, title):
-    """POST a fresh open ticket and return its id."""
-    expected_id = models.new_ticket_id()
+def money(x):
+    return f"${round(x, 2):,.2f}"
+
+
+def create_invoice(client, models, client_name):
+    """POST a fresh draft invoice of $100.00 and return its id."""
+    expected_id = models.new_invoice_id()
     response = client.post(
-        "/tickets",
-        data={"title": title, "agent_name": "Acceptance Bot", "description": "Created by the held-out suite."},
+        "/invoices",
+        data={"client": client_name, "description": "Created by the held-out suite.", "amount": "100.00"},
         follow_redirects=False,
     )
     assert response.status_code == 303
@@ -103,12 +102,12 @@ def test_favicon_link(home_html):
 
 
 def test_default_title(home_html):
-    assert re.search(r"<title>[^<]*AgentHelpdesk", home_html)
+    assert re.search(r"<title>[^<]*InvoiceDesk", home_html)
 
 
 def test_navbar_links(home_html):
     assert re.search(r"href=[\"']/[\"']", home_html)
-    assert re.search(r"href=[\"']/tickets[\"']", home_html)
+    assert re.search(r"href=[\"']/invoices[\"']", home_html)
     assert re.search(r"href=[\"']/stats[\"']", home_html)
 
 
@@ -122,262 +121,291 @@ def test_app_has_uvicorn_run_block(impl):
 # Phase 2 — data model, constants, helpers
 
 
-def test_ticket_is_dataclass_with_spec_fields_and_defaults(impl):
-    ticket_cls = impl["models"].Ticket
-    assert is_dataclass(ticket_cls)
-    names = {f.name for f in fields(ticket_cls)}
-    assert {"id", "title", "agent_name", "description", "status", "created_at"} <= names
-    created_at_field = ticket_cls.__dataclass_fields__["created_at"]
-    # a plain `= datetime.now(...)` default is a module-load-time constant bug
+def test_invoice_is_dataclass_with_spec_fields_and_defaults(impl):
+    invoice_cls = impl["models"].Invoice
+    assert is_dataclass(invoice_cls)
+    names = {f.name for f in fields(invoice_cls)}
+    assert {"id", "client", "description", "amount", "status", "created_at"} <= names
+    created_at_field = invoice_cls.__dataclass_fields__["created_at"]
     assert created_at_field.default_factory is not MISSING
-    ticket = ticket_cls(id=99999, title="T", agent_name="A", description="D")
-    assert ticket.status == "open"
-    assert ticket.created_at.utcoffset() == timedelta(0)
+    invoice = invoice_cls(id=99999, client="C", description="D", amount=1.0)
+    assert invoice.status == "draft"
+    assert invoice.created_at.utcoffset() == timedelta(0)
 
 
-def test_comment_is_dataclass_with_spec_fields(impl):
-    comment_cls = impl["models"].Comment
-    assert is_dataclass(comment_cls)
-    names = {f.name for f in fields(comment_cls)}
-    assert {"ticket_id", "author", "text", "created_at"} <= names
-    comment = comment_cls(ticket_id=1, author="A", text="T")
-    assert comment.created_at.utcoffset() == timedelta(0)
+def test_payment_is_dataclass_with_spec_fields(impl):
+    payment_cls = impl["models"].Payment
+    assert is_dataclass(payment_cls)
+    names = {f.name for f in fields(payment_cls)}
+    assert {"invoice_id", "amount", "note", "paid_at"} <= names
+    payment = payment_cls(invoice_id=1, amount=1.0, note="n")
+    assert payment.paid_at.utcoffset() == timedelta(0)
 
 
 def test_status_constants(impl):
     models = impl["models"]
-    assert models.STATUSES == ["open", "in_progress", "resolved"]
-    assert models.ALLOWED_TRANSITIONS == {
-        "open": ["in_progress"],
-        "in_progress": ["resolved"],
-        "resolved": [],
-    }
+    assert models.STATUSES == ["draft", "sent", "paid"]
+    assert models.ALLOWED_TRANSITIONS == {"draft": ["sent"], "sent": ["paid"], "paid": []}
 
 
-def test_seed_data(impl):
-    seeds = impl["seed_tickets"]
+def test_seed_data_consistent_with_rules(impl):
+    seeds = impl["seed_invoices"]
     assert len(seeds) == 5
-    assert {t.id for t in seeds} == {1, 2, 3, 4, 5}
-    assert {t.status for t in seeds} == {"open", "in_progress", "resolved"}
-    seed_comments = impl["seed_comments"]
-    assert 4 <= len(seed_comments) <= 6
-    assert len({c.ticket_id for c in seed_comments}) >= 2
+    assert {i.id for i in seeds} == {1, 2, 3, 4, 5}
+    assert {i.status for i in seeds} == {"draft", "sent", "paid"}
+    seed_payments = impl["seed_payments"]
+    assert 4 <= len(seed_payments) <= 6
+    assert len({p.invoice_id for p in seed_payments}) >= 2
+    by_id = {i.id: i for i in seeds}
+    for p in seed_payments:
+        assert by_id[p.invoice_id].status in ("sent", "paid")
+    for inv in seeds:
+        if inv.status == "paid":
+            assert sum(p.amount for p in seed_payments if p.invoice_id == inv.id) >= inv.amount
 
 
 def test_helpers(impl):
     models = impl["models"]
-    assert models.get_ticket(1).id == 1
-    assert models.get_ticket(999999) is None
-    a_commented_ticket = impl["seed_comments"][0].ticket_id
-    assert len(models.comments_for(a_commented_ticket)) >= 1
-    assert models.comments_for(999999) == []
-    assert models.new_ticket_id() == max(t.id for t in models.tickets) + 1
+    assert models.get_invoice(1).id == 1
+    assert models.get_invoice(999999) is None
+    a_paid_invoice = impl["seed_payments"][0].invoice_id
+    assert len(models.payments_for(a_paid_invoice)) >= 1
+    assert models.payments_for(999999) == []
+    expected = round(sum(p.amount for p in models.payments if p.invoice_id == a_paid_invoice), 2)
+    assert models.paid_total(a_paid_invoice) == expected
+    assert models.new_invoice_id() == max(i.id for i in models.invoices) + 1
 
 
 # Phase 2 — board and detail pages
 
 
-def test_board_shows_seed_and_filter_links(client, impl):
-    response = client.get("/tickets")
+def test_board_shows_seed_filter_links_and_paid_line(client, impl):
+    response = client.get("/invoices")
     assert response.status_code == 200
-    assert "Ticket Board" in response.text
-    assert safe_fragment(impl["seed_tickets"][0].title) in response.text
+    assert "Invoices" in response.text
+    assert safe_fragment(impl["seed_invoices"][0].client) in response.text
     for status in impl["models"].STATUSES:
-        assert re.search(rf"href=[\"']/tickets\?status={status}[\"']", response.text)
+        assert re.search(rf"href=[\"']/invoices\?status={status}[\"']", response.text)
+    inv = impl["seed_invoices"][0]
+    paid = impl["models"].paid_total(inv.id)
+    assert f"{money(paid)} of {money(inv.amount)} paid" in response.text
 
 
 def test_board_status_badges_use_spec_colors(client):
-    # seeds cover all three statuses, so all three badge classes must appear
-    html = client.get("/tickets").text
+    html = client.get("/invoices").text
     for badge_class in BADGES.values():
         assert badge_class in html
 
 
 def test_board_sorted_newest_first(client, impl):
-    html = client.get("/tickets").text
-    ordered = sorted(impl["seed_tickets"], key=lambda t: t.created_at, reverse=True)
-    positions = [html.find(safe_fragment(t.title)) for t in ordered]
+    html = client.get("/invoices").text
+    ordered = sorted(impl["seed_invoices"], key=lambda i: i.created_at, reverse=True)
+    positions = [html.find(safe_fragment(i.client)) for i in ordered]
     assert all(p >= 0 for p in positions)
     assert positions == sorted(positions)
 
 
 def test_status_filter_includes_and_excludes(client, impl):
-    open_seed = next(t for t in impl["seed_tickets"] if t.status == "open")
-    resolved_seed = next(t for t in impl["seed_tickets"] if t.status == "resolved")
-    response = client.get("/tickets", params={"status": "open"})
+    draft_seed = next(i for i in impl["seed_invoices"] if i.status == "draft")
+    paid_seed = next(i for i in impl["seed_invoices"] if i.status == "paid")
+    response = client.get("/invoices", params={"status": "draft"})
     assert response.status_code == 200
-    assert safe_fragment(open_seed.title) in response.text
-    assert safe_fragment(resolved_seed.title) not in response.text
+    assert safe_fragment(draft_seed.client) in response.text
+    assert safe_fragment(paid_seed.client) not in response.text
 
 
 def test_status_filter_rejects_unknown_value(client):
-    assert client.get("/tickets", params={"status": "bogus"}).status_code == 400
+    assert client.get("/invoices", params={"status": "bogus"}).status_code == 400
 
 
-def test_detail_page_shows_description_and_comments(client, impl):
-    a_comment = impl["seed_comments"][0]
-    ticket = impl["models"].get_ticket(a_comment.ticket_id)
-    response = client.get(f"/tickets/{ticket.id}")
+def test_detail_shows_payment_and_balance_due(client, impl):
+    models = impl["models"]
+    a_payment = impl["seed_payments"][0]
+    invoice = models.get_invoice(a_payment.invoice_id)
+    response = client.get(f"/invoices/{invoice.id}")
     assert response.status_code == 200
-    assert safe_fragment(ticket.description) in response.text
-    assert safe_fragment(a_comment.text) in response.text
-    assert safe_fragment(a_comment.author) in response.text
+    assert safe_fragment(a_payment.note) in response.text
+    balance = round(invoice.amount - models.paid_total(invoice.id), 2)
+    assert f"Balance due: {money(balance)}" in response.text
 
 
 def test_detail_unknown_id_404(client):
-    assert client.get("/tickets/999999").status_code == 404
+    assert client.get("/invoices/999999").status_code == 404
 
 
-# Phase 3 — creating tickets
+# Phase 3 — creating invoices
 
 
-def test_new_ticket_form(client):
-    response = client.get("/tickets/new")
+def test_new_invoice_form(client):
+    response = client.get("/invoices/new")
     assert response.status_code == 200
     html = response.text
     assert re.search(r"<form[^>]*method=[\"']post[\"']", html, re.IGNORECASE)
-    for field_name in ["title", "agent_name", "description"]:
+    for field_name in ["client", "description", "amount"]:
         assert re.search(rf"name=[\"']{field_name}[\"']", html)
     assert "<textarea" in html
-    # the board links to the form
-    assert re.search(r"href=[\"']/tickets/new[\"']", client.get("/tickets").text)
+    assert re.search(r"href=[\"']/invoices/new[\"']", client.get("/invoices").text)
 
 
-def test_create_ticket_round_trip(client, impl):
+def test_create_invoice_round_trip(client, impl):
     models = impl["models"]
-    ticket_id = create_ticket(client, models, "Acceptance round trip ticket")
-    created = models.get_ticket(ticket_id)
+    invoice_id = create_invoice(client, models, "Acceptance Round Trip LLC")
+    created = models.get_invoice(invoice_id)
     assert created is not None
-    assert created.status == "open"
-    page = client.get(f"/tickets/{ticket_id}").text
-    assert "Acceptance round trip ticket" in page
-    assert BADGES["open"] in page
+    assert created.status == "draft"
+    assert created.amount == 100.00
+    page = client.get(f"/invoices/{invoice_id}").text
+    assert "Acceptance Round Trip LLC" in page
+    assert BADGES["draft"] in page
 
 
-def test_create_ticket_validation_rerenders_with_422(client, impl):
-    models = impl["models"]
-    before = len(models.tickets)
+def test_create_invoice_empty_client_422_preserves_description(client, impl):
+    before = len(impl["models"].invoices)
     response = client.post(
-        "/tickets",
-        data={"title": "   ", "agent_name": "Acceptance Bot", "description": "Preserve me on re-render."},
+        "/invoices",
+        data={"client": "   ", "description": "Preserve me on re-render.", "amount": "10.00"},
         follow_redirects=False,
     )
     assert response.status_code == 422
     assert "is-invalid" in response.text
     assert "Preserve me on re-render." in response.text
-    assert len(models.tickets) == before
+    assert len(impl["models"].invoices) == before
 
 
-# Phase 3 — comments
-
-
-def test_add_comment_round_trip(client, impl):
-    models = impl["models"]
-    ticket_id = create_ticket(client, models, "Ticket for comment test")
-    before = len(models.comments_for(ticket_id))
+def test_create_invoice_bad_amount_422_preserves_raw_text(client, impl):
+    before = len(impl["models"].invoices)
     response = client.post(
-        f"/tickets/{ticket_id}/comments",
-        data={"author": "MediatorBot", "text": "Have you tried talking to your human?"},
-        follow_redirects=False,
-    )
-    assert response.status_code == 303
-    assert len(models.comments_for(ticket_id)) == before + 1
-    page = client.get(f"/tickets/{ticket_id}").text
-    assert "Have you tried talking to your human?" in page
-
-
-def test_comment_validation_422(client, impl):
-    ticket_id = create_ticket(client, impl["models"], "Ticket for comment validation test")
-    response = client.post(
-        f"/tickets/{ticket_id}/comments",
-        data={"author": "MediatorBot", "text": "   "},
+        "/invoices",
+        data={"client": "C", "description": "D", "amount": "abc"},
         follow_redirects=False,
     )
     assert response.status_code == 422
+    assert "abc" in response.text
+    assert len(impl["models"].invoices) == before
 
 
-def test_comment_on_unknown_ticket_404(client):
+# Phase 3 — payments and lifecycle
+
+
+def test_payment_on_draft_invoice_400(client, impl):
+    invoice_id = create_invoice(client, impl["models"], "Draft Payment Test Co")
     response = client.post(
-        "/tickets/999999/comments",
-        data={"author": "MediatorBot", "text": "Hello?"},
+        f"/invoices/{invoice_id}/payments",
+        data={"note": "too early", "amount": "10.00"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 400
+
+
+def test_payment_on_unknown_invoice_404(client):
+    response = client.post(
+        "/invoices/999999/payments",
+        data={"note": "n", "amount": "1.00"},
         follow_redirects=False,
     )
     assert response.status_code == 404
 
 
-# Phase 3 — status workflow
-
-
-def test_status_workflow_enforced(client, impl):
+def test_lifecycle_with_money_rules(client, impl):
     models = impl["models"]
-    ticket_id = create_ticket(client, models, "Ticket for workflow test")
+    invoice_id = create_invoice(client, models, "Lifecycle Test Co")
 
     # skipping a step is rejected
-    response = client.post(f"/tickets/{ticket_id}/status", data={"new_status": "resolved"}, follow_redirects=False)
+    response = client.post(f"/invoices/{invoice_id}/status", data={"new_status": "paid"}, follow_redirects=False)
     assert response.status_code == 400
-    assert models.get_ticket(ticket_id).status == "open"
+    assert models.get_invoice(invoice_id).status == "draft"
 
-    # open -> in_progress
-    response = client.post(f"/tickets/{ticket_id}/status", data={"new_status": "in_progress"}, follow_redirects=False)
+    # draft -> sent
+    response = client.post(f"/invoices/{invoice_id}/status", data={"new_status": "sent"}, follow_redirects=False)
     assert response.status_code == 303
-    assert models.get_ticket(ticket_id).status == "in_progress"
-    assert BADGES["in_progress"] in client.get(f"/tickets/{ticket_id}").text
+    assert models.get_invoice(invoice_id).status == "sent"
+    assert BADGES["sent"] in client.get(f"/invoices/{invoice_id}").text
 
-    # in_progress -> resolved
-    response = client.post(f"/tickets/{ticket_id}/status", data={"new_status": "resolved"}, follow_redirects=False)
+    # invalid payment amount on a sent invoice
+    response = client.post(f"/invoices/{invoice_id}/payments", data={"note": "n", "amount": "0"}, follow_redirects=False)
+    assert response.status_code == 422
+
+    # partial payment records and reduces the balance
+    response = client.post(
+        f"/invoices/{invoice_id}/payments",
+        data={"note": "First installment", "amount": "60.00"},
+        follow_redirects=False,
+    )
     assert response.status_code == 303
-    assert models.get_ticket(ticket_id).status == "resolved"
+    page = client.get(f"/invoices/{invoice_id}").text
+    assert "First installment" in page
+    assert f"Balance due: {money(40.00)}" in page
 
-    # any transition on a resolved ticket is rejected
-    for status in ["open", "in_progress"]:
-        response = client.post(f"/tickets/{ticket_id}/status", data={"new_status": status}, follow_redirects=False)
+    # cannot mark paid while short
+    response = client.post(f"/invoices/{invoice_id}/status", data={"new_status": "paid"}, follow_redirects=False)
+    assert response.status_code == 400
+    assert models.get_invoice(invoice_id).status == "sent"
+
+    # pay the rest, then mark paid
+    response = client.post(
+        f"/invoices/{invoice_id}/payments",
+        data={"note": "Final installment", "amount": "40.00"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 303
+    response = client.post(f"/invoices/{invoice_id}/status", data={"new_status": "paid"}, follow_redirects=False)
+    assert response.status_code == 303
+    assert models.get_invoice(invoice_id).status == "paid"
+    assert BADGES["paid"] in client.get(f"/invoices/{invoice_id}").text
+
+    # any transition on a paid invoice is rejected
+    for status in ["draft", "sent"]:
+        response = client.post(f"/invoices/{invoice_id}/status", data={"new_status": status}, follow_redirects=False)
         assert response.status_code == 400
 
 
-def test_status_change_on_unknown_ticket_404(client):
-    response = client.post("/tickets/999999/status", data={"new_status": "in_progress"}, follow_redirects=False)
+def test_status_change_on_unknown_invoice_404(client):
+    response = client.post("/invoices/999999/status", data={"new_status": "sent"}, follow_redirects=False)
     assert response.status_code == 404
 
 
 def test_transition_buttons_match_allowed_moves(client, impl):
     models = impl["models"]
-    ticket_id = create_ticket(client, models, "Ticket for button rendering test")
-    open_detail = client.get(f"/tickets/{ticket_id}").text
-    assert re.search(r"name=[\"']new_status[\"']", open_detail)
-    assert "in_progress" in open_detail
-    resolved_seed = next(t for t in impl["seed_tickets"] if t.status == "resolved")
-    resolved_detail = client.get(f"/tickets/{resolved_seed.id}").text
-    assert not re.search(r"name=[\"']new_status[\"']", resolved_detail)
+    invoice_id = create_invoice(client, models, "Button Render Test Co")
+    draft_detail = client.get(f"/invoices/{invoice_id}").text
+    assert re.search(r"name=[\"']new_status[\"']", draft_detail)
+    assert "sent" in draft_detail
+    paid_seed = next(i for i in impl["seed_invoices"] if i.status == "paid")
+    paid_detail = client.get(f"/invoices/{paid_seed.id}").text
+    assert not re.search(r"name=[\"']new_status[\"']", paid_detail)
 
 
 # Phase 4 — stats and JSON API
 
 
-def test_stats_page(client, impl):
+def test_stats_page_money_lines(client, impl):
     models = impl["models"]
     response = client.get("/stats")
     assert response.status_code == 200
+    assert "Billing Stats" in response.text
+    invoiced = sum(i.amount for i in models.invoices)
+    collected = sum(p.amount for p in models.payments)
+    assert f"Total invoiced: {money(invoiced)}" in response.text
+    assert f"Total collected: {money(collected)}" in response.text
+    assert f"Outstanding: {money(invoiced - collected)}" in response.text
     text = re.sub(r"<[^>]+>", " ", response.text)
     tokens = text.split()
     for status in models.STATUSES:
-        count = sum(1 for t in models.tickets if t.status == status)
+        count = sum(1 for i in models.invoices if i.status == status)
         assert str(count) in tokens
-    assert str(len(models.tickets)) in tokens
-    average = round(len(models.comments) / len(models.tickets), 1)
-    assert str(average) in tokens or f"{average:.1f}" in tokens
 
 
-def test_api_tickets(client, impl):
+def test_api_invoices(client, impl):
     models = impl["models"]
-    response = client.get("/api/tickets")
+    response = client.get("/api/invoices")
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("application/json")
     data = response.json()
-    assert len(data) == len(models.tickets)
+    assert len(data) == len(models.invoices)
     ids = [item["id"] for item in data]
     assert ids == sorted(ids)
     first = next(item for item in data if item["id"] == 1)
-    assert {"id", "title", "agent_name", "status", "created_at", "comment_count"} <= set(first)
-    assert first["comment_count"] == len(models.comments_for(1))
-    assert first["status"] == models.get_ticket(1).status
+    assert {"id", "client", "description", "amount", "status", "created_at", "paid_total"} <= set(first)
+    assert first["paid_total"] == models.paid_total(1)
+    assert first["status"] == models.get_invoice(1).status
     datetime.fromisoformat(first["created_at"])

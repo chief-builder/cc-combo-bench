@@ -24,15 +24,20 @@ implementable, verifiable by the same fully scripted process:
 
 | Tier | App | Complexity | Dir |
 |---|---|---|---|
-| 1 | AgentClinic | 1 entity, 3 routes, 1 form; 2 phases | specs/tier1-agentclinic |
-| 2 | AgentBoard | detail pages + 404, tag filtering, 422 validation re-render; 3 phases | specs/tier2-agentboard |
-| 3 | AgentHelpdesk | 2 related entities, status state machine, stats, JSON API; 4 phases | specs/tier3-agenthelpdesk |
+| 1 | SpendLog (spending journal) | 1 entity, 3 routes, 1 form, running total; 2 phases | specs/tier1-spendlog |
+| 2 | ExpenseHub (expense browser) | detail pages + 404, category filtering with live totals, 422 validation incl. numeric amounts; 3 phases | specs/tier2-expensehub |
+| 3 | InvoiceDesk (invoice tracker) | 2 related entities (Invoice+Payment), lifecycle with a money gate (can't mark paid until payments cover the amount), billing stats, JSON API; 4 phases | specs/tier3-invoicedesk |
+
+(Personal-finance family; replaced the original Agent*-themed specs on
+2026-08-19 with mechanics mapped 1:1 plus money-math upgrades.)
 
 Each roadmap deliberately plants one-line requirements with classic
 footguns as high-signal probes (tier 1: the per-instance timestamp
-default; tier 2: `/listings/new` registered before the int path route).
-Every behavior a roadmap requires must also appear in its test list —
-an omission there reads as an agent miss when it's really a spec bug.
+default; tier 2: `/expenses/new` registered before the int path route;
+tiers 1-3: exact two-decimal money lines whose values must be computed,
+not pattern-matched). Every behavior a roadmap requires must also
+appear in its test list — an omission there reads as an agent miss
+when it's really a spec bug.
 
 ## Fixed across every combo (the control)
 

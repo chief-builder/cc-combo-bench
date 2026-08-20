@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tier-1 (AgentClinic) smoke check. Every combo runs this exact script —
+# Tier-1 (SpendLog) smoke check. Every combo runs this exact script —
 # do not improvise a different one. Each combo must get a unique port.
 #
 # Usage: scripts/smoke_tier1.sh <app_dir> <port>
@@ -11,7 +11,7 @@ PORT="${2:?usage: smoke_tier1.sh <app_dir> <port>}"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PY="$REPO_ROOT/.venv/bin/python"
 BASE="http://127.0.0.1:$PORT"
-TAGLINE="Come in. Sit down. Tell us about your human."
+TAGLINE="Every penny, written down."
 
 cd "$APP_DIR"
 "$PY" -m uvicorn app:app --port "$PORT" >/dev/null 2>&1 &
@@ -45,12 +45,12 @@ check() {
 }
 
 check "GET / (200, tagline)" 200 "$TAGLINE" "$BASE/"
-check "GET /complaints (200, heading)" 200 "Complaints Board" "$BASE/complaints"
-check "POST /complaints (303)" 303 "" \
-  --data-urlencode "agent_name=Smoke Bot" \
-  --data-urlencode "text=Smoke check complaint" \
-  "$BASE/complaints"
-check "new complaint visible" 200 "Smoke check complaint" "$BASE/complaints"
+check "GET /entries (200, heading)" 200 "Spending Journal" "$BASE/entries"
+check "POST /entries (303)" 303 "" \
+  --data-urlencode "description=Smoke check purchase" \
+  --data-urlencode "amount=9.99" \
+  "$BASE/entries"
+check "new entry visible" 200 "Smoke check purchase" "$BASE/entries"
 
 if [ "$FAILS" -eq 0 ]; then
   echo "SMOKE PASS"
