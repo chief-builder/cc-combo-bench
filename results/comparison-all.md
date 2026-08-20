@@ -1,4 +1,4 @@
-# Combo comparison — finance campaign: rounds 1-2, replicates, tiers, axis-cross
+# Combo comparison — finance campaign: rounds 1-2, replicates, tiers, axis-cross, cross-provider
 
 Round 1 on the personal-finance specs (2026-08-20): spawn strategy ×
 sub-agent model, main agent held at Sonnet 5, tier-1 SpendLog. Quality
@@ -129,6 +129,45 @@ across two campaigns and two domains at tier 1.
 - The NaN-past-validation minor is now present in 9 of 10 graded
   tier-2/3 runs.
 
+## Cross-provider — Codex CLI as the implementer (Sonnet 5 main)
+
+Single Codex sub-agent (OpenAI Codex CLI, gpt-5.6-sol, medium effort)
+under a Sonnet 5 main, all three tiers (XP1 pilot first, then XP2/XP3
+in parallel). Same provider-neutral sub-agent prompts — that
+neutrality is the control.
+
+| Run | Tier | Acceptance | Crit | Conf | Minor | Main-agent $ | Codex tokens | Wall-clock |
+|---|---|---|---|---|---|---|---|---|
+| XP1 | 1 | 16/16 | 0 | **0** | 1 | $0.73 | 26,339 | 200s |
+| XP2 | 2 | 25/25 | 0 | **0** | 2 | $1.12 | 38,243 | 339s |
+| XP3 | 3 | 32/32 | 0 | **0** | 2 | $1.39 | 56,992 | 870s |
+
+- **The campaign's first perfect cross-tier sweep**: full acceptance
+  and zero critical/conformance defects at all three tiers in one
+  batch, with only 5 minors total. Every canary was dodged —
+  `default_factory` timestamps, route ordering, exact money lines,
+  consistent money-gate seed data.
+- **These are the first runs graded against the amended spec letter**
+  (non-finite amounts; tier-2 suite now 25 tests, tier-3 32) — and
+  Codex wrote the `math.isfinite` guard at both tiers and asserted
+  `nan`/`inf` in its own tests. The explicit bullet works; whether
+  Claude subs also pick it up post-amendment is the natural next
+  replicate.
+- The recurring un-URL-encoded category-link minor reappeared at tier
+  2 — cross-provider now, so it is a spec-shape blind spot, not a
+  model family trait.
+- **Cost caveat**: XP $ totals cover the Sonnet 5 main agent only —
+  Codex ran under ChatGPT-subscription auth, which reports tokens
+  (26k/38k/57k) but no price. Not comparable to the all-Anthropic
+  totals; the honest comparison is quality + wall-clock. Tier-3
+  wall-clock (870s) was the campaign's slowest run despite the clean
+  result.
+- **Harness note**: both the XP2 and XP3 main agents noticed the
+  intentional worktree strip, checked the Codex transcript, and
+  correctly reported it as pre-existing rather than blaming the
+  sub-agent — the first campaign in three where no main agent
+  produced the strip false positive.
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase
@@ -169,8 +208,11 @@ across two campaigns and two domains at tier 1.
 
 ## Next steps
 
-1. Cross-provider: Codex (ready) and opencode (needs `opencode auth
-   login`).
-2. Consider promoting the NaN/Infinity guard to the roadmaps' letter
-   (currently a consistent cross-run minor) if it should discriminate
-   rather than lurk.
+1. opencode as a second cross-provider sub-agent (blocked on an
+   interactive `opencode auth login`).
+2. Codex effort sweep (low/high vs the medium XP runs) — sweepable
+   under subscription auth; a true model sweep still needs
+   `OPENAI_API_KEY`.
+3. Post-amendment Claude replicates at tiers 2-3: does the explicit
+   non-finite bullet fix the 9-of-10 blind spot for Claude subs the
+   way it held for Codex?
