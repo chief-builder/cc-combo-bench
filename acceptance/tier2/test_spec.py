@@ -57,7 +57,7 @@ def safe_fragment(text):
 
 
 def money(x):
-    return f"${round(x, 2):,.2f}"
+    return f"${round(x, 2):.2f}"
 
 
 # Phase 1 — home page and base layout

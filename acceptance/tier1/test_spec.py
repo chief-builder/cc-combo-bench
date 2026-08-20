@@ -60,7 +60,7 @@ def safe_fragment(text):
 
 
 def money(x):
-    return f"${round(x, 2):,.2f}"
+    return f"${round(x, 2):.2f}"
 
 
 def live_total(models):

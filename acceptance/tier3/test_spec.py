@@ -60,7 +60,7 @@ def safe_fragment(text):
 
 
 def money(x):
-    return f"${round(x, 2):,.2f}"
+    return f"${round(x, 2):.2f}"
 
 
 def create_invoice(client, models, client_name):
