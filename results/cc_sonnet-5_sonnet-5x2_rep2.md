@@ -1,0 +1,183 @@
+# cc_sonnet-5_sonnet-5x2_rep2
+
+Tier 1 (SpendLog), main agent Sonnet 5, per-phase sub-agents (Sonnet 5 x2),
+replicate 2. Worktree: `cc-combo-bench-worktrees/rep-combo2`.
+
+## Prompts used
+
+### Phase 1 sub-agent prompt (verbatim)
+
+```
+Implement Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2/specs/tier1-spendlog/.
+Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2 — create every file there, never in any
+other directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 1 of the roadmap exactly as written — file names, routes,
+status codes, defaults, CDN links, and template contents are requirements,
+not suggestions. Do not start any later phase.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 1 calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Phase 2 sub-agent prompt (verbatim)
+
+```
+Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2/specs/tier1-spendlog/ is already
+implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2. Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2 — create
+every file there, never in any other directory. Read mission.md, tech-stack.md, and
+roadmap.md, then implement Phase 2 of the roadmap exactly as written —
+file names, routes, status codes, defaults, CDN links, and template
+contents are requirements, not suggestions. Modify existing files only
+where Phase 2 requires it (e.g. new routes in app.py, new tests in
+tests/test_app.py); leave the rest of the Phase 1 code as you found it,
+even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 2 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+Spawn command (identical for both phases, sub-agent temp prompt file swapped):
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-combo2 && claude -p --model sonnet --permission-mode acceptEdits --allowedTools "Bash" --output-format text < <temp prompt file>
+```
+
+Each sub-agent was spawned exactly once, in the foreground, no duplicates.
+
+## Review findings
+
+### Phase 1
+
+No defects found. `app.py`, `templates/base.html`, `templates/home.html`,
+and `tests/test_app.py` implement the roadmap's Phase 1 items exactly:
+`/` route returns `home.html`; base layout has the doctype, `lang="en"`,
+charset/viewport meta, Bootstrap 5 CDN CSS/JS, python.org favicon link,
+`{% block title %}` (default "SpendLog"), navbar with Home/Journal links,
+and `{% block content %}`; home page has the hero with the exact tagline
+"Every penny, written down." and a welcoming paragraph; `if __name__ ==
+"__main__"` block calls `uvicorn.run("app:app", reload=True)`; smoke test
+asserts `GET /` is 200 and contains the tagline.
+
+### Phase 2
+
+No defects found. `models.py` (`app.py:6`, `models.py:1-17`) defines
+`Entry` with `description: str`, `amount: float`, and
+`timestamp: datetime = field(default_factory=lambda:
+datetime.now(timezone.utc))` — a per-instance-evaluated default, which is
+the correct pattern per this project's standing rulings (not the `None` +
+`__post_init__` workaround, not a shared import-time default). Four seed
+entries with realistic cent amounts are present (`models.py:12-17`).
+`GET /entries` (`app.py:17-22`) computes `total` as `round(sum(...), 2)`
+and passes `entries`/`total` to `templates/entries.html`, which renders
+the heading, the exact `Total spent: $X.XX` line
+(`templates/entries.html:7`), each entry as a Bootstrap card with
+description, `$X.XX`-formatted amount, and formatted timestamp
+(`templates/entries.html:9-21`), and a POST form with description/amount
+inputs and submit button (`templates/entries.html:23-35`). `POST
+/entries` (`app.py:25-28`) reads `description`/`amount` via `Form(...)`,
+appends a new `Entry`, and redirects to `/entries` with `RedirectResponse`
+status 303. Tests cover `GET /entries` (200, seed description present,
+correct total line), the 303 redirect on POST (asserted directly, no
+follow-redirects), and the post-then-get round trip (new description and
+updated total both present).
+
+## Verification
+
+### Implementation's own tests — PASS
+
+```
+tests/test_app.py::test_home_returns_200 PASSED
+tests/test_app.py::test_home_contains_tagline PASSED
+tests/test_app.py::test_entries_returns_200_with_seed_data_and_total PASSED
+tests/test_app.py::test_post_entries_redirects_with_303 PASSED
+tests/test_app.py::test_post_entries_adds_entry_and_updates_total PASSED
+
+5 passed, 3 warnings in 0.12s
+```
+
+### Held-out acceptance suite — PASS
+
+```
+acceptance/tier1/test_spec.py::test_home_returns_200_with_tagline PASSED
+acceptance/tier1/test_spec.py::test_html_lang_en PASSED
+acceptance/tier1/test_spec.py::test_bootstrap5_css_cdn PASSED
+acceptance/tier1/test_spec.py::test_bootstrap5_js_bundle PASSED
+acceptance/tier1/test_spec.py::test_favicon_link PASSED
+acceptance/tier1/test_spec.py::test_default_title PASSED
+acceptance/tier1/test_spec.py::test_navbar_links PASSED
+acceptance/tier1/test_spec.py::test_app_has_uvicorn_run_block PASSED
+acceptance/tier1/test_spec.py::test_entry_is_dataclass_with_spec_fields PASSED
+acceptance/tier1/test_spec.py::test_timestamp_defaults_to_aware_utc_now PASSED
+acceptance/tier1/test_spec.py::test_seed_entries PASSED
+acceptance/tier1/test_spec.py::test_journal_shows_heading_seed_and_total PASSED
+acceptance/tier1/test_spec.py::test_amounts_formatted_two_decimals PASSED
+acceptance/tier1/test_spec.py::test_entries_rendered_as_cards PASSED
+acceptance/tier1/test_spec.py::test_entry_form_present PASSED
+acceptance/tier1/test_spec.py::test_post_entry_round_trip_updates_total PASSED
+
+16 passed, 3 warnings in 0.13s
+```
+
+### Smoke script — PASS
+
+```
+ok    GET / (200, tagline)
+ok    GET /entries (200, heading)
+ok    POST /entries (303)
+ok    new entry visible
+SMOKE PASS
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 34 | 21 | 68 | 69,410 | 1,101,647 | 9,107 | $0.728 |
+| Sub-agent session 1 | claude-sonnet-5 | 19 | 12 | 38 | 26,447 | 483,939 | 4,586 | $0.313 |
+| Sub-agent session 2 | claude-sonnet-5 | 21 | 13 | 42 | 48,968 | 529,840 | 8,804 | $0.475 |
+| **Total** | | | | | | | | **$1.516** |
+
+Wall-clock (main-agent session span): 174s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_225bcc43-4fb/agent-af960a1f0a397683b.jsonl`
+- Sub-agent session 1: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-rep-combo2/bccadbfb-23c5-4209-9a2b-cf952166b607.jsonl`
+- Sub-agent session 2: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-rep-combo2/a0c06593-a58c-47e6-a789-755ffdb55c52.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree "G" (port 8123), shuffled pair with the
+other replicate, same SpendLog rubric, all three scripted checks
+re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 16 / 16 |
+| Own tests passing | 5 / 5 |
+| Critical/functional mistakes | 0 |
+| Spec-conformance defects | 1 |
+| Minor/style issues | 0 |
+| Smoke script | pass |
+
+Defects:
+- S8, tests/test_app.py:28-34 — POST redirect test asserts the 303 but never asserts the redirect target is /entries.
