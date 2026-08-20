@@ -1,0 +1,277 @@
+# cc_tier3_sonnet-5_sonnet-5x4
+
+Main agent: Sonnet 5 (orchestrator only, never implements). Sub-agent:
+Sonnet 5, spawned once per roadmap phase (4 phases, 4 spawns), each via
+`claude -p --model sonnet --permission-mode acceptEdits --allowedTools
+"Bash" --output-format text`, foreground, timeout 600000ms. Worktree:
+`/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase`.
+Spec: tier 3 (InvoiceDesk), `specs/tier3-invoicedesk/`. No duplicate
+spawns occurred.
+
+## Prompts used
+
+### Phase 1 (subagent-phase1.md, filled)
+
+```
+Implement Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase/specs/tier3-invoicedesk/.
+Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase — create every file there, never in any
+other directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 1 of the roadmap exactly as written — file names, routes,
+status codes, defaults, CDN links, and template contents are requirements,
+not suggestions. Do not start any later phase.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 1 calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Phase 2 (subagent-phase-later.md, filled PHASE=2, PREV_PHASE=1)
+
+```
+The roadmap through Phase 1 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase — create every file there, never in any other directory. Read
+mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 2 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 2 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 2 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 3 (subagent-phase-later.md, filled PHASE=3, PREV_PHASE=2)
+
+```
+The roadmap through Phase 2 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase — create every file there, never in any other directory. Read
+mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 3 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 3 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 3 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 4 (subagent-phase-later.md, filled PHASE=4, PREV_PHASE=3)
+
+```
+The roadmap through Phase 3 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase — create every file there, never in any other directory. Read
+mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 4 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 4 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 4 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+## Review findings
+
+Review was performed by reading the produced code against the roadmap's
+literal text after each phase's sub-agent finished, before the next was
+spawned. The route-ordering bug below was only exposed later by the
+held-out acceptance suite (step 3) — the in-run code read did not catch
+it, which is itself recorded as a review-process gap.
+
+### Phase 1 — Home Page
+
+No defects found. `app.py`, `templates/base.html`, `templates/home.html`
+match the roadmap: FastAPI instance, `/` route, Bootstrap 5 CDN CSS/JS,
+Python.org favicon, navbar with Home/Invoices/Stats links, `{% block
+content %}`, tagline "Bill it. Send it. Get paid." in the hero, and the
+`uvicorn.run("app:app", reload=True)` entry point. Smoke test passes.
+
+### Phase 2 — Invoice Board + Detail Pages
+
+No defects found at the time of review. `models.py` matches the spec
+exactly: `Invoice`/`Payment` dataclasses with the required fields and
+`field(default_factory=...)` timestamp defaults (the uniform-ruling
+correct form), `STATUSES`, `ALLOWED_TRANSITIONS`, helper functions
+(`get_invoice`, `payments_for`, `paid_total`, `new_invoice_id`). Seed
+data: 5 invoices covering all three statuses, 4 payments spread across 3
+invoices (ids 1, 4, 5), consistent with the rule that every paid seed
+invoice's payments sum to at least its amount and payments exist only on
+sent/paid invoices. `GET /invoices` (status filter, 400 on bad status,
+newest-first sort) and `GET /invoices/{invoice_id}` (404 on unknown id)
+routes match the spec. Templates render the required badge colors, `$P.PP
+of $A.AA paid` line, and `Balance due: $X.XX` line (formatting defect not
+yet apparent from code reading alone — see acceptance-suite findings
+below).
+
+### Phase 3 — Create Invoices, Record Payments, Work the Lifecycle
+
+**Critical/functional (found only by the held-out acceptance suite, after
+all phases were built — not caught during the in-run Phase 3 review):**
+`GET /invoices/new` is registered in `app.py` (line 64) AFTER `GET
+/invoices/{invoice_id}` (line 42, defined in Phase 2). Because
+`invoice_id` is typed `int`, FastAPI's route matching tries the earlier
+`/invoices/{invoice_id}` pattern first, attempts to coerce the literal
+path segment `"new"` to `int`, and fails validation — returning HTTP 422
+instead of ever reaching the `/invoices/new` handler. Confirmed
+reproducible in isolation: `GET /invoices/new` returns 422, not the
+roadmap-required 200 empty form. This is the same class of route-
+registration-order footgun the tier-2 roadmap plants explicitly with
+`/expenses/new`; here it arises implicitly because Phase 2 defines the
+`{invoice_id}` route and Phase 3 defines `/invoices/new` afterward, and
+the sub-agent appended the new route after the existing ones without
+reordering.
+
+Other than that bug, the rest of Phase 3 matches the roadmap: form
+validation (client/description non-empty after `.strip()`, amount > 0),
+422 re-render with `is-invalid`/`invalid-feedback` and preserved input,
+303 redirect on success with rounded amount and `new_invoice_id()`,
+payment route's 404/400 (non-`sent` status) checks, payment 422 with
+preserved input, lifecycle transition buttons driven by
+`ALLOWED_TRANSITIONS`, and the `sent → paid` money-gate check with the
+exact required `HTTPException` detail strings.
+
+### Phase 4 — Stats Page + JSON API
+
+**Spec-conformance (found only by the held-out acceptance suite):** The
+dollar amounts on `templates/stats.html` (`Total invoiced`, `Total
+collected`, `Outstanding`) and on `templates/invoices.html`'s `$P.PP of
+$A.AA paid` line are rendered with Jinja's `"%.2f" | format(...)`, which
+produces no thousands separator (e.g. `$3400.50`, `$1200.00`). The
+held-out suite's `money()` helper expects comma-grouped thousands (e.g.
+`$3,400.50`, `$1,200.00`). The roadmap's literal text only specifies
+`$X.XX` two-decimal formatting and does not mention thousands
+separators, so this is not an unambiguous letter-of-the-spec violation,
+but it is a real behavioral mismatch against the held-out suite's
+expectation and is recorded as a spec-conformance-adjacent defect.
+
+`GET /stats` (per-status counts including zero counts, the three summary
+lines) and `GET /api/invoices` (sorted by id, all 7 fields, ISO
+`created_at`, `paid_total`) otherwise match the roadmap.
+
+### Minor/style
+
+None noted beyond the above.
+
+## Verification
+
+### 1. Implementation's own tests
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v
+```
+
+**PASS — 19 passed, 9 warnings in 0.14s** (all warnings are pre-existing
+`asyncio.iscoroutinefunction` deprecation notices from FastAPI internals,
+unrelated to the app code).
+
+### 2. Held-out acceptance suite
+
+```
+APP_DIR=/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/pytest /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/acceptance/tier3/test_spec.py -v
+```
+
+**FAIL — 28 passed, 3 failed, 9 warnings in 0.17s**
+
+Failures:
+- `test_board_shows_seed_filter_links_and_paid_line` — expected
+  `$1,200.00 of $1,200.00 paid`, actual rendering had no thousands
+  separator (`$1200.00 of $1200.00 paid`).
+- `test_new_invoice_form` — `GET /invoices/new` returned 422 instead of
+  200, due to the route-ordering bug described above
+  (`/invoices/{invoice_id}` shadowing `/invoices/new`).
+- `test_stats_page_money_lines` — expected comma-grouped `Total
+  invoiced`/`Total collected`/`Outstanding` lines (e.g. `$3,400.50`),
+  actual had no thousands separator (`$3400.50`).
+
+### 3. Smoke script
+
+```
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/scripts/smoke_tier3.sh /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/t3-sonnet-perphase 8144
+```
+
+**PASS — SMOKE PASS** (all 14 checks `ok`, including
+`GET /invoices/999999` 404, lifecycle transitions, payment recording,
+`/stats`, `/api/invoices`). The smoke script does not exercise `GET
+/invoices/new` or comma-formatted dollar amounts, so it did not surface
+either acceptance-suite failure.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 67 | 35 | 134 | 137,254 | 3,424,452 | 19,384 | $1.833 |
+| Sub-agent session 1 | claude-sonnet-5 | 18 | 12 | 36 | 38,182 | 474,250 | 5,580 | $0.369 |
+| Sub-agent session 2 | claude-sonnet-5 | 27 | 16 | 54 | 66,605 | 808,664 | 15,814 | $0.730 |
+| Sub-agent session 3 | claude-sonnet-5 | 31 | 20 | 62 | 112,837 | 1,068,998 | 49,854 | $1.492 |
+| Sub-agent session 4 | claude-sonnet-5 | 23 | 15 | 46 | 65,500 | 688,381 | 8,689 | $0.583 |
+| **Total** | | | | | | | | **$5.007** |
+
+Wall-clock (main-agent session span): 540s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_1d3374ec-f82/agent-a6b7a1d46443baa95.jsonl`
+- Sub-agent session 1: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-t3-sonnet-perphase/761f3778-bdf7-45e1-8454-e91fede2ad1d.jsonl`
+- Sub-agent session 2: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-t3-sonnet-perphase/4f363cff-b967-4372-9269-e1b26260f46f.jsonl`
+- Sub-agent session 3: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-t3-sonnet-perphase/10e7f6bd-e94c-4abf-9d74-1ae9b19b6407.jsonl`
+- Sub-agent session 4: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-t3-sonnet-perphase/19c1593b-b7aa-4783-8dbb-88c3b8502431.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree "O" (port 8154), shuffled within its tier
+pair, fixed checklist derived from the roadmap (post money()-fix
+suite), all three scripted checks re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 30 / 31 |
+| Own tests passing | 19 / 19 |
+| Critical/functional mistakes | 1 |
+| Spec-conformance defects | 0 |
+| Minor/style issues | 0 |
+| Smoke script | pass |
+
+Defects:
+- C1, app.py:42 vs app.py:64 — GET /invoices/{invoice_id} registered before GET /invoices/new, so /invoices/new is captured by the int route and 422s; the board's "New invoice" button is dead at runtime. The route-order trap arising implicitly across phases (phase 2 registered the int route; phase 3 appended /new after it) — missed by the in-run per-phase review, caught only by the held-out suite.
+
+Note: this run's in-run 28/31 included two failures from the suite's
+thousands-separator bug (fixed in 0df5f2c); the corrected suite gives
+30/31 with only the route-order failure remaining.
