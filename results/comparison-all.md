@@ -1,4 +1,4 @@
-# Combo comparison — SpendLog campaign, round 1
+# Combo comparison — SpendLog campaign, round 1 + replicates
 
 Round 1 on the personal-finance specs (2026-08-20): spawn strategy ×
 sub-agent model, main agent held at Sonnet 5, tier-1 SpendLog. Quality
@@ -21,6 +21,28 @@ behavior wrong; Conf = letter violated, app works; Minor = style only.
 
 All smoke checks pass. Zero harness anomalies (the foreground-spawn
 and mktemp hardening, applied from run one this campaign, held).
+
+## Replicates — the clean pair, second draws
+
+| Cell | Run | Acceptance | Crit | Conf | Minor | Est. $ | Wall-clock |
+|---|---|---|---|---|---|---|---|
+| single Opus 5 | original | 16/16 | 0 | **0** | **0** | $1.41 | 199s |
+| | replicate | 16/16 | 0 | **0** | **0** | $1.76 | 156s |
+| Sonnet 5 ×2 per-phase | original | 16/16 | 0 | **0** | **0** | $1.79 | 269s |
+| | replicate | 16/16 | 0 | 1 | 0 | $1.52 | 174s |
+
+- **Single Opus 5 is the campaign's first cell fully clean at n=2** —
+  0/0/0 both draws, fastest both draws (199s, 156s), $1.41-$1.76.
+- **Per-phase Sonnet 5 is near-clean at n=2**: full acceptance and
+  defect-free application code in both draws; the replicate's one
+  blemish is the recurring weak-test class (a 303 asserted without its
+  redirect target) — test quality, not app quality.
+- Verdict on the round-1 close call: at this tier the two are
+  effectively tied on app correctness; Opus is faster and its record
+  is spotless, Sonnet's costs overlap Opus's band. Pick Opus for
+  single-shot speed + cleanliness, per-phase Sonnet if the phase
+  structure matters downstream (it was the higher-tier consistency
+  pick last campaign).
 
 ## Findings
 
@@ -51,10 +73,10 @@ and mktemp hardening, applied from run one this campaign, held).
 
 ## Caveats
 
-- n = 1 per cell. The prior campaign showed cell-level results (esp.
-  who trips the canary) swing between draws — replicate before ranking
-  on single-defect margins. The decision-relevant close call this
-  round: combo 2 vs combo 5 (both clean; $1.79/269s vs $1.41/199s).
+- n = 1 per cell except combos 2 and 5 (both n=2, see Replicates).
+  The prior campaign showed cell-level results (esp. who trips the
+  canary) swing between draws — replicate before ranking on
+  single-defect margins.
 - Grading is blind and checklist-driven but performed by the same
   model family being benchmarked; scripted checks are re-run by the
   grader as mitigation.
@@ -62,10 +84,8 @@ and mktemp hardening, applied from run one this campaign, held).
 
 ## Next steps
 
-1. Replicate combos 2 and 5 (the clean pair) if the ranking is to be
-   acted on.
-2. Round 2 (main-agent axis) and tier scaling (ExpenseHub /
+1. Round 2 (main-agent axis) and tier scaling (ExpenseHub /
    InvoiceDesk) per PLAN.md — the tier-2 numeric-validation and tier-3
    money-gate canaries are still unexercised.
-3. Cross-provider: Codex (ready) and opencode (needs `opencode auth
+2. Cross-provider: Codex (ready) and opencode (needs `opencode auth
    login`).
