@@ -66,28 +66,35 @@ across two campaigns and two domains at tier 1.
 | single Opus 5 | 2 | 24/24 | 0 | **0** | 2 | $2.17 | 278s |
 | Sonnet 5 ×3 per-phase | 2 | 24/24 | 0 | **0** | 2 | $3.27 | 350s |
 | single Opus 5 | 3 | 31/31 | 0 | **0** | 1 | $3.24 | 315s |
+| — replicate | 3 | 31/31 | 0 | **0** | 1 | $3.41 | 306s |
 | Sonnet 5 ×4 per-phase | 3 | **30/31** | **1** | 0 | 0 | $5.01 | 540s |
+| — replicate | 3 | **30/31** | **1** | 0 | 4 | $5.15 | 522s |
 
 - **Single Opus 5 held clean at every tier** — 16/16, 24/24, 31/31,
   zero critical/conformance defects across the whole campaign, at
   roughly two-thirds of per-phase Sonnet's cost and much better
   wall-clock. The campaign's correctness pick, decisively.
-- **The route-order trap bit per-phase Sonnet at tier 3 — implicitly.**
-  Tier 2's explicit `/expenses/new` plant was dodged by everyone, but
-  at tier 3 the same class arose *across phases*: phase 2 registered
-  the int path route, phase 3 appended `/invoices/new` after it, and
-  the form page 422s at runtime. The in-run per-phase review read the
-  code and missed it; only the held-out suite caught it. This is the
-  sharpest evidence yet that per-phase handoffs create integration
-  seams no single sub-agent sees — and that code review without
-  execution misses route-registration bugs.
+- **The route-order trap bit per-phase Sonnet at tier 3 — implicitly,
+  and now 2-for-2.** Tier 2's explicit `/expenses/new` plant was
+  dodged by everyone, but at tier 3 the same class arose *across
+  phases*: phase 2 registers the int path route, phase 3 appends
+  `/invoices/new` after it, and the form page 422s at runtime. The
+  replicate reproduced the identical critical (both draws 30/31), the
+  in-run per-phase reviews missed it both times, and the sub-agents'
+  own tests never hit the route either time. At n=2 this is a
+  systematic per-phase failure mode, not variance: phase handoffs
+  create integration seams no single sub-agent sees, and code review
+  without execution misses route-registration bugs. Single Opus,
+  seeing the whole app at once, ordered the routes correctly in both
+  draws (31/31 twice, ~$3.3 vs per-phase's ~$5.1, ~40% faster).
 - **The new numeric canary registered across the board, as minors**:
-  all four tier runs let `nan`/`inf` past their positive-amount
-  validation (`nan <= 0` is False — only one tree guarded with
-  `math.isfinite`), and both tier-2 runs shipped un-URL-encoded
-  category links. Outside the roadmap's letter (hence minor), but a
-  consistent, teachable blind spot: agents validate the happy path of
-  "a number", not the pathological floats.
+  6 of 6 tier-2/3 runs (replicates included) let `nan`/`inf` past
+  their positive-amount validation (`nan <= 0` is False — a single
+  tree in the campaign guarded with `math.isfinite`), and both tier-2
+  runs shipped un-URL-encoded category links. Outside the roadmap's
+  letter (hence minor), but a consistent, teachable blind spot:
+  agents validate the happy path of "a number", not the pathological
+  floats.
 - **Instrument note**: the tier-3 in-run acceptance counts (29/31,
   28/31) each included failures from a suite bug — the `money()`
   helper demanded thousands separators the roadmap never specified
@@ -137,9 +144,7 @@ across two campaigns and two domains at tier 1.
 
 ## Next steps
 
-1. Replicate the tier-3 pair (n=1 each; per-phase Sonnet's critical vs
-   Opus's clean sweep is the campaign's decision-relevant gap).
-2. Axis-cross: Haiku main over the leaders at tiers 2-3 (does the
+1. Axis-cross: Haiku main over the leaders at tiers 2-3 (does the
    cheap orchestrator survive multi-phase on this domain too?).
 3. Cross-provider: Codex (ready) and opencode (needs `opencode auth
    login`).
