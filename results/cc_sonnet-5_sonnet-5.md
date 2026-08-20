@@ -1,0 +1,146 @@
+# cc_sonnet-5_sonnet-5
+
+## Prompts used
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo1/specs/tier1-spendlog/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo1 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo1 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+## Review findings
+
+### Critical / functional
+
+- **`models.py:9`** — `timestamp: datetime = datetime.now(timezone.utc)` is a plain
+  dataclass field default, not a `field(default_factory=...)`. The expression is
+  evaluated exactly once, at module import time, and that single value is reused as
+  the default for every `Entry` instance. Consequence: all four seed entries *and*
+  every entry created later via `POST /entries` (which relies on the dataclass
+  default rather than passing an explicit timestamp) share the exact same frozen
+  timestamp — the moment `models.py` was first imported — instead of each entry
+  recording its own real creation time. Verified directly:
+  ```
+  >>> from models import Entry
+  >>> e1 = Entry('a', 1.0); time.sleep(1.2); e2 = Entry('b', 2.0)
+  >>> e1.timestamp == e2.timestamp
+  True
+  ```
+  This is caught explicitly by the held-out acceptance suite
+  (`test_timestamp_defaults_to_aware_utc_now`), which asserts the field uses
+  `default_factory`.
+
+### Spec-conformance
+
+- None beyond the above — file names, routes, status codes, CDN links (Bootstrap
+  5.3.3 CSS/JS bundle, Python.org favicon), template block structure, form fields,
+  and the `Total spent: $X.XX` / `$X.XX` formatting all match the roadmap exactly.
+
+### Minor / style
+
+- None noted.
+
+## Verification
+
+### 1. Implementation's own tests — PASS
+
+```
+cd .../combo1 && .venv/bin/python -m pytest tests/ -v
+...
+tests/test_app.py::test_home_page PASSED                                 [ 25%]
+tests/test_app.py::test_entries_page PASSED                              [ 50%]
+tests/test_app.py::test_post_entry_redirects PASSED                      [ 75%]
+tests/test_app.py::test_post_entry_appears_in_journal PASSED             [100%]
+======================== 4 passed, 3 warnings in 0.12s =========================
+```
+
+### 2. Held-out acceptance suite — FAIL (1 of 16)
+
+```
+APP_DIR=.../combo1 .venv/bin/pytest acceptance/tier1/test_spec.py -v
+...
+acceptance/tier1/test_spec.py::test_home_returns_200_with_tagline PASSED [  6%]
+acceptance/tier1/test_spec.py::test_html_lang_en PASSED                  [ 12%]
+acceptance/tier1/test_spec.py::test_bootstrap5_css_cdn PASSED            [ 18%]
+acceptance/tier1/test_spec.py::test_bootstrap5_js_bundle PASSED          [ 25%]
+acceptance/tier1/test_spec.py::test_favicon_link PASSED                  [ 31%]
+acceptance/tier1/test_spec.py::test_default_title PASSED                 [ 37%]
+acceptance/tier1/test_spec.py::test_navbar_links PASSED                  [ 43%]
+acceptance/tier1/test_spec.py::test_app_has_uvicorn_run_block PASSED     [ 50%]
+acceptance/tier1/test_spec.py::test_entry_is_dataclass_with_spec_fields PASSED [ 56%]
+acceptance/tier1/test_spec.py::test_timestamp_defaults_to_aware_utc_now FAILED [ 62%]
+acceptance/tier1/test_spec.py::test_seed_entries PASSED                  [ 68%]
+acceptance/tier1/test_spec.py::test_journal_shows_heading_seed_and_total PASSED [ 75%]
+acceptance/tier1/test_spec.py::test_amounts_formatted_two_decimals PASSED [ 81%]
+acceptance/tier1/test_spec.py::test_entries_rendered_as_cards PASSED     [ 87%]
+acceptance/tier1/test_spec.py::test_entry_form_present PASSED            [ 93%]
+acceptance/tier1/test_spec.py::test_post_entry_round_trip_updates_total PASSED [100%]
+
+FAILED acceptance/tier1/test_spec.py::test_timestamp_defaults_to_aware_utc_now
+  AssertionError: assert timestamp_field.default_factory is not MISSING
+=================== 1 failed, 15 passed, 3 warnings in 0.14s ===================
+```
+
+### 3. Smoke script — PASS
+
+```
+scripts/smoke_tier1.sh .../combo1 8101
+ok    GET / (200, tagline)
+ok    GET /entries (200, heading)
+ok    POST /entries (303)
+ok    new entry visible
+SMOKE PASS
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 32 | 21 | 64 | 45,547 | 811,226 | 6,986 | $0.519 |
+| Sub-agent | claude-sonnet-5 | 27 | 16 | 54 | 31,680 | 725,670 | 9,437 | $0.478 |
+| **Total** | | | | | | | | **$0.997** |
+
+Wall-clock (main-agent session span): 229s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_ade12075-cc8/agent-aa27845fa701ca7f7.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-combo1/f7a651bc-135f-4237-94bf-291a2f4c0a64.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree "B" (port 8112), shuffled with the other five
+round-1 trees, fixed SpendLog checklist, all three scripted checks
+re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 15 / 16 |
+| Own tests passing | 4 / 4 |
+| Critical/functional mistakes | 1 |
+| Spec-conformance defects | 1 |
+| Minor/style issues | 1 |
+| Smoke script | pass |
+
+Defects:
+- C1, models.py:9 — `timestamp: datetime = datetime.now(timezone.utc)` is a class-level default evaluated at import; every posted entry shares one frozen timestamp (the acceptance failure).
+- S6, templates/entries.html:16 — timestamp rendered raw (str() with microseconds/offset), not formatted.
+- minor, templates/home.html:3 — gratuitous title block duplicating the base default.
