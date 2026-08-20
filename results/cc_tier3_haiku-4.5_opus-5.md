@@ -1,0 +1,182 @@
+# InvoiceDesk Tier 3 Benchmark Results
+
+## Prompts used
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-opus/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-opus — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-opus && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+## Review findings
+
+No defects found. The implementation fully conforms to the roadmap specification:
+
+- All 4 phases implemented correctly
+- All required routes, status codes, and response formats match the spec
+- Data models (Invoice, Payment) have all required fields with correct types and defaults
+- Seed data is consistent with lifecycle rules (payments only on sent/paid invoices, paid invoices have sufficient payment total)
+- Template structure and Bootstrap styling are correct
+- Form validation and error handling follow spec requirements
+- Lifecycle transitions and payment recording enforce all business rules
+- API endpoint returns correct JSON with all required fields in specified format
+- No extra dependencies added beyond requirements.txt
+
+## Verification
+
+### Implementation tests
+```
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-8.3.4, pluggy-1.6.0
+collected 19 items
+
+tests/test_app.py::test_home_page PASSED                                 [  5%]
+tests/test_app.py::test_invoice_board_lists_seed_client PASSED           [ 10%]
+tests/test_app.py::test_invoice_board_filters_by_status PASSED           [ 15%]
+tests/test_app.py::test_invoice_board_rejects_unknown_status PASSED      [ 21%]
+tests/test_app.py::test_invoice_detail_shows_payments_and_balance PASSED [ 26%]
+tests/test_app.py::test_invoice_detail_unknown_id PASSED                 [ 31%]
+tests/test_app.py::test_create_invoice_redirects_to_detail PASSED        [ 36%]
+tests/test_app.py::test_create_invoice_empty_client_is_422 PASSED        [ 42%]
+tests/test_app.py::test_create_invoice_bad_amount_preserves_input PASSED [ 47%]
+tests/test_app.py::test_payment_on_draft_invoice_is_400 PASSED           [ 52%]
+tests/test_app.py::test_payment_on_unknown_invoice_is_404 PASSED         [ 57%]
+tests/test_app.py::test_valid_transition_draft_to_sent PASSED            [ 63%]
+tests/test_app.py::test_invalid_transition_draft_to_paid PASSED          [ 68%]
+tests/test_app.py::test_no_transitions_from_paid_invoice PASSED          [ 73%]
+tests/test_app.py::test_record_payment_reduces_balance_due PASSED        [ 78%]
+tests/test_app.py::test_payment_amount_zero_is_422 PASSED                [ 84%]
+tests/test_app.py::test_mark_paid_requires_full_payment PASSED           [ 89%]
+tests/test_app.py::test_stats_page_totals PASSED                         [ 94%]
+tests/test_app.py::test_api_invoices PASSED                              [100%]
+
+======================== 19 passed in 0.16s ========================
+```
+
+**Result: PASS** — All 19 tests pass.
+
+### Acceptance suite
+```
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-8.3.4, pluggy-1.6.0
+collected 31 items
+
+acceptance/tier3/test_spec.py::test_home_returns_200_with_tagline PASSED [  3%]
+acceptance/tier3/test_spec.py::test_html_lang_en PASSED                  [  6%]
+acceptance/tier3/test_spec.py::test_bootstrap5_css_cdn PASSED            [  9%]
+acceptance/tier3/test_spec.py::test_bootstrap5_js_bundle PASSED          [ 12%]
+acceptance/tier3/test_spec.py::test_favicon_link PASSED                  [ 16%]
+acceptance/tier3/test_spec.py::test_default_title PASSED                 [ 19%]
+acceptance/tier3/test_spec.py::test_navbar_links PASSED                  [ 22%]
+acceptance/tier3/test_spec.py::test_app_has_uvicorn_run_block PASSED     [ 25%]
+acceptance/tier3/test_spec.py::test_invoice_is_dataclass_with_spec_fields_and_defaults PASSED [ 29%]
+acceptance/tier3/test_spec.py::test_payment_is_dataclass_with_spec_fields PASSED [ 32%]
+acceptance/tier3/test_spec.py::test_status_constants PASSED              [ 35%]
+acceptance/tier3/test_spec.py::test_seed_data_consistent_with_rules PASSED [ 38%]
+acceptance/tier3/test_spec.py::test_helpers PASSED                       [ 41%]
+acceptance/tier3/test_spec.py::test_board_shows_seed_filter_links_and_paid_line PASSED [ 45%]
+acceptance/tier3/test_spec.py::test_board_status_badges_use_spec_colors PASSED [ 48%]
+acceptance/tier3/test_spec.py::test_board_sorted_newest_first PASSED     [ 51%]
+acceptance/tier3/test_spec.py::test_status_filter_includes_and_excludes PASSED [ 54%]
+acceptance/tier3/test_spec.py::test_status_filter_rejects_unknown_value PASSED [ 58%]
+acceptance/tier3/test_spec.py::test_detail_shows_payment_and_balance_due PASSED [ 61%]
+acceptance/tier3/test_spec.py::test_detail_unknown_id_404 PASSED         [ 64%]
+acceptance/tier3/test_spec.py::test_new_invoice_form PASSED              [ 67%]
+acceptance/tier3/test_spec.py::test_create_invoice_round_trip PASSED     [ 70%]
+acceptance/tier3/test_spec.py::test_create_invoice_empty_client_422_preserves_description PASSED [ 74%]
+acceptance/tier3/test_spec.py::test_create_invoice_bad_amount_422_preserves_raw_text PASSED [ 77%]
+acceptance/tier3/test_spec.py::test_payment_on_draft_invoice_400 PASSED  [ 80%]
+acceptance/tier3/test_spec.py::test_payment_on_unknown_invoice_404 PASSED [ 83%]
+acceptance/tier3/test_spec.py::test_lifecycle_with_money_rules PASSED    [ 87%]
+acceptance/tier3/test_spec.py::test_status_change_on_unknown_invoice_404 PASSED [ 90%]
+acceptance/tier3/test_spec.py::test_transition_buttons_match_allowed_moves PASSED [ 93%]
+acceptance/tier3/test_spec.py::test_stats_page_money_lines PASSED        [ 96%]
+acceptance/tier3/test_spec.py::test_api_invoices PASSED                  [100%]
+
+======================== 31 passed in 0.16s ========================
+```
+
+**Result: PASS** — All 31 acceptance tests pass.
+
+### Smoke script
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+**Result: PASS** — All 14 smoke tests pass.
+
+## Summary
+
+**All verification tests passed successfully.**
+
+- Implementation tests: 19/19 pass
+- Acceptance suite: 31/31 pass
+- Smoke script: 14/14 pass
+
+The implementation is complete and correct. No defects detected.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-haiku-4-5-20251001 | 40 | 21 | 332 | 89,973 | 880,260 | 9,188 | $0.247 |
+| Sub-agent | claude-opus-5 | 23 | 14 | 46 | 76,994 | 726,620 | 30,150 | $1.599 |
+| **Total** | | | | | | | | **$1.845** |
+
+Wall-clock (main-agent session span): 302s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_53dc66f7-3e1/agent-a5d17eb118de35e40.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-x-t3-opus/54b60d50-ccf4-4919-b6d2-f6105c275660.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree "T" (port 8177), shuffled within its tier
+pair, same tier rubric as prior passes, all three scripted checks
+re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 31 / 31 |
+| Own tests passing | 19 / 19 |
+| Critical/functional mistakes | 0 |
+| Spec-conformance defects | 0 |
+| Minor/style issues | 2 |
+| Smoke script | pass |
+
+Defects:
+- minor, app.py:94-99 — invoice-create amount validation lets nan/inf through.
+- minor, app.py:154-159 — payment amount validation lets nan/inf through.

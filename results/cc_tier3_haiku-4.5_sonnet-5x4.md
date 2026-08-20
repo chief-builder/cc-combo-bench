@@ -1,0 +1,263 @@
+# Benchmark Results: InvoiceDesk Tier 3 — Haiku 4.5 Sub-agents, Sonnet 5x4 Main
+
+## Prompts used
+
+### Phase 1 Prompt
+
+```
+# Sub-agent — implement Phase 1 only
+
+Used by combos 2, 3, 6 (spawned from kickoff-per-phase.md). Contains no
+model reference, so it is byte-identical across sub-agent models.
+
+---
+
+Implement Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet/specs/tier3-invoicedesk/.
+Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet — create every file there, never in any
+other directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 1 of the roadmap exactly as written — file names, routes,
+status codes, defaults, CDN links, and template contents are requirements,
+not suggestions. Do not start any later phase.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 1 calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Phase 2 Prompt
+
+```
+# Sub-agent — implement one later phase (specs with 3+ phases)
+
+Used by kickoff-per-phase-multi.md for every phase after Phase 1.
+{{PHASE}} = the phase number to implement; {{PREV_PHASE}} = the highest
+phase already implemented ({{PHASE}} - 1). Tier-1 runs keep using
+subagent-phase2.md unchanged for round-to-round comparability. Contains
+no model reference, so it is byte-identical across sub-agent models.
+
+---
+
+The roadmap through Phase 1 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 2 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 2 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 2 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 3 Prompt
+
+```
+# Sub-agent — implement one later phase (specs with 3+ phases)
+
+Used by kickoff-per-phase-multi.md for every phase after Phase 1.
+{{PHASE}} = the phase number to implement; {{PREV_PHASE}} = the highest
+phase already implemented ({{PHASE}} - 1). Tier-1 runs keep using
+subagent-phase2.md unchanged for round-to-round comparability. Contains
+no model reference, so it is byte-identical across sub-agent models.
+
+---
+
+The roadmap through Phase 2 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 3 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 3 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 3 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 4 Prompt
+
+```
+# Sub-agent — implement one later phase (specs with 3+ phases)
+
+Used by kickoff-per-phase-multi.md for every phase after Phase 1.
+{{PHASE}} = the phase number to implement; {{PREV_PHASE}} = the highest
+phase already implemented ({{PHASE}} - 1). Tier-1 runs keep using
+subagent-phase2.md unchanged for round-to-round comparability. Contains
+no model reference, so it is byte-identical across sub-agent models.
+
+---
+
+The roadmap through Phase 3 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 4 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 4 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 4 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/x-t3-sonnet && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+## Review findings
+
+### Phase 1
+No defects found.
+
+### Phase 2
+No defects found.
+
+### Phase 3
+
+**Defect 1: Route ordering issue**
+- **Severity**: Critical/Functional
+- **File**: `app.py`
+- **Line**: 40-41 vs 57-58
+- **Issue**: The route `/invoices/{invoice_id}` is defined before `/invoices/new`. In FastAPI, routes are matched by order, and the parametrized route `/invoices/{invoice_id}` will match the string "new" before the explicit `/invoices/new` route gets a chance. This causes `GET /invoices/new` to fail with 422 (validation error) instead of returning 200 with the form.
+- **Expected behavior**: `/invoices/new` should be defined before `/invoices/{invoice_id}` to ensure explicit paths are matched first.
+- **Test failure**: `acceptance/tier3/test_spec.py::test_new_invoice_form` (expected 200, got 422)
+
+**Defect 2: Invoice.created_at default value timing**
+- **Severity**: Functional
+- **File**: `models.py`
+- **Line**: 15
+- **Issue**: The Invoice dataclass defines `created_at: datetime = datetime.now(timezone.utc)`. In Python dataclasses, default values are evaluated at class definition time, not at instance creation time. This means all invoices created without an explicit `created_at` will share the same timestamp (when models.py was loaded). When Phase 3 creates new invoices via `POST /invoices`, they don't specify `created_at`, so they all get the module-load timestamp, not the creation timestamp.
+- **Expected behavior**: Should use `field(default_factory=lambda: datetime.now(timezone.utc))` to evaluate the timestamp at each instance creation.
+- **Test failure**: `acceptance/tier3/test_spec.py::test_invoice_is_dataclass_with_spec_fields_and_defaults` (expected default_factory, got static default)
+
+### Phase 4
+No defects found.
+
+## Verification
+
+### Test Results
+
+#### Implementation Tests (tests/test_app.py)
+**PASS**: 18/18 tests passed
+```
+===================== 18 passed, 9 warnings in 0.15s =====================
+```
+
+#### Acceptance Tests (acceptance/tier3/test_spec.py)
+**FAIL**: 29/31 tests passed, 2 failed
+```
+FAILED acceptance/tier3/test_spec.py::test_invoice_is_dataclass_with_spec_fields_and_defaults
+FAILED acceptance/tier3/test_spec.py::test_new_invoice_form
+
+Short test summary:
+- test_new_invoice_form: GET /invoices/new returned 422 instead of 200 (route ordering issue)
+- test_invoice_is_dataclass_with_spec_fields_and_defaults: Invoice.created_at lacks default_factory
+```
+
+#### Smoke Test
+**PASS**: All 14 checks passed
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Summary
+
+**Overall Status**: PARTIAL PASS
+
+The implementation successfully demonstrates a complete invoicing application through 4 phases, with all internal tests passing (18/18) and smoke tests passing (14/14). However, the acceptance test suite identified 2 critical defects introduced in Phase 3:
+
+1. **Route ordering defect**: The `/invoices/new` route is shadowed by the parametrized `/invoices/{invoice_id}` route, causing the form page to return 422 instead of 200. This is a FastAPI routing priority issue.
+
+2. **Timestamp defect**: The Invoice dataclass uses a static default for `created_at` (evaluated at module load time) instead of a factory function, causing all newly-created invoices to have the same timestamp. This violates the intent of the specification and the acceptance test's expectation of a per-instance default factory.
+
+The defects are primarily due to spec implementation details (dataclass defaults) and routing design decisions that were not caught by the unit tests but were revealed by the acceptance suite's stricter validation.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-haiku-4-5-20251001 | 107 | 47 | 862 | 147,340 | 3,576,965 | 20,148 | $0.643 |
+| Sub-agent session 1 | claude-sonnet-5 | 16 | 11 | 32 | 43,510 | 427,927 | 7,400 | $0.403 |
+| Sub-agent session 2 | claude-sonnet-5 | 33 | 20 | 66 | 67,753 | 1,127,537 | 22,510 | $0.930 |
+| Sub-agent session 3 | claude-sonnet-5 | 28 | 17 | 56 | 93,298 | 931,000 | 30,308 | $1.084 |
+| Sub-agent session 4 | claude-sonnet-5 | 23 | 15 | 46 | 74,740 | 728,782 | 9,155 | $0.636 |
+| **Total** | | | | | | | | **$3.697** |
+
+Wall-clock (main-agent session span): 589s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_53dc66f7-3e1/agent-a4f4ce9e6e6a1809f.jsonl`
+- Sub-agent session 1: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-x-t3-sonnet/8d9f9be5-993f-49ec-9f79-7f8da8425604.jsonl`
+- Sub-agent session 2: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-x-t3-sonnet/5f0b27e5-a7fa-4b81-aa2d-8c26702f6693.jsonl`
+- Sub-agent session 3: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-x-t3-sonnet/0be69166-399f-4f73-87a2-59e5f7c94d34.jsonl`
+- Sub-agent session 4: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-x-t3-sonnet/e9ac2045-8dac-425c-9373-b8b235ca0e82.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree "U" (port 8178), shuffled within its tier
+pair, same tier rubric as prior passes, all three scripted checks
+re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 29 / 31 |
+| Own tests passing | 18 / 18 |
+| Critical/functional mistakes | 3 |
+| Spec-conformance defects | 0 |
+| Minor/style issues | 4 |
+| Smoke script | pass |
+
+Defects:
+- C1, app.py:40 vs app.py:57 — GET /invoices/{invoice_id} before GET /invoices/new; the form route 422s. Third consecutive per-phase tier-3 draw with this exact critical.
+- C2, models.py:15 — Invoice.created_at plain import-time default (shared frozen timestamp).
+- C2, models.py:23 — Payment.paid_at plain import-time default.
+- minor, app.py:76-78, 124-126 — nan/inf past both amount validations.
+- minor, templates/invoices.html:28 + invoice_detail.html:10,20 — raw unformatted datetimes where the roadmap says formatted.
