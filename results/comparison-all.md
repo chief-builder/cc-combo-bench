@@ -146,8 +146,8 @@ across two campaigns and two domains at tier 1.
 
 1. Axis-cross: Haiku main over the leaders at tiers 2-3 (does the
    cheap orchestrator survive multi-phase on this domain too?).
-3. Cross-provider: Codex (ready) and opencode (needs `opencode auth
+2. Cross-provider: Codex (ready) and opencode (needs `opencode auth
    login`).
-4. Consider promoting the NaN/Infinity guard to the roadmaps' letter
+3. Consider promoting the NaN/Infinity guard to the roadmaps' letter
    (currently a consistent cross-run minor) if it should discriminate
    rather than lurk.
