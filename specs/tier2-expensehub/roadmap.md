@@ -71,7 +71,7 @@
 - Add an "Add expense" link/button to `/expenses/new` on the expenses page
 - Add `POST /expenses` route in `app.py`:
   - Read `title`, `payee`, `amount`, `category`, `notes` from form data (`Form` from `fastapi`), all as strings
-  - Validate: `title`, `payee`, and `category` must be non-empty after `.strip()`; `amount` must parse as a number and be strictly greater than 0 (reject non-numeric text, zero, and negatives)
+  - Validate: `title`, `payee`, and `category` must be non-empty after `.strip()`; `amount` must parse as a **finite** number and be strictly greater than 0 (reject non-numeric text, zero, negatives, and the non-finite floats `nan`/`inf`/`-inf` — check with `math.isfinite`)
   - On validation failure: re-render `expense_new.html` with status code **422**, error messages, and preserved input (no redirect)
   - On success: round the amount to 2 decimals, create an `Expense` with `new_expense_id()`, append to `expenses`, and redirect to the new expense's detail page (`RedirectResponse` to `/expenses/{id}` with status 303)
   - `notes` is optional and may be empty
@@ -81,3 +81,4 @@
   - `POST /expenses` with an empty `title` returns 422, contains the `is-invalid` class, and still contains the submitted notes text
   - `POST /expenses` with `amount` set to non-numeric text (e.g. `abc`) returns 422 and preserves the raw amount text
   - `POST /expenses` with a negative `amount` returns 422
+  - `POST /expenses` with `amount` set to `nan` or `inf` returns 422 (Python's `float()` parses both, and `nan <= 0` is False — a plain comparison check lets them through)

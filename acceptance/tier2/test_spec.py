@@ -284,3 +284,15 @@ def test_post_expense_negative_amount_422(client, impl):
     )
     assert response.status_code == 422
     assert len(impl["models"].expenses) == before
+
+
+def test_post_expense_non_finite_amount_422(client, impl):
+    before = len(impl["models"].expenses)
+    for bad in ("nan", "inf"):
+        response = client.post(
+            "/expenses",
+            data={"title": "T", "payee": "P", "amount": bad, "category": "food", "notes": ""},
+            follow_redirects=False,
+        )
+        assert response.status_code == 422
+    assert len(impl["models"].expenses) == before

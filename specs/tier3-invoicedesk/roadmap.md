@@ -72,7 +72,7 @@
 - Add `GET /invoices/new` route returning the empty form, and a "New invoice" button linking to it from the invoice board
 - Add `POST /invoices` route in `app.py`:
   - Read `client`, `description`, `amount` from form data (`Form` from `fastapi`), all as strings
-  - Validate: `client` and `description` non-empty after `.strip()`; `amount` must parse as a number and be strictly greater than 0
+  - Validate: `client` and `description` non-empty after `.strip()`; `amount` must parse as a **finite** number and be strictly greater than 0 (reject `nan`/`inf`/`-inf` — check with `math.isfinite`)
   - On failure: re-render `invoice_new.html` with status code **422**, errors, preserved input (no redirect)
   - On success: round the amount to 2 decimals, create an `Invoice` with `new_invoice_id()` and status `"draft"`, append, redirect to `/invoices/{id}` (`RedirectResponse`, status 303)
 - Add a payment form on `templates/invoice_detail.html`:
@@ -80,7 +80,7 @@
 - Add `POST /invoices/{invoice_id}/payments` route:
   - Unknown invoice → 404
   - If the invoice's status is not `"sent"`, raise `HTTPException(status_code=400, detail=f"Cannot record a payment on a {status} invoice")`
-  - Validate `amount` parses as a number and is strictly greater than 0; on failure re-render the detail template with status **422**, the error, and preserved input (`note` is optional and may be empty)
+  - Validate `amount` parses as a **finite** number (reject `nan`/`inf`/`-inf` via `math.isfinite`) and is strictly greater than 0; on failure re-render the detail template with status **422**, the error, and preserved input (`note` is optional and may be empty)
   - On success: round to 2 decimals, append a `Payment`, redirect to `/invoices/{id}` (status 303)
 - Add the lifecycle to the detail page:
   - For each status in `ALLOWED_TRANSITIONS[invoice.status]`, render a form button that `POST`s to `/invoices/{id}/status` with hidden input `new_status` (label: "Send invoice" for `sent`, "Mark paid" for `paid`)
@@ -100,6 +100,7 @@
   - Invalid transitions return 400: `draft → paid` (skipping a step) and any transition on a `paid` invoice
   - Recording a valid payment on a sent invoice returns 303; the detail page then shows the payment note and the reduced `Balance due: $X.XX`
   - `POST /invoices/{sent id}/payments` with `amount` of `0` returns 422
+  - `POST /invoices` with `amount` of `nan` returns 422, and `POST /invoices/{sent id}/payments` with `amount` of `inf` returns 422 (both parse via `float()`; only an `isfinite` check catches them)
   - `POST /invoices/{sent id}/status` with `new_status=paid` while payments total less than the amount returns 400; after payments cover the amount, the same request returns 303 and the detail shows the `paid` badge
 
 ## Phase 4 — Stats Page + JSON API

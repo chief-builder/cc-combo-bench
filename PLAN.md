@@ -39,6 +39,16 @@ not pattern-matched). Every behavior a roadmap requires must also
 appear in its test list — an omission there reads as an agent miss
 when it's really a spec bug.
 
+Spec changelog: 2026-08-20 — tier-2/3 roadmaps now explicitly require
+rejecting non-finite amounts (`nan`/`inf`; check with
+`math.isfinite`), with matching test-list bullets and acceptance
+tests (tier-2 suite: 25 tests; tier-3: 32). Promoted from a cross-run
+observation: 9 of 10 graded tier-2/3 runs let non-finite floats past
+"amount > 0" validation (`nan <= 0` is False). Scorecards recorded
+before this date graded it as minor under the old letter and stand as
+recorded; runs after this date face it as a scored requirement, and
+pre/post acceptance denominators differ accordingly.
+
 ## Fixed across every combo (the control)
 
 - Same spec (per tier), same clean starting state (a stripped worktree

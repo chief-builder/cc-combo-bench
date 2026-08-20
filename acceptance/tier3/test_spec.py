@@ -409,3 +409,26 @@ def test_api_invoices(client, impl):
     assert first["paid_total"] == models.paid_total(1)
     assert first["status"] == models.get_invoice(1).status
     datetime.fromisoformat(first["created_at"])
+
+
+def test_non_finite_amounts_rejected(client, impl):
+    models = impl["models"]
+    before = len(models.invoices)
+    response = client.post(
+        "/invoices",
+        data={"client": "C", "description": "D", "amount": "nan"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
+    assert len(models.invoices) == before
+    invoice_id = create_invoice(client, models, "NaN Guard Test Co")
+    sent = client.post(f"/invoices/{invoice_id}/status", data={"new_status": "sent"}, follow_redirects=False)
+    assert sent.status_code == 303
+    payments_before = len(models.payments_for(invoice_id))
+    response = client.post(
+        f"/invoices/{invoice_id}/payments",
+        data={"note": "n", "amount": "inf"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
+    assert len(models.payments_for(invoice_id)) == payments_before
