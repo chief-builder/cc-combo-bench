@@ -112,6 +112,8 @@ across two campaigns and two domains at tier 1.
 | Haiku main + Sonnet ×3 | 2 | 24/24 | 0 | **0** | 2 | $2.26 | −31% ($3.27) | 370s |
 | Haiku main + single Opus | 3 | 31/31 | 0 | **0** | 2 | **$1.85** | −45% (~$3.3) | 302s |
 | Haiku main + Sonnet ×4 | 3 | **29/31** | **3** | 0 | 4 | $3.70 | −27% (~$5.1) | 589s |
+| Haiku main + single Opus — rep2, post-amendment | 2 | 25/25 | 0 | **0** | 2 | $1.61 | — | 188s |
+| Haiku main + single Opus — rep2, post-amendment | 3 | 32/32 | 0 | **0** | 1 | $2.44 | — | 295s |
 
 - **Cheap orchestration survives multi-phase on this domain too.** The
   Haiku main managed every spawn (1, 3, 1, 4) exactly once with no
@@ -127,7 +129,19 @@ across two campaigns and two domains at tier 1.
   C2 criticals) — per-phase Sonnet's worst tier-3 showing of the
   campaign.
 - The NaN-past-validation minor is now present in 9 of 10 graded
-  tier-2/3 runs.
+  tier-2/3 runs — all pre-amendment.
+- **The post-amendment replicates (2026-08-20, suites 25/32) answered
+  the amendment question for Claude**: both Opus subs wrote
+  `math.isfinite` (t2 app.py:75; t3 at both validation points) and
+  asserted `nan`/`inf`/`-inf` in their own tests — the blind spot is
+  closed by an explicit spec bullet, for Claude exactly as for Codex.
+  Both draws blind-graded clean (0 critical / 0 conformance), making
+  **Haiku main + single Opus clean at n=2 at both tiers 2 and 3**.
+  Post-amendment costs ($1.61 t2, $2.44 t3) sit above the original
+  draws ($1.21, $1.85) — the amended roadmaps are slightly longer and
+  draws vary — but still ~26-31% below the Sonnet-main equivalents.
+  The recurring un-URL-encoded category-link minor recurred at tier 2
+  (now 4-for-4 across models and providers).
 
 ## Cross-provider — Codex CLI as the implementer (Sonnet 5 main)
 
@@ -213,6 +227,6 @@ neutrality is the control.
 2. Codex effort sweep (low/high vs the medium XP runs) — sweepable
    under subscription auth; a true model sweep still needs
    `OPENAI_API_KEY`.
-3. Post-amendment Claude replicates at tiers 2-3: does the explicit
-   non-finite bullet fix the 9-of-10 blind spot for Claude subs the
-   way it held for Codex?
+3. ~~Post-amendment Claude replicates at tiers 2-3~~ — done
+   2026-08-20: the explicit bullet fixed the blind spot for Claude
+   subs at both tiers (see Axis-cross).
