@@ -1,0 +1,182 @@
+# cc_tier2_sonnet-5_codex-low
+
+## Prompts used
+
+**Spawn command:**
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-l2 && codex exec --full-auto --skip-git-repo-check -c 'model_reasoning_effort="low"' - < <temp file>
+```
+
+**Sub-agent prompt (verbatim):**
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-l2/specs/tier2-expensehub/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-l2 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-l2 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+## Review findings
+
+### Critical / functional
+
+- **`models.py:13`** — `spent_at: datetime = datetime.now(timezone.utc)` is a plain
+  dataclass default, not a `default_factory`. `datetime.now(timezone.utc)` is
+  evaluated exactly once, at module import time (when the process starts), and
+  that single frozen timestamp is reused as the default for every future
+  `Expense` that doesn't explicitly pass `spent_at`. Concretely: every expense
+  created via `POST /expenses` (`app.py:102-109` never passes `spent_at`) gets
+  the same stale "app start time" instead of the actual moment it was created.
+  Confirmed by the held-out acceptance suite
+  (`test_spent_at_defaults_to_aware_utc_now`), which fails because
+  `default_factory` is `MISSING`. This is the one substantive bug found.
+
+### Spec-conformance
+
+- None beyond the item above — routes, status codes, redirect behavior,
+  validation rules (`math.isfinite`, strictly-positive amount, empty-field
+  rejection with preserved input), template contents (badges, links, "Total:
+  $X.XX" line, "Show all" link, category-filtered heading), CDN links, and
+  favicon all match the roadmap as written.
+
+### Minor / style
+
+- None noted.
+
+## Verification
+
+**1. Implementation's own tests** — PASS (10/10)
+
+```
+tests/test_app.py::test_home_page PASSED
+tests/test_app.py::test_expense_list PASSED
+tests/test_app.py::test_expense_detail PASSED
+tests/test_app.py::test_missing_expense PASSED
+tests/test_app.py::test_category_filter PASSED
+tests/test_app.py::test_create_expense PASSED
+tests/test_app.py::test_empty_title_is_rejected_and_preserves_notes PASSED
+tests/test_app.py::test_non_numeric_amount_is_rejected_and_preserved PASSED
+tests/test_app.py::test_negative_amount_is_rejected PASSED
+tests/test_app.py::test_non_finite_amount_is_rejected PASSED
+======================== 10 passed, 5 warnings in 0.14s ========================
+```
+
+**2. Held-out acceptance suite** — FAIL (24/25)
+
+```
+acceptance/tier2/test_spec.py::test_spent_at_defaults_to_aware_utc_now FAILED
+...
+FAILED acceptance/tier2/test_spec.py::test_spent_at_defaults_to_aware_utc_now
+=================== 1 failed, 24 passed, 5 warnings in 0.16s ===================
+```
+
+Failure detail:
+
+```
+AssertionError: assert <dataclasses._MISSING_TYPE object at 0x...> is not <dataclasses._MISSING_TYPE object at 0x...>
+ +  where <dataclasses._MISSING_TYPE object at 0x...> = Field(name='spent_at', ...).default_factory
+```
+
+**3. Smoke script** — PASS
+
+```
+ok    GET / (200, tagline)
+ok    GET /expenses (200, heading)
+ok    GET /expenses/1 (200)
+ok    GET /expenses/999999 (404)
+ok    POST /expenses (303 to detail)
+ok    new expense detail shows post
+ok    POST /expenses bad amount (422, is-invalid)
+SMOKE PASS
+```
+
+## Provider stats
+
+```
+tokens used
+22,942
+```
+
+(model/session line printed by codex exec):
+
+```
+OpenAI Codex v0.146.0
+model: gpt-5.6-sol
+provider: openai
+reasoning effort: low
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 30 | 17 | 60 | 60,650 | 853,902 | 9,587 | $0.628 |
+| **Total** | | | | | | | | **$0.628** |
+
+Wall-clock (main-agent session span): 215s
+
+Note: Sub-agent is OpenAI Codex CLI (gpt-5.6-sol, reasoning effort low): no Anthropic transcript exists; provider-reported usage is 22,942 tokens (see Provider stats above). No $ estimate for the sub-agent under ChatGPT-subscription auth, so the total above covers the main agent only.
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_e5599920-88f/agent-aecbf8e859e931768.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded in a shuffled anonymized batch of 6 (key: scratchpad/grading-key-xe.txt)
+by two parallel graders (trees A-C / D-F; the original single grader stalled
+twice on harness watchdog errors — a grading-infra note, not a run anomaly).
+All scripted checks re-run on the anonymized copies. Standing-uniformity
+rulings applied by the bench across both graders: un-URL-encoded user-text
+links = minor (per four prior scorecards); a required Form() declaration for
+the roadmap's optional notes field = spec-conformance (applied uniformly to
+both trees showing it); weak tests (roadmap-listed behavior not asserted) =
+spec-conformance per campaign precedent.
+
+Graded as treeE (port 8315).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 24/25 |
+| Own tests passing | 10/10 |
+| Critical/functional | 1 |
+| Spec-conformance | 1 |
+| Minor/style | 1 |
+| Smoke | pass |
+
+Critical: models.py:13 — `spent_at: datetime = datetime.now(timezone.utc)`
+is a plain import-time default (the timestamp-canary worst variant): every
+expense created via POST /expenses gets the frozen app-startup timestamp,
+corrupting newest-first sort over the process lifetime. This is the
+acceptance failure (test_spent_at_defaults_to_aware_utc_now) — the first
+time the canary has caught Codex, and it bit at LOW reasoning effort.
+
+Conformance: app.py:68 — `notes: str = Form(...)` makes the roadmap's
+optional notes field required (a request omitting the key gets a framework
+422 instead of acceptance).
+
+Minor: templates/expenses.html:21 + expense_detail.html:10 — category links
+without `|urlencode` (the recurring cross-run minor; grader classified
+conformance, standing ruling keeps it minor).
+
+Amendment note: `math.isfinite` present at app.py:89 even at low effort —
+the explicit spec bullet held; the unwritten canary is what low effort
+tripped on.

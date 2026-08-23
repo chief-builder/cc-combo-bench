@@ -1,4 +1,4 @@
-# Combo comparison — finance campaign: rounds 1-2, replicates, tiers, axis-cross, cross-provider
+# Combo comparison — finance campaign: rounds 1-2, replicates, tiers, axis-cross, cross-provider, effort sweep
 
 Round 1 on the personal-finance specs (2026-08-20): spawn strategy ×
 sub-agent model, main agent held at Sonnet 5, tier-1 SpendLog. Quality
@@ -182,6 +182,50 @@ neutrality is the control.
   sub-agent — the first campaign in three where no main agent
   produced the strip false positive.
 
+## Codex effort sweep — low/high vs the medium XP runs
+
+Same harness and model (Codex CLI, gpt-5.6-sol, single sub under a
+Sonnet 5 main), reasoning effort varied via
+`-c 'model_reasoning_effort="<e>"'`. Six runs (2026-08-23), all against
+the amended specs. Main-agent $ only, as with all Codex cells.
+
+| Effort | Tier | Acceptance | Crit | Conf | Minor | Codex tokens | Main $ | Wall-clock |
+|---|---|---|---|---|---|---|---|---|
+| low | 1 | 16/16 | 0 | **0** | 0 | 23,464 | $0.87 | 181s |
+| low | 2 | **24/25** | **1** | 1 | 1 | 22,942 | $0.63 | 215s |
+| low | 3 | 32/32 | 0 | 3 | 1 | 33,593 | $0.99 | 298s |
+| medium (XP) | 1 | 16/16 | 0 | **0** | 1 | 26,339 | $0.73 | 200s |
+| medium (XP) | 2 | 25/25 | 0 | **0** | 2 | 38,243 | $1.12 | 339s |
+| medium (XP) | 3 | 32/32 | 0 | **0** | 2 | 56,992 | $1.39 | 870s |
+| high | 1 | 16/16 | 0 | **0** | 0 | 33,529 | $0.85 | 255s |
+| high | 2 | 25/25 | 0 | **0** | 0 | 29,176 | $1.18 | 297s |
+| high | 3 | 32/32 | 0 | **0** | 0 | 52,045 | $1.17 | 375s |
+
+- **High effort swept spotless**: 0 defects of any kind at all three
+  tiers — the campaign's first 0/0/0 sweep — and its tier-2 tree was
+  the **first in the campaign to URL-encode the category links**,
+  closing the blind spot that was 4-for-4 across models and providers.
+- **Low effort degrades tier-sensitively, and in an instructive shape**:
+  clean at tier 1; at tier 2 it shipped the plain import-time timestamp
+  default (the canary's worst variant — the first time it caught Codex,
+  and the sweep's only acceptance failure) plus a required-notes
+  conformance; at tier 3 the app code was fully conformant but the test
+  suite compressed to 7 broad functions and dropped two roadmap-listed
+  assertions (weak-test conformance ×2, plus the required-note ruling).
+  Effort buys canary-dodging and test rigor, not basic capability.
+- **The amended spec letter held at every effort level**:
+  `math.isfinite` present in all four tier-2/3 trees, including both
+  low-effort ones. Explicit bullets survive effort reduction; unwritten
+  expectations are what low effort trips on — the sharpest form of the
+  campaign's spec-writing lesson.
+- Token spend did not scale monotonically (low t2 22.9k < high t2
+  29.2k < medium t2 38.2k); medium's tier-3 870s wall-clock remains
+  the campaign's slowest, with high at 375s — effort and latency are
+  not the same axis.
+- Grading provenance: two parallel graders (trees A-C / D-F) after the
+  single grader stalled twice on infra watchdog errors; standing
+  uniformity rulings applied across both (see per-run scorecards).
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase
@@ -224,9 +268,12 @@ neutrality is the control.
 
 1. opencode as a second cross-provider sub-agent (blocked on an
    interactive `opencode auth login`).
-2. Codex effort sweep (low/high vs the medium XP runs) — sweepable
-   under subscription auth; a true model sweep still needs
-   `OPENAI_API_KEY`.
+2. ~~Codex effort sweep~~ — done 2026-08-23 (see Effort sweep); a true
+   Codex model sweep still needs `OPENAI_API_KEY`.
+3. DeepSeek as a sub-agent via Claude Code + DeepSeek's
+   Anthropic-compatible endpoint (isolates the model axis with the
+   harness held constant; restores real $ for a non-Anthropic sub) —
+   blocked on `DEEPSEEK_API_KEY`.
 3. ~~Post-amendment Claude replicates at tiers 2-3~~ — done
    2026-08-20: the explicit bullet fixed the blind spot for Claude
    subs at both tiers (see Axis-cross).

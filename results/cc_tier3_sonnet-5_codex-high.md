@@ -1,0 +1,185 @@
+# cc_tier3_sonnet-5_codex-high
+
+Main agent: Claude (Sonnet 5), orchestrating only.
+Sub-agent: Codex CLI (`codex exec --full-auto`, `model_reasoning_effort="high"`).
+Worktree: `/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3`
+
+## Prompts used
+
+### Sub-agent prompt (verbatim, saved to a `mktemp` temp file)
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Spawn command (verbatim)
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3 && codex exec --full-auto --skip-git-repo-check -c 'model_reasoning_effort="high"' - < <the temp file>
+```
+
+Spawned exactly once; no duplicate processes were started.
+
+## Review findings
+
+Read `app.py`, `models.py`, all six templates, and `tests/test_app.py` against
+`roadmap.md` phase by phase. No critical/functional defects and no
+spec-conformance defects were found — every route, status code, template
+requirement, badge-color mapping, validation rule, lifecycle rule, and
+seed-data constraint in the roadmap was implemented as specified.
+
+- **Minor/style**: none worth recording. Implementation choices such as
+  using `field(default_factory=...)` for `created_at`/`paid_at` defaults
+  (instead of a bare literal default, which would be evaluated once at
+  class-definition time and shared across instances) are a correct and
+  arguably safer reading of "default `datetime.now(timezone.utc)`" than a
+  literal default, not a deviation.
+- **Non-issue noted during review**: the worktree's git status shows many
+  benchmark-infra files (`PLAN.md`, `acceptance/`, `prompts/`, `results/`,
+  `scripts/`, etc.) as absent/deleted relative to the repo's git index.
+  This predates the sub-agent's run — the sub-agent's own transcript
+  explicitly notes it found "many pre-existing deleted benchmark files"
+  and left them untouched, adding only `app.py`, `models.py`,
+  `templates/`, and `tests/`. Not attributable to the sub-agent and not a
+  defect in the InvoiceDesk implementation.
+
+Files reviewed (all created by the sub-agent):
+- `app.py`
+- `models.py`
+- `templates/base.html`, `templates/home.html`, `templates/invoices.html`,
+  `templates/invoice_detail.html`, `templates/invoice_new.html`,
+  `templates/stats.html`
+- `tests/test_app.py`
+
+## Verification
+
+All three checks passed.
+
+### 1. Implementation's own tests
+
+`cd .../xe-h3 && .venv/bin/python -m pytest tests/ -v`
+
+```
+collected 20 items
+... (20 passed)
+======================== 20 passed, 9 warnings in 0.19s ========================
+```
+(Warnings are FastAPI/starlette `asyncio.iscoroutinefunction` deprecation warnings, unrelated to the implementation.)
+
+### 2. Held-out acceptance suite
+
+`APP_DIR=.../xe-h3 .venv/bin/pytest acceptance/tier3/test_spec.py -v`
+
+```
+collected 32 items
+... (32 passed)
+======================== 32 passed, 9 warnings in 0.17s ========================
+```
+
+### 3. Smoke script
+
+`scripts/smoke_tier3.sh .../xe-h3 8206`
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Provider stats
+
+Codex CLI printed the following token-usage line at the end of its run:
+
+```
+tokens used
+52,045
+```
+
+Provider/model banner printed at session start:
+
+```
+OpenAI Codex v0.146.0
+--------
+workdir: /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xe-h3
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: high
+reasoning summaries: none
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 49 | 30 | 98 | 123,734 | 1,848,206 | 10,372 | $1.174 |
+| **Total** | | | | | | | | **$1.174** |
+
+Wall-clock (main-agent session span): 375s
+
+Note: Sub-agent is OpenAI Codex CLI (gpt-5.6-sol, reasoning effort high): no Anthropic transcript exists; provider-reported usage is 52,045 tokens (see Provider stats above). No $ estimate for the sub-agent under ChatGPT-subscription auth, so the total above covers the main agent only.
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_e5599920-88f/agent-a995d1a9e5674c5eb.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded in a shuffled anonymized batch of 6 (key: scratchpad/grading-key-xe.txt)
+by two parallel graders (trees A-C / D-F; the original single grader stalled
+twice on harness watchdog errors — a grading-infra note, not a run anomaly).
+All scripted checks re-run on the anonymized copies. Standing-uniformity
+rulings applied by the bench across both graders: un-URL-encoded user-text
+links = minor (per four prior scorecards); a required Form() declaration for
+the roadmap's optional notes field = spec-conformance (applied uniformly to
+both trees showing it); weak tests (roadmap-listed behavior not asserted) =
+spec-conformance per campaign precedent.
+
+Graded as treeF (port 8316).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 32/32 |
+| Own tests passing | 20/20 |
+| Critical/functional | 0 |
+| Spec-conformance | 0 |
+| Minor/style | 0 |
+| Smoke | pass |
+
+Fully clean. `default_factory` on both dataclasses, `math.isfinite` at
+both validation points (app.py:108, 164), consistent seed data, exact
+detail strings, all 18 roadmap-listed test behaviors genuinely asserted
+with an autouse seed-restore fixture.
