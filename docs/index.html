@@ -24,6 +24,7 @@
     --trap-wash: #F5EBD0;
     --bug: #AF3029;
     --bug-wash: #F6E1DD;
+    --dot: #EADDC8;
     --shadow: 0 1px 3px rgba(44,32,19,.06), 0 8px 24px rgba(44,32,19,.06);
   }
   @media (prefers-color-scheme: dark) {
@@ -42,6 +43,7 @@
       --trap-wash: #2E2410;
       --bug: #E0716F;
       --bug-wash: #362019;
+      --dot: #2B2118;
       --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
     }
   }
@@ -49,16 +51,18 @@
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    background: var(--paper);
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
     color: var(--ink);
     font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
-    font-size: 17px;
+    font-size: 17.5px;
     line-height: 1.65;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
   h1, h2, h3, .num { font-family: "Outfit", system-ui, sans-serif; }
   code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
-  p { max-width: 66ch; margin: 0 0 16px; }
+  p { max-width: 74ch; margin: 0 0 16px; }
   a { color: var(--accent-dark); }
   code {
     font-size: .85em;
@@ -74,7 +78,6 @@
     border-bottom: 4px solid var(--ink);
     margin-bottom: 44px;
   }
-  .lede, header .statline { max-width: 820px; }
   h1 {
     font-size: clamp(40px, 7.5vw, 66px);
     font-weight: 800;
@@ -84,11 +87,12 @@
     text-wrap: balance;
   }
   h1 .hl { color: var(--accent); }
-  .lede { font-size: 21px; color: var(--ink-2); max-width: 56ch; }
-  .statline { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .lede { font-size: 21px; color: var(--ink-2); max-width: 64ch; }
+  .statline { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
   .stat {
+    flex: 1 1 160px;
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 10px;
-    padding: 10px 16px; box-shadow: var(--shadow);
+    padding: 12px 18px; box-shadow: var(--shadow);
   }
   .stat .num { font-size: 24px; font-weight: 800; color: var(--accent-dark); display: block; line-height: 1.1; }
   .stat .lbl { font-size: 12.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
@@ -163,7 +167,7 @@
     color: var(--accent-dark); margin-bottom: 6px;
   }
   .finding h3 { margin: 0 0 10px; font-size: 22px; }
-  .finding p { color: var(--ink-2); margin-bottom: 10px; }
+  .finding p { color: var(--ink-2); margin-bottom: 10px; max-width: none; }
   .finding p:last-child { margin-bottom: 0; }
   .finding .so {
     background: var(--accent-wash); border-radius: 10px; padding: 10px 16px;
@@ -214,7 +218,7 @@
   .term b { font-family: "Outfit", sans-serif; }
   .term p { font-size: 14.5px; color: var(--ink-2); margin: 4px 0 0; max-width: none; }
 
-  ul.checks { padding-left: 4px; list-style: none; max-width: 66ch; }
+  ul.checks { padding-left: 4px; list-style: none; max-width: 74ch; }
   ul.checks li { padding-left: 30px; position: relative; margin-bottom: 10px; }
   ul.checks li::before { content: "✔"; position: absolute; left: 2px; color: var(--accent); font-weight: 700; }
 

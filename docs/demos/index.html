@@ -20,6 +20,7 @@
     --accent: #BC5215;
     --accent-dark: #9A430F;
     --accent-wash: #F6E5D7;
+    --dot: #EADDC8;
     --shadow: 0 1px 3px rgba(44,32,19,.06), 0 8px 24px rgba(44,32,19,.06);
   }
   @media (prefers-color-scheme: dark) {
@@ -34,6 +35,7 @@
       --accent: #E0793C;
       --accent-dark: #E8935C;
       --accent-wash: #332417;
+      --dot: #2B2118;
       --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
     }
   }
@@ -41,13 +43,15 @@
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
-    background: var(--paper);
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
     color: var(--ink);
     font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
-    font-size: 17px;
+    font-size: 17.5px;
     line-height: 1.65;
   }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
   h1, h2 { font-family: "Outfit", system-ui, sans-serif; }
   p { max-width: 68ch; margin: 0 0 16px; }
   a { color: var(--accent-dark); }
