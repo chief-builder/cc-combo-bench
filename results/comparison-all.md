@@ -226,6 +226,47 @@ the amended specs. Main-agent $ only, as with all Codex cells.
   single grader stalled twice on infra watchdog errors; standing
   uniformity rulings applied across both (see per-run scorecards).
 
+## Completing the tier-3 grid — four late cells (2026-08-25)
+
+Four cells chosen to close the scoreboard's gaps: the mainstream
+default (single Sonnet), the relay's 2×2 completion (Opus ×4
+per-phase), and the budget floor (single Haiku under both mains). All
+post-amendment (32-test suite, corrected per 5f069d8).
+
+| Run | Acceptance | Crit | Conf | Minor | Est. $ | Wall-clock |
+|---|---|---|---|---|---|---|
+| Sonnet main + single Sonnet | 32/32 | 0 | 1 | 3 | $2.13 | 262s |
+| Sonnet main + single Haiku | 32/32 | 0 | 3 | 5 | $1.88 | 276s |
+| Sonnet main + **Opus 5 ×4 per-phase** | 32/32 | 0 | **0** | **0** | $5.99 | 445s |
+| **Haiku main + single Haiku** | 32/32 | 0 | 3 | 6 | **$0.73** | 264s |
+
+- **The relay 2×2 is complete, and the finding sharpened**: Opus ×4
+  per-phase went fully clean (0/0/0) — the first per-phase tier-3 run
+  without the route-ordering critical — and single Sonnet's app code
+  is fully conformant. So the seam requires *both* the relay *and* a
+  mid-tier implementer: Sonnet solo orders routes correctly, Sonnet
+  in a relay broke 3-for-3, Opus in a relay saw the inherited route
+  table and ordered correctly (n=1). Model strength buys seam
+  awareness — at $5.99, triple the single-Opus price for the same
+  score.
+- **Haiku main + single Haiku is the new budget anchor**: $0.73 for a
+  fully conformant tier-3 app, every canary dodged. The all-Haiku and
+  single-Haiku cells' defects are *entirely test-rigor* (prefix-only
+  assertions, 303s asserted as followed 200s, a required note field)
+  — the weak-test class now clearly tracks implementer tier, while
+  app-code correctness no longer does.
+- **Every one of the four dodged every canary** — `math.isfinite` at
+  both validation points, route ordering, `default_factory`, exact
+  detail strings, consistent seed money. Post-amendment, the amended
+  letter is now 9-for-9 across three model tiers and two providers.
+- **Third instrument bug of the benchmark, same lesson**: single
+  Sonnet's in-run 31/32 was the suite assuming unique seed client
+  names (roadmap permits duplicates — `html.find()` at independent
+  positions breaks on them). Fixed to a sequential search (5f069d8),
+  tier-2's identical pattern fixed preemptively, grader re-ran the
+  corrected suite: 32/32. Cross-checked "failures" keep turning out
+  to be the instrument — audit the suite before blaming the agent.
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase

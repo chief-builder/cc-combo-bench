@@ -347,7 +347,8 @@
     <div class="num">Finding 2</div>
     <h3>Relay teams drop the baton 🏃</h3>
     <p>On InvoiceDesk, per-phase teams (Sonnet 5 ×4, a fresh implementer per phase) shipped a broken app <strong>3 times out of 3</strong>, under two different orchestrator models — always the same bug. The phase-2 agent registered <code>/invoices/{id}</code>; the phase-3 agent appended <code>/invoices/new</code> after it; the route pile-up sprang. Each agent's own work was fine, its own tests passed, and the orchestrator's code review missed it every time — the bug lived in the <em>handoff</em>, and only the held-out suite caught it. A single implementer who saw the whole app never once made this mistake.</p>
-    <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. If you must split work, someone has to own the whole.</p>
+    <p>Two control runs completed the picture: single Sonnet 5 built the same app with the routes ordered correctly — and an <strong>Opus 5 ×4 relay ran flawlessly</strong>, reading the inherited route table before adding its page. So the seam needs both the relay <em>and</em> a mid-tier implementer; a stronger model buys seam awareness, at triple the price of just using it solo.</p>
+    <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. Splitting work is a tax: either someone strong owns the seams, or the seams own you.</p>
   </div>
 
   <div class="finding">
@@ -379,11 +380,14 @@
         <tr><td><span class="medal">🥇</span> Haiku 4.5 main + single Opus 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$1.85–$2.44</td><td><span class="badge good">best value, clean ×2</span></td></tr>
         <tr><td><span class="medal">🥈</span> Sonnet 5 main + single Opus 5</td><td class="n">31/31</td><td class="n">0</td><td class="n">~$3.30</td><td><span class="badge good">clean ×2</span></td></tr>
         <tr><td><span class="medal">🥉</span> Codex CLI (gpt-5.6-sol), high effort</td><td class="n">32/32</td><td class="n">0</td><td class="n">n/a*</td><td><span class="badge good">zero-defect run</span></td></tr>
+        <tr><td>Sonnet 5 main + Opus 5 ×4 per-phase</td><td class="n">32/32</td><td class="n">0</td><td class="n">$5.99</td><td><span class="badge good">relay, rescued by Opus</span></td></tr>
+        <tr><td>Sonnet 5 main + single Sonnet 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$2.13</td><td><span class="badge good">solid default</span></td></tr>
+        <tr><td>Haiku 4.5 main + single Haiku 4.5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$0.73</td><td><span class="badge good">budget anchor†</span></td></tr>
         <tr><td>Sonnet 5 ×4 per-phase (relay)</td><td class="n">30/31</td><td class="n">1–3</td><td class="n">~$5.10</td><td><span class="badge bad">route bug, 3-for-3</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="foot">Score = held-out pytest suite; some runs predate the NaN amendment and faced the 31-test version. *Codex ran under ChatGPT-subscription auth, which reports tokens (26k–57k per run) but no dollar price — one honest gap in our receipts.</p>
+  <p class="foot">Score = held-out pytest suite; some runs predate the NaN amendment and faced the 31-test version. *Codex ran under ChatGPT-subscription auth, which reports tokens (26k–57k per run) but no dollar price — one honest gap in our receipts. †The all-Haiku app was fully correct; its defects were weak <em>tests</em> (asserting a "$" prefix instead of the value) — cheap implementers now fail at test rigor, not app code.</p>
 
   <div class="bigidea">
     <p>The most expensive configuration was also the one that shipped the broken app. In this experiment, <span class="hl">precise specs and held-out tests</span> beat raw spending — every single time.</p>
