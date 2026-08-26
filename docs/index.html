@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Great AI Build-Off</title>
+<meta name="description" content="We made teams of AI coding agents build the same three apps 31 times, graded them like exams, and wrote down what we learned.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --paper: #FDFCF8;
+    --card: #FFFFFF;
+    --inset: #F2F1EA;
+    --ink: #1B2432;
+    --ink-2: #4A5568;
+    --ink-3: #8A94A3;
+    --rule: #E2E0D6;
+    --accent: #0E8A5F;
+    --accent-dark: #0B6B4A;
+    --accent-wash: #E4F2EB;
+    --trap: #B07514;
+    --trap-wash: #FBF1DC;
+    --bug: #C6403E;
+    --bug-wash: #F9E9E8;
+    --shadow: 0 1px 3px rgba(27,36,50,.06), 0 8px 24px rgba(27,36,50,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #151A22;
+      --card: #1D2430;
+      --inset: #10141B;
+      --ink: #E9ECF1;
+      --ink-2: #A8B2C0;
+      --ink-3: #6E7989;
+      --rule: #303947;
+      --accent: #3DBE8B;
+      --accent-dark: #5FD2A4;
+      --accent-wash: #1B3129;
+      --trap: #D9A94E;
+      --trap-wash: #33290F;
+      --bug: #E0716F;
+      --bug-wash: #362020;
+      --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 22px 90px; }
+  h1, h2, h3, .num { font-family: "Outfit", system-ui, sans-serif; }
+  code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  p { max-width: 66ch; margin: 0 0 16px; }
+  a { color: var(--accent-dark); }
+  code {
+    font-size: .85em;
+    background: var(--inset);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  /* hero */
+  header {
+    padding: 72px 0 40px;
+    border-bottom: 4px solid var(--ink);
+    margin-bottom: 44px;
+  }
+  .kicker {
+    display: inline-block;
+    font-family: "Outfit", sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent-dark);
+    background: var(--accent-wash);
+    border-radius: 999px;
+    padding: 4px 14px;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(40px, 7.5vw, 66px);
+    font-weight: 800;
+    line-height: 1.03;
+    letter-spacing: -.015em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h1 .hl { color: var(--accent); }
+  .lede { font-size: 21px; color: var(--ink-2); max-width: 56ch; }
+  .statline { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  .stat {
+    background: var(--card); border: 1.5px solid var(--rule); border-radius: 10px;
+    padding: 10px 16px; box-shadow: var(--shadow);
+  }
+  .stat .num { font-size: 24px; font-weight: 800; color: var(--accent-dark); display: block; line-height: 1.1; }
+  .stat .lbl { font-size: 12.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .06em; }
+
+  nav.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: -18px 0 46px; }
+  nav.toc a {
+    font-family: "Outfit", sans-serif; font-weight: 600; font-size: 14px;
+    text-decoration: none; color: var(--ink-2);
+    border: 1.5px solid var(--rule); border-radius: 999px; padding: 6px 14px;
+    background: var(--card);
+  }
+  nav.toc a:hover { border-color: var(--accent); color: var(--accent-dark); }
+
+  h2 {
+    font-size: clamp(28px, 4.5vw, 38px);
+    font-weight: 800;
+    letter-spacing: -.01em;
+    line-height: 1.1;
+    margin: 70px 0 14px;
+    text-wrap: balance;
+  }
+  h2 .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--ink); color: var(--paper);
+    font-size: 20px; margin-right: 12px; vertical-align: -6px;
+  }
+  h3 { font-size: 20px; font-weight: 700; margin: 30px 0 8px; }
+
+  /* role cards */
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 24px 0; }
+  .role {
+    background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px;
+    padding: 20px 22px; box-shadow: var(--shadow);
+  }
+  .role .emoji { font-size: 34px; display: block; margin-bottom: 8px; }
+  .role h3 { margin: 0 0 6px; }
+  .role p { font-size: 15px; color: var(--ink-2); margin: 0; max-width: none; }
+
+  /* app ladder */
+  .apps { display: grid; gap: 14px; margin: 24px 0; }
+  .app {
+    display: grid; grid-template-columns: 58px 1fr; align-items: stretch;
+    background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px;
+    overflow: hidden; box-shadow: var(--shadow);
+  }
+  .app .lv {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-wash); color: var(--accent-dark);
+    font-family: "Outfit", sans-serif; font-weight: 800; font-size: 22px;
+    border-right: 1.5px solid var(--rule);
+  }
+  .app .body { padding: 16px 20px; }
+  .app h3 { margin: 0; display: inline; }
+  .app .tag { font-style: italic; color: var(--ink-3); }
+  .app p { font-size: 15px; color: var(--ink-2); margin: 6px 0 0; max-width: none; }
+
+  /* trap cards */
+  .traps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
+  .trap-card {
+    background: var(--trap-wash); border: 1.5px solid var(--trap); border-radius: 14px;
+    padding: 18px 20px;
+  }
+  .trap-card h3 { margin: 0 0 8px; color: var(--trap); font-size: 17px; }
+  .trap-card p { font-size: 14.5px; margin: 0; max-width: none; }
+
+  /* findings */
+  .finding {
+    background: var(--card); border: 1.5px solid var(--rule); border-left: 6px solid var(--accent);
+    border-radius: 14px; box-shadow: var(--shadow);
+    padding: 22px 26px; margin: 22px 0;
+  }
+  .finding .num {
+    font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent-dark); margin-bottom: 6px;
+  }
+  .finding h3 { margin: 0 0 10px; font-size: 22px; }
+  .finding p { color: var(--ink-2); margin-bottom: 10px; }
+  .finding p:last-child { margin-bottom: 0; }
+  .finding .so {
+    background: var(--accent-wash); border-radius: 10px; padding: 10px 16px;
+    font-size: 15px; color: var(--ink);
+  }
+  .finding .so strong { color: var(--accent-dark); }
+
+  /* results table */
+  .tablewrap {
+    overflow-x: auto; border: 1.5px solid var(--rule); border-radius: 14px;
+    background: var(--card); box-shadow: var(--shadow); margin: 22px 0 8px;
+  }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+  th {
+    font-family: "Outfit", sans-serif; font-size: 12.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2);
+    text-align: left; padding: 14px 14px 10px; border-bottom: 2.5px solid var(--ink);
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+  td.n, th.n { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 14px; }
+  tr:last-child td { border-bottom: 0; }
+  .medal { font-size: 16px; }
+  .badge {
+    display: inline-block; font-family: "JetBrains Mono", monospace; font-size: 11.5px;
+    border-radius: 999px; padding: 2px 10px; white-space: nowrap;
+  }
+  .badge.good { background: var(--accent-wash); color: var(--accent-dark); }
+  .badge.bad { background: var(--bug-wash); color: var(--bug); }
+  .foot { font-size: 14px; color: var(--ink-3); margin-top: 6px; }
+
+  /* quote/big idea */
+  .bigidea {
+    background: var(--ink); color: var(--paper); border-radius: 18px;
+    padding: 30px 34px; margin: 40px 0;
+  }
+  .bigidea p {
+    font-family: "Outfit", sans-serif; font-weight: 700;
+    font-size: clamp(20px, 3.4vw, 27px); line-height: 1.35; margin: 0; max-width: none;
+    text-wrap: balance;
+  }
+  .bigidea .hl { color: var(--accent); }
+  @media (prefers-color-scheme: dark) {
+    .bigidea { background: var(--card); color: var(--ink); border: 1.5px solid var(--rule); }
+  }
+
+  /* glossary */
+  .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 24px 0; }
+  .term {
+    background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px; padding: 14px 18px;
+  }
+  .term b { font-family: "Outfit", sans-serif; }
+  .term p { font-size: 14.5px; color: var(--ink-2); margin: 4px 0 0; max-width: none; }
+
+  ul.checks { padding-left: 4px; list-style: none; max-width: 66ch; }
+  ul.checks li { padding-left: 30px; position: relative; margin-bottom: 10px; }
+  ul.checks li::before { content: "✔"; position: absolute; left: 2px; color: var(--accent); font-weight: 700; }
+
+  footer {
+    margin-top: 80px; padding-top: 22px; border-top: 4px solid var(--ink);
+    font-size: 14px; color: var(--ink-3);
+  }
+  footer p { max-width: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="kicker">A real experiment, explained for students</span>
+  <h1>The Great <span class="hl">AI Build-Off</span></h1>
+  <p class="lede">We made teams of AI coding agents build the same three apps, over and over — 31 times — then graded every attempt like an exam and kept the receipts. Here's how it worked and what it taught us.</p>
+  <div class="statline">
+    <div class="stat"><span class="num">31</span><span class="lbl">graded runs</span></div>
+    <div class="stat"><span class="num">3</span><span class="lbl">apps, easy → hard</span></div>
+    <div class="stat"><span class="num">73</span><span class="lbl">secret exam questions</span></div>
+    <div class="stat"><span class="num">~$59</span><span class="lbl">total AI cost</span></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#setup">The setup</a>
+  <a href="#apps">The 3 apps</a>
+  <a href="#traps">The hidden traps</a>
+  <a href="#grading">Fair grading</a>
+  <a href="#findings">5 big findings</a>
+  <a href="#you">Why it matters for you</a>
+  <a href="#glossary">Glossary</a>
+</nav>
+
+<section id="setup">
+  <h2><span class="step">1</span>The setup: a manager and a builder</h2>
+  <p>An <strong>AI coding agent</strong> is an AI that doesn't just chat — it writes files, runs commands, and tests its own code, like a very fast intern with a laptop. In our experiment, every attempt (we call each one a <em>run</em>) used a two-role team, like a tiny construction company:</p>
+  <div class="roles">
+    <div class="role">
+      <span class="emoji">👷‍♀️</span>
+      <h3>The manager</h3>
+      <p>Reads the assignment, hires a builder, checks the finished work, and files a report. One strict rule: <strong>the manager never touches the code.</strong> Not even to fix an obvious bug.</p>
+    </div>
+    <div class="role">
+      <span class="emoji">🔨</span>
+      <h3>The builder(s)</h3>
+      <p>Gets the assignment and actually writes the app. Sometimes one builder does the whole job; sometimes the work is split into phases, with a <em>brand-new</em> builder for each phase who never met the previous one.</p>
+    </div>
+  </div>
+  <p>Every run got the <strong>exact same assignment, word for word</strong>. The only things we changed between runs: which AI model played the manager, which played the builder, whether the work was split into phases, and (later) which company's AI did the building. Change one thing at a time, keep everything else fixed — that's what makes it an experiment instead of a vibe check.</p>
+</section>
+
+<section id="apps">
+  <h2><span class="step">2</span>The three apps: easy, medium, boss level</h2>
+  <p>All three are small money-tracking websites. Each one's assignment is a written plan broken into numbered <strong>phases</strong> — build the home page, then the lists, then the forms, and so on. More phases = more features = more places where the pieces have to fit together.</p>
+  <div class="apps">
+    <div class="app">
+      <div class="lv">1</div>
+      <div class="body">
+        <h3>SpendLog</h3> <span class="tag">"Every penny, written down."</span>
+        <p>A spending journal. One kind of record, three pages, one form, a running total. 2 phases — the warm-up.</p>
+      </div>
+    </div>
+    <div class="app">
+      <div class="lv">2</div>
+      <div class="body">
+        <h3>ExpenseHub</h3> <span class="tag">"Know where it all goes."</span>
+        <p>An expense browser. Detail pages, filtering by category, and a form that must politely reject bad input. 3 phases.</p>
+      </div>
+    </div>
+    <div class="app">
+      <div class="lv">3</div>
+      <div class="body">
+        <h3>InvoiceDesk</h3> <span class="tag">"Bill it. Send it. Get paid."</span>
+        <p>An invoice tracker with rules: an invoice moves draft → sent → paid, and it <em>cannot</em> be marked paid until payments actually cover the amount. Plus a stats page and a data API. 4 phases — the boss level.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="traps">
+  <h2><span class="step">3</span>The hidden traps</h2>
+  <p>Here's the sneaky part. Each assignment contained a few one-line requirements that <em>look</em> boring but hide classic programming mistakes — like a teacher who slips one tricky question into the homework to see who's really paying attention. We call them <strong>canaries</strong>. Three favorites:</p>
+  <div class="traps">
+    <div class="trap-card">
+      <h3>🕰️ The frozen clock</h3>
+      <p>"Each entry gets the current time by default." Write that code the lazy way and the time gets stamped <em>once, when the app starts</em> — so every entry forever shows the same moment. The app looks fine in a demo and is quietly wrong in real life.</p>
+    </div>
+    <div class="trap-card">
+      <h3>🚦 The route pile-up</h3>
+      <p>Web pages are matched in order. If the page <code>/expenses/new</code> is registered <em>after</em> the page <code>/expenses/{number}</code>, the app tries to read the word "new" as a number and crashes the form. Order matters, and nothing warns you.</p>
+    </div>
+    <div class="trap-card">
+      <h3>🌀 The weird numbers</h3>
+      <p>Ask "is the amount bigger than zero?" and the bizarre value <code>NaN</code> (not-a-number) answers <em>no</em> to every comparison — so it slides right past the check. Someone could log a NaN expense and scramble your totals.</p>
+    </div>
+  </div>
+</section>
+
+<section id="grading">
+  <h2><span class="step">4</span>Grading it fairly (this is the important part)</h2>
+  <p>If you let an AI grade its own homework, it gives itself an A. So we built the grading to be as tamper-proof as a real exam:</p>
+  <ul class="checks">
+    <li><strong>A sealed answer key.</strong> For each app we wrote a secret test suite — 16, 25, and 32 automated checks — that the builders <em>never see</em>. Their folder is scrubbed before the run starts. You can't teach to a test you've never seen.</li>
+    <li><strong>Blind grading.</strong> After the runs, a separate grader scores anonymized, shuffled copies of the code — it can't tell which team produced which project, so there's no favoritism.</li>
+    <li><strong>Receipts for everything.</strong> Every run's cost is computed from the actual usage logs, and every prompt, finding, and test result is saved to a results file. No "trust me."</li>
+    <li><strong>Repeats.</strong> One good run can be luck. The important results were run twice (or more) before we believed them.</li>
+  </ul>
+</section>
+
+<section id="findings">
+  <h2><span class="step">5</span>The five big findings</h2>
+
+  <div class="finding">
+    <div class="num">Finding 1</div>
+    <h3>The cheap manager did just as well 💸</h3>
+    <p>We swapped the expensive manager model for the cheapest one — and quality didn't drop at all. The best team overall was the <strong>cheapest manager + the strongest single builder</strong>: perfect scores at every difficulty level, at about half the cost of the fancy-manager version.</p>
+    <p class="so"><strong>So what?</strong> Spend your budget where the actual work happens. Management is real work, but it doesn't need the most expensive brain in the building.</p>
+  </div>
+
+  <div class="finding">
+    <div class="num">Finding 2</div>
+    <h3>Relay teams drop the baton 🏃</h3>
+    <p>On the hardest app, teams that split the build across phases — a fresh builder per phase, like a relay race — broke the app <strong>3 times out of 3</strong>, with the exact same bug: builder #2 set up the pages one way, builder #3 bolted a new page on after, and the route pile-up trap sprang. Each builder's own work was fine. The bug lived <em>between</em> them, in the handoff. A single builder who saw the whole app never made this mistake.</p>
+    <p class="so"><strong>So what?</strong> Every handoff is a place where a bug can hide — the same reason group projects fall apart when nobody looks at the whole thing. If you must split work, someone has to own the seams.</p>
+  </div>
+
+  <div class="finding">
+    <div class="num">Finding 3</div>
+    <h3>If it's not written down, it doesn't happen ✍️</h3>
+    <p>The weird-numbers trap caught <strong>9 out of 10</strong> teams while the requirement was unwritten — everyone checked "bigger than zero" and called it done. Then we added <em>one sentence</em> to the assignment ("reject NaN and infinity") — and the next <strong>5 out of 5</strong> teams, across two different AI companies, got it right.</p>
+    <p class="so"><strong>So what?</strong> AI does what the instructions say, not what you meant. One clear sentence beat nine smart models' intuition. Writing precise instructions is a superpower — for prompting AI and for working with humans.</p>
+  </div>
+
+  <div class="finding">
+    <div class="num">Finding 4</div>
+    <h3>"Think harder" mode prevents the sloppy mistakes 🧠</h3>
+    <p>One AI has an adjustable "reasoning effort" dial. On <strong>high</strong>, it produced the only flawless sweep of all three apps in the whole experiment. On <strong>low</strong>, it could still build everything — but it fell for the frozen-clock trap and quietly skipped some of the tests it was told to write. Extra thinking didn't add ability; it removed carelessness.</p>
+    <p class="so"><strong>So what?</strong> Sound familiar? Rushing doesn't make you unable to do the problem — it makes you skip the step where you'd have caught your own mistake.</p>
+  </div>
+
+  <div class="finding">
+    <div class="num">Finding 5</div>
+    <h3>Different AIs, same blind spots 👓</h3>
+    <p>We ran the same experiment with a completely different company's AI. It did great — and it made some of the <em>same</em> mistakes in the same places, because the assignment's shape invited them. The blind spots belonged to the task, not the brand. (And only "think harder" mode ever fixed the subtlest one.)</p>
+    <p class="so"><strong>So what?</strong> Switching tools doesn't rescue you from an unclear assignment. Fixing the assignment does.</p>
+  </div>
+
+  <h3>The final scoreboard (hardest app, best teams)</h3>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Team</th><th class="n">Score</th><th class="n">Serious bugs</th><th class="n">Cost</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td><span class="medal">🥇</span> Cheap manager + one strong builder</td><td class="n">32/32</td><td class="n">0</td><td class="n">~$2</td><td><span class="badge good">best value</span></td></tr>
+        <tr><td><span class="medal">🥈</span> Standard manager + one strong builder</td><td class="n">31/31</td><td class="n">0</td><td class="n">~$3.30</td><td><span class="badge good">rock solid</span></td></tr>
+        <tr><td><span class="medal">🥉</span> Other company's AI, "think harder" mode</td><td class="n">32/32</td><td class="n">0</td><td class="n">n/a*</td><td><span class="badge good">flawless run</span></td></tr>
+        <tr><td>Relay team (new builder per phase)</td><td class="n">30/31</td><td class="n">1–3</td><td class="n">~$5</td><td><span class="badge bad">dropped the baton</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="foot">Score = secret test suite. Some runs used a 31-question version of the exam, before we added the weird-numbers question. *That AI ran on a subscription, so per-run cost isn't published — one honest gap in our receipts.</p>
+
+  <div class="bigidea">
+    <p>The most expensive team was also the one that shipped the broken app. In this experiment, <span class="hl">clear instructions and real testing</span> beat raw spending — every single time.</p>
+  </div>
+</section>
+
+<section id="you">
+  <h2><span class="step">6</span>Why this matters for you</h2>
+  <p>You'll probably never run this exact benchmark. But you <em>will</em> work with AI — and with people — on things that matter. The experiment's lessons travel:</p>
+  <ul class="checks">
+    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 31 runs came from adding one precise sentence to the instructions. Vague asks get plausible-looking, quietly-wrong results.</li>
+    <li><strong>Don't grade your own homework.</strong> Every builder's own tests passed — including the broken apps'. Real checking is done by someone (or something) that didn't do the work and can't be sweet-talked.</li>
+    <li><strong>Watch the handoffs.</strong> Whether it's AI phases or your group project, the bugs live between people's parts. Someone has to look at the whole thing.</li>
+    <li><strong>Working ≠ correct.</strong> Every broken app in this experiment ran fine and looked fine. The bugs only appeared under tests designed to probe the edges. "It runs" is the start of checking, not the end.</li>
+    <li><strong>Measure, then believe.</strong> One run is a story; a repeated, blind-graded result is evidence. That mindset is the whole scientific method, wearing a programming costume.</li>
+  </ul>
+  <h3>Try it yourself (no giant budget needed)</h3>
+  <p>Pick any AI coding tool and give it a small, written assignment with one hidden trap you know the answer to — like the frozen clock. Then write three tests it never sees, and grade it. Change <em>one</em> word of your instructions and run it again. Congratulations: you're benchmarking.</p>
+</section>
+
+<section id="glossary">
+  <h2><span class="step">7</span>Glossary</h2>
+  <div class="glossary">
+    <div class="term"><b>AI coding agent</b><p>An AI that acts, not just chats: it creates files, writes code, runs it, and reads the errors.</p></div>
+    <div class="term"><b>Run</b><p>One complete attempt: a team gets the assignment, builds the app, gets graded.</p></div>
+    <div class="term"><b>Spec</b><p>The written assignment — what to build, feature by feature. Short for "specification."</p></div>
+    <div class="term"><b>Phase</b><p>One numbered chunk of the spec's build plan. More phases = more handoffs when work is split.</p></div>
+    <div class="term"><b>Canary</b><p>A requirement planted to detect a specific classic mistake — an early-warning tripwire.</p></div>
+    <div class="term"><b>Held-out tests</b><p>The secret exam. Automated checks the builders never see, so they can't teach to the test.</p></div>
+    <div class="term"><b>Blind grading</b><p>Scoring shuffled, anonymized work so the grader can't play favorites.</p></div>
+    <div class="term"><b>NaN</b><p>"Not a Number" — a special float value that answers <em>no</em> to every comparison, letting it sneak past naive checks.</p></div>
+    <div class="term"><b>Token</b><p>The unit AI text is measured (and billed) in — roughly three-quarters of a word.</p></div>
+    <div class="term"><b>Orchestrator</b><p>The manager role: delegates, verifies, reports — never implements. (The fancy word for it.)</p></div>
+  </div>
+</section>
+
+<footer>
+  <p>Built from a real 31-run benchmark (August 2026) comparing agent/sub-agent configurations of Claude and Codex models building SpendLog, ExpenseHub, and InvoiceDesk. Full methodology, per-run records, prompts, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
+</footer>
+
+</div>
+</body>
+</html>
