@@ -55,7 +55,7 @@
     font-size: 17px;
     line-height: 1.65;
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 0 22px 90px; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
   h1, h2, h3, .num { font-family: "Outfit", system-ui, sans-serif; }
   code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
   p { max-width: 66ch; margin: 0 0 16px; }
@@ -70,10 +70,11 @@
   }
 
   header {
-    padding: 72px 0 40px;
+    padding: clamp(48px, 7vh, 84px) 0 40px;
     border-bottom: 4px solid var(--ink);
     margin-bottom: 44px;
   }
+  .lede, header .statline { max-width: 820px; }
   h1 {
     font-size: clamp(40px, 7.5vw, 66px);
     font-weight: 800;
