@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Demos — The Great AI Build-Off</title>
+<meta name="description" content="Screenshots of SpendLog, ExpenseHub, and InvoiceDesk — the actual, unedited apps built by the benchmark's zero-defect runs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --paper: #FAF3EA;
+    --card: #FFFDF9;
+    --inset: #F1E7D9;
+    --ink: #2C2013;
+    --ink-2: #6B5A47;
+    --ink-3: #9C8B76;
+    --rule: #E5D8C5;
+    --accent: #BC5215;
+    --accent-dark: #9A430F;
+    --accent-wash: #F6E5D7;
+    --shadow: 0 1px 3px rgba(44,32,19,.06), 0 8px 24px rgba(44,32,19,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1C1510;
+      --card: #251C14;
+      --inset: #15100B;
+      --ink: #EDE4D7;
+      --ink-2: #B3A38E;
+      --ink-3: #7E6F5C;
+      --rule: #3A2F23;
+      --accent: #E0793C;
+      --accent-dark: #E8935C;
+      --accent-wash: #332417;
+      --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 22px 90px; }
+  h1, h2 { font-family: "Outfit", system-ui, sans-serif; }
+  p { max-width: 68ch; margin: 0 0 16px; }
+  a { color: var(--accent-dark); }
+  code {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .85em; background: var(--inset); border: 1px solid var(--rule);
+    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  }
+  header { padding: 56px 0 28px; border-bottom: 4px solid var(--ink); margin-bottom: 36px; }
+  .back {
+    font-family: "Outfit", sans-serif; font-weight: 600; font-size: 14px;
+    text-decoration: none; color: var(--ink-2);
+    border: 1.5px solid var(--rule); border-radius: 999px; padding: 6px 14px;
+    background: var(--card); display: inline-block; margin-bottom: 20px;
+  }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 800; line-height: 1.05; letter-spacing: -.015em; margin: 0 0 14px; text-wrap: balance; }
+  h1 .hl { color: var(--accent); }
+  .lede { font-size: 19px; color: var(--ink-2); max-width: 60ch; }
+
+  h2 {
+    font-size: clamp(26px, 4vw, 34px); font-weight: 800; letter-spacing: -.01em;
+    margin: 60px 0 6px; text-wrap: balance;
+  }
+  h2 .tag { font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; font-style: italic; font-size: 17px; color: var(--ink-3); }
+  .provenance { font-size: 14.5px; color: var(--ink-3); margin-bottom: 20px; }
+
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin: 20px 0 8px; }
+  figure {
+    margin: 0; background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px;
+    overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column;
+  }
+  figure a { display: block; line-height: 0; background: var(--inset); }
+  figure img { width: 100%; max-width: 100%; height: auto; display: block; }
+  figcaption { padding: 12px 16px; font-size: 14.5px; color: var(--ink-2); }
+  figcaption b { font-family: "Outfit", sans-serif; color: var(--ink); }
+
+  footer { margin-top: 70px; padding-top: 20px; border-top: 4px solid var(--ink); font-size: 14px; color: var(--ink-3); }
+  footer p { max-width: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>The apps, <span class="hl">as the agents built them</span></h1>
+  <p class="lede">These screenshots are the actual, unedited output of the benchmark's zero-defect runs — the Codex CLI (gpt-5.6-sol, high reasoning effort) sweep that passed every held-out test with no findings of any kind. No human touched a line of this code.</p>
+</header>
+
+<section id="spendlog">
+  <h2>SpendLog <span class="tag">— tier 1 · "Every penny, written down."</span></h2>
+  <p class="provenance">2 phases · 16/16 held-out tests · blind-graded 0 critical / 0 conformance / 0 minor</p>
+  <div class="gallery">
+    <figure>
+      <a href="img/t1-home.png"><img src="img/t1-home.png" alt="SpendLog home page with hero tagline" loading="lazy"></a>
+      <figcaption><b>Home.</b> The phase-1 deliverable: base layout, navbar, and the spec's exact tagline in a hero section.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t1-entries.png"><img src="img/t1-entries.png" alt="SpendLog entries page with running total and add form" loading="lazy"></a>
+      <figcaption><b>Entries.</b> Seeded journal entries, the computed <code>Total spent: $X.XX</code> line, and the add-entry form. Each entry's timestamp is per-instance — the frozen-clock trap, dodged.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="expensehub">
+  <h2>ExpenseHub <span class="tag">— tier 2 · "Know where it all goes."</span></h2>
+  <p class="provenance">3 phases · 25/25 held-out tests · blind-graded 0 / 0 / 0 — the first tree in 31 runs to URL-encode its category links</p>
+  <div class="gallery">
+    <figure>
+      <a href="img/t2-home.png"><img src="img/t2-home.png" alt="ExpenseHub home page" loading="lazy"></a>
+      <figcaption><b>Home.</b> Same skeleton pattern as tier 1 — the stack is held constant so complexity is the only thing that grows.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t2-expenses.png"><img src="img/t2-expenses.png" alt="ExpenseHub expense list with total and category badges" loading="lazy"></a>
+      <figcaption><b>All expenses.</b> Newest-first cards, category badges that double as filter links, and the recomputed total.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t2-filtered.png"><img src="img/t2-filtered.png" alt="ExpenseHub filtered by the food category" loading="lazy"></a>
+      <figcaption><b>Filtered view.</b> <code>?category=food</code> — the heading changes, the total is recomputed from only the visible expenses, and a "Show all" link appears. All spec'd, all tested.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t2-form.png"><img src="img/t2-form.png" alt="ExpenseHub add-expense form" loading="lazy"></a>
+      <figcaption><b>Add expense.</b> Behind this form sits the validation gauntlet: 422 on empty fields, non-numeric amounts, zero, negatives — and <code>nan</code>/<code>inf</code>, via <code>math.isfinite</code>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="invoicedesk">
+  <h2>InvoiceDesk <span class="tag">— tier 3 · "Bill it. Send it. Get paid."</span></h2>
+  <p class="provenance">4 phases · 32/32 held-out tests · blind-graded 0 / 0 / 0</p>
+  <div class="gallery">
+    <figure>
+      <a href="img/t3-home.png"><img src="img/t3-home.png" alt="InvoiceDesk home page" loading="lazy"></a>
+      <figcaption><b>Home.</b> The boss level's front door.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t3-invoices.png"><img src="img/t3-invoices.png" alt="InvoiceDesk invoice board with status badges and payment progress" loading="lazy"></a>
+      <figcaption><b>Invoice board.</b> Status filters, color-coded badges (draft/sent/paid), and a <code>$P.PP of $A.AA paid</code> progress line per invoice.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t3-detail.png"><img src="img/t3-detail.png" alt="InvoiceDesk invoice detail with balance due, payments, and lifecycle button" loading="lazy"></a>
+      <figcaption><b>Invoice detail.</b> The state machine in the UI: a sent invoice with its payment history, computed <code>Balance due</code>, a payment form, and a "Mark paid" button that the backend will refuse until payments cover the amount — the money gate.</figcaption>
+    </figure>
+    <figure>
+      <a href="img/t3-stats.png"><img src="img/t3-stats.png" alt="InvoiceDesk billing stats page" loading="lazy"></a>
+      <figcaption><b>Billing stats.</b> Per-status counts and the three money lines — invoiced, collected, outstanding — every one computed, not hard-coded, and checked to the cent by the held-out suite.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<footer>
+  <p>Captured with Playwright from the apps running locally, seed data and all. The code shown is the anonymized grading copy of the Codex high-effort runs (trees D, A, and F in the blind-grading batch) — see the repository's <code>results/</code> directory for the full scorecards. <a href="../">Back to the write-up &rarr;</a></p>
+</footer>
+
+</div>
+</body>
+</html>
