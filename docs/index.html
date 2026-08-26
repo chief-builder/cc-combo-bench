@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Great AI Build-Off</title>
-<meta name="description" content="We made teams of AI coding agents build the same three apps 31 times, graded them against held-out test suites, and wrote down what we learned.">
+<meta name="description" content="We made teams of AI coding agents build the same three apps 36 times, graded them against held-out test suites, and wrote down what we learned.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -234,12 +234,12 @@
 
 <header>
   <h1>The Great <span class="hl">AI Build-Off</span></h1>
-  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 31 times, then graded every attempt against held-out test suites and kept the receipts. Here's how it worked and what it taught us.</p>
+  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 36 times, then graded every attempt against held-out test suites and kept the receipts. Here's how it worked and what it taught us.</p>
   <div class="statline">
-    <div class="stat"><span class="num">31</span><span class="lbl">graded runs</span></div>
+    <div class="stat"><span class="num">36</span><span class="lbl">graded runs</span></div>
     <div class="stat"><span class="num">3</span><span class="lbl">apps, easy → hard</span></div>
     <div class="stat"><span class="num">73</span><span class="lbl">held-out tests</span></div>
-    <div class="stat"><span class="num">~$59</span><span class="lbl">total token cost</span></div>
+    <div class="stat"><span class="num">~$74</span><span class="lbl">total token cost</span></div>
   </div>
 </header>
 
@@ -339,15 +339,16 @@
   <div class="finding">
     <div class="num">Finding 1</div>
     <h3>The cheap orchestrator lost nothing 💸</h3>
-    <p>Swapping the Sonnet 5 orchestrator for <strong>Haiku 4.5</strong> — a model about a third the price — changed quality not at all. The best configuration in all 31 runs was <strong>Haiku 4.5 orchestrating a single Opus 5 implementer</strong>: blind-graded clean at every tier, twice ($1.21–$2.44 per app), 26–45% cheaper than the same implementer under Sonnet 5.</p>
+    <p>Swapping the Sonnet 5 orchestrator for <strong>Haiku 4.5</strong> — a model about a third the price — changed quality not at all. The best configuration in all 36 runs was <strong>Haiku 4.5 orchestrating a single Opus 5 implementer</strong>: blind-graded clean at every tier, twice ($1.21–$2.44 per app), 26–45% cheaper than the same implementer under Sonnet 5.</p>
     <p class="so"><strong>So what?</strong> Quality tracked the implementer, not the orchestrator. Spend your token budget where the actual work happens.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 2</div>
     <h3>Relay teams drop the baton 🏃</h3>
-    <p>On InvoiceDesk, per-phase teams (Sonnet 5 ×4, a fresh implementer per phase) shipped a broken app <strong>3 times out of 3</strong>, under two different orchestrator models — always the same bug. The phase-2 agent registered <code>/invoices/{id}</code>; the phase-3 agent appended <code>/invoices/new</code> after it; the route pile-up sprang. Each agent's own work was fine, its own tests passed, and the orchestrator's code review missed it every time — the bug lived in the <em>handoff</em>, and only the held-out suite caught it. A single implementer who saw the whole app never once made this mistake.</p>
+    <p>On InvoiceDesk, per-phase teams (Sonnet 5 ×4, a fresh implementer per phase) shipped a broken app <strong>3 times out of 3</strong>, under two different orchestrator models — always the same bug. The phase-2 agent registered <code>/invoices/{id}</code>; the phase-3 agent appended <code>/invoices/new</code> after it; the route pile-up sprang. Each agent's own work was fine, its own tests passed, and the orchestrator's code review missed it every time — the bug lived in the <em>handoff</em>, and only the held-out suite caught it. Single implementers almost never made this mistake — one Haiku 4.5 draw eventually did, solo, with 40 green tests of its own, because not one of them ever requested the broken page.</p>
     <p>Two control runs completed the picture: single Sonnet 5 built the same app with the routes ordered correctly — and an <strong>Opus 5 ×4 relay ran flawlessly</strong>, reading the inherited route table before adding its page. So the seam needs both the relay <em>and</em> a mid-tier implementer; a stronger model buys seam awareness, at triple the price of just using it solo.</p>
+    <p>And one more twist: pairing the <em>smartest orchestrator</em> (Opus 5) with the cheapest implementer didn't help. Opus's code review caught the route bug precisely — the same bug class every other reviewer missed — but a reviewer who can't fix anything can only watch. $4.16 for a broken app; the insight was stranded.</p>
     <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. Splitting work is a tax: either someone strong owns the seams, or the seams own you.</p>
   </div>
 
@@ -384,6 +385,7 @@
         <tr><td>Sonnet 5 main + single Sonnet 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$2.13</td><td><span class="badge good">solid default</span></td></tr>
         <tr><td>Haiku 4.5 main + single Haiku 4.5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$0.73</td><td><span class="badge good">budget anchor†</span></td></tr>
         <tr><td>Sonnet 5 ×4 per-phase (relay)</td><td class="n">30/31</td><td class="n">1–3</td><td class="n">~$5.10</td><td><span class="badge bad">route bug, 3-for-3</span></td></tr>
+        <tr><td>Opus 5 main + single Haiku 4.5</td><td class="n">31/32</td><td class="n">1</td><td class="n">$4.16</td><td><span class="badge bad">smart manager, stranded review</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -398,7 +400,7 @@
   <h2><span class="step">6</span>Why it matters for you</h2>
   <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons transfer:</p>
   <ul class="checks">
-    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 31 runs came from adding one precise sentence to the spec. Vague prompts get plausible-looking, quietly-wrong code.</li>
+    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 36 runs came from adding one precise sentence to the spec. Vague prompts get plausible-looking, quietly-wrong code.</li>
     <li><strong>Don't grade your own homework.</strong> Every implementer's own tests passed — including the broken apps'. Real verification is done by tests the author never saw and can't overfit to.</li>
     <li><strong>Watch the handoffs.</strong> Whether it's per-phase sub-agents or your group project, the bugs live between the parts. Someone has to look at the whole.</li>
     <li><strong>Working ≠ correct.</strong> Every broken app here ran fine, demoed fine, and passed its own tests. The defects only surfaced under tests designed to probe the edges.</li>
@@ -427,7 +429,7 @@
 </section>
 
 <footer>
-  <p>Built from a real 31-run benchmark (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
+  <p>Built from a real 36-run benchmark (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
 </footer>
 
 </div>

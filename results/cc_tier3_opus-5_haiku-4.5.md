@@ -1,0 +1,237 @@
+# cc_tier3_opus-5_haiku-4.5
+
+Tier 3 (InvoiceDesk). Orchestrator: Opus 5. Implementer: one sub-agent on
+haiku (`claude -p --model haiku`), single spawn, all phases.
+
+Worktree: `/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/oh-t3`
+
+## Prompts used
+
+Built from `prompts/subagent-both-phases.md` (part below the `---`), placeholders
+filled, saved to an `mktemp` file, passed verbatim on stdin to:
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/oh-t3 && claude -p --model haiku --permission-mode acceptEdits --allowedTools "Bash" --output-format text < <temp file>
+```
+
+Verbatim prompt:
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/oh-t3/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/oh-t3 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/oh-t3 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+Sub-agent was spawned exactly once. No duplicate launches.
+
+Files produced: `app.py`, `models.py`, `templates/{base,home,invoices,invoice_detail,invoice_new,stats}.html`, `tests/test_app.py`.
+
+## Review findings
+
+### Critical / functional
+
+1. **`GET /invoices/new` is unreachable — route declared after the `{invoice_id}`
+   catch-all.** `app.py:70` registers `@app.get("/invoices/{invoice_id}")` and
+   `app.py:97` registers `@app.get("/invoices/new")`. Starlette matches routes in
+   registration order, so `/invoices/new` is captured by the earlier route, fails
+   the `int` path coercion, and returns **422** instead of rendering the new-invoice
+   form. The "New invoice" button on the board (`templates/invoices.html:8`) therefore
+   leads to a 422 error page. Confirmed by the acceptance suite
+   (`test_new_invoice_form`: `assert 422 == 200`). The entire Phase 3 create-form UI
+   is inaccessible through the browser; only the `POST /invoices` endpoint works.
+
+### Spec conformance
+
+2. **Favicon uses an invalid `rel`.** `templates/base.html:7` —
+   `<link rel="favicon" href="https://www.python.org/static/favicon.ico">`. The
+   roadmap asks for a favicon `<link>`; `rel="favicon"` is not a recognized relation
+   (should be `rel="icon"`), so no browser will load it. The acceptance test only
+   greps for the URL, so this passed verification but is still wrong.
+
+3. **Required roadmap test is a stub.** `tests/test_app.py:334-349`
+   (`test_mark_paid_after_full_payment`) contains only comments and a bare `pass`;
+   it asserts nothing. The roadmap explicitly requires the test "after payments
+   cover the amount, the same request returns 303 and the detail shows the `paid`
+   badge". The implementation logic is in fact correct (verified independently by
+   the acceptance suite and the smoke script), but the sub-agent's own test does
+   not cover it.
+
+4. **Weak/degenerate tests elsewhere.**
+   - `tests/test_app.py:288-297` (`test_payment_updates_balance_due`) only asserts
+     the literal string `"Balance due:"` is present; it never checks the balance
+     actually decreased, and computes `response1` without using it.
+   - `tests/test_app.py:258-264` (`test_transition_on_paid_invoice_returns_400`)
+     posts `new_status="something"`, an invalid status value rather than a real
+     lifecycle move; it would pass even if paid-invoice transitions were allowed.
+   - `tests/test_app.py:242-256` (`test_invalid_transition_draft_to_paid`) creates a
+     throwaway invoice it never uses, then tests invoice 1.
+   - No test at all for `GET /invoices/new`, which is why defect 1 shipped.
+
+5. **Payments section hidden when empty.** `templates/invoice_detail.html:21` wraps
+   the whole payments block in `{% if payments %}`, so an invoice with no payments
+   shows no payments section or heading. The roadmap describes "a payments section
+   listing each payment" — arguably should render the section with an empty state.
+
+6. **Payment form only rendered for `sent` invoices.**
+   `templates/invoice_detail.html:38`. Defensible (matches the server rule) but the
+   roadmap describes the payment form as an unconditional part of the detail
+   template.
+
+### Minor / style
+
+7. **Unused import.** `app.py:5` — `from fastapi.staticfiles import StaticFiles`;
+   never used, and no static dir exists.
+
+8. **Deprecated `TemplateResponse` call form** used throughout `app.py`
+   (`TemplateResponse(name, {"request": ...})`), producing 28 DeprecationWarnings
+   per test run. The modern form is `TemplateResponse(request, name, ...)`.
+
+9. **Redundant re-parsing.** `app.py:127` and `app.py:148` both call
+   `float(amount)`; same duplication at `app.py:179` / `app.py:208`.
+
+10. **Route handler passes both raw and pre-formatted values into templates**
+    (`app.py:44-57`, `app.py:79-93`), building throwaway dicts instead of letting
+    Jinja format. It also passes the unused `paid_total` callable (`app.py:66`) and
+    an unused `errors`/`form_data` pair into the GET detail context (`app.py:90-91`).
+    Works, but noisier than the roadmap requires.
+
+11. **`required` attributes added to form inputs** (`templates/invoice_new.html:13,19,25`,
+    `templates/invoice_detail.html:47`) — not requested by the roadmap; harmless for
+    tests but suppresses the server-side validation path in a real browser.
+
+## Verification
+
+### 1. Implementation's own tests — PASS
+
+`cd <worktree> && .venv/bin/python -m pytest tests/ -v`
+
+```
+40 passed, 37 warnings in 0.17s
+```
+
+All 40 tests pass. (Note finding 3: one of them asserts nothing.)
+
+### 2. Held-out acceptance suite — FAIL (1 of 32)
+
+`APP_DIR=<worktree> .venv/bin/pytest acceptance/tier3/test_spec.py -v`
+
+```
+1 failed, 31 passed, 28 warnings in 0.17s
+
+FAILED acceptance/tier3/test_spec.py::test_new_invoice_form - assert 422 == 200
+
+    def test_new_invoice_form(client):
+        response = client.get("/invoices/new")
+>       assert response.status_code == 200
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+```
+
+Root cause: review finding 1 (route ordering).
+
+### 3. Smoke script — PASS
+
+`scripts/smoke_tier3.sh <worktree> 8521`
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+The smoke script never requests `/invoices/new`, so it does not surface defect 1.
+
+### Summary
+
+| Check | Result |
+|---|---|
+| Implementation tests | PASS (40/40) |
+| Acceptance suite | FAIL (31/32) |
+| Smoke script | PASS (14/14) |
+
+Nothing was fixed; findings are reported as-is.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-opus-5 | 35 | 23 | 70 | 246,134 | 1,105,030 | 10,410 | $2.351 |
+| Sub-agent | claude-haiku-4-5-20251001 | 156 | 62 | 1,251 | 253,881 | 9,490,764 | 109,002 | $1.813 |
+| **Total** | | | | | | | | **$4.164** |
+
+Wall-clock (main-agent session span): 555s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_1965eb9e-be2/agent-a17e5a857b4f03ba6.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-oh-t3/b4c34b59-a1f8-467f-aff0-72ba71472b49.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded as a single anonymized tree (key: scratchpad/grading-key-oh.txt);
+grader re-ran all scripted checks on the anonymized copy (port 8522)
+against the corrected suite.
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 31/32 |
+| Own tests passing | 40/40 |
+| Critical/functional | 1 |
+| Spec-conformance | 2 |
+| Minor/style | 2 |
+| Smoke | pass |
+
+Critical: app.py:70 registers `GET /invoices/{invoice_id}` before
+`GET /invoices/new` (app.py:97) — the int path converter swallows
+`/invoices/new`, the new-invoice form 422s in a browser, and the board's
+"New invoice" button leads to an error page. First time the route trap
+has caught a SINGLE-sub run (previously 3-for-3 relay-only); the prior
+single-Haiku draw ordered correctly, so this is draw variance at the
+Haiku tier. Shipped under 40 green own tests because none requests
+`GET /invoices/new`; smoke never hits it either.
+
+Conformance: test_mark_paid_after_full_payment is a stub ending in
+`pass` for a roadmap-listed behavior (tests/test_app.py:334-349);
+test_payment_updates_balance_due asserts only the "Balance due:" prefix
+(tests/test_app.py:288-297).
+
+Minors: payment form rendered only on sent invoices (precedent);
+`rel="favicon"` instead of `rel="icon"` (browsers ignore it; the
+acceptance suite greps only the URL).
+
+Orchestrator note: the Opus 5 main's in-run review caught the route
+critical precisely (file, line, mechanism — the class Sonnet mains
+missed in all three relay runs), the stub test, and the weak-test class.
+The harness forbids fixing, so none of that insight reached the shipped
+app: the campaign's clearest demonstration that in a review-only role,
+orchestrator intelligence is stranded.

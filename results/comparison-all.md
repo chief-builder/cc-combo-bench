@@ -239,6 +239,7 @@ post-amendment (32-test suite, corrected per 5f069d8).
 | Sonnet main + single Haiku | 32/32 | 0 | 3 | 5 | $1.88 | 276s |
 | Sonnet main + **Opus 5 ×4 per-phase** | 32/32 | 0 | **0** | **0** | $5.99 | 445s |
 | **Haiku main + single Haiku** | 32/32 | 0 | 3 | 6 | **$0.73** | 264s |
+| Opus main + single Haiku (2026-08-26) | **31/32** | **1** | 2 | 2 | $4.16 | 555s |
 
 - **The relay 2×2 is complete, and the finding sharpened**: Opus ×4
   per-phase went fully clean (0/0/0) — the first per-phase tier-3 run
@@ -259,6 +260,19 @@ post-amendment (32-test suite, corrected per 5f069d8).
   both validation points, route ordering, `default_factory`, exact
   detail strings, consistent seed money. Post-amendment, the amended
   letter is now 9-for-9 across three model tiers and two providers.
+- **The Opus→Haiku corner (the maximal "smart manager, cheap worker")
+  settled the orchestrator question decisively — against it.** The
+  Haiku sub shipped the route-ordering critical in a SINGLE-sub run
+  (first time; the trap is implementer-tier-correlated, not
+  relay-exclusive — the other single-Haiku draw ordered correctly)
+  under 40 green own tests, none of which requests `/invoices/new`.
+  The Opus main's in-run review was the campaign's best — it caught
+  the critical precisely, the stub test, and the weak-test class that
+  Sonnet mains never flag — but the review-only harness strands that
+  insight: $4.16 for a broken app, versus $0.73 (Haiku main) or $1.88
+  (Sonnet main) for correct ones from the same implementer tier.
+  Better orchestrators see more; in a role that can't fix or gate,
+  seeing isn't shipping. Spend on the implementer.
 - **Third instrument bug of the benchmark, same lesson**: single
   Sonnet's in-run 31/32 was the suite assuming unique seed client
   names (roadmap permits duplicates — `html.find()` at independent
