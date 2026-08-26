@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cc_tier3_haiku-4.5_haiku-4.5 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>cc_tier3_haiku-4.5_haiku-4.5</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># Benchmark Results: InvoiceDesk (Tier 3)
+
+## Prompts used
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-hh/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-hh — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-hh &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+## Review findings
+
+No defects identified. The implementation:
+
+- Implements all four phases of the roadmap completely and correctly
+- Uses proper data models with all required fields and defaults
+- Includes proper validation for all form inputs (client, description, amount, payments)
+- Correctly enforces business logic constraints:
+  - Payments only on &quot;sent&quot; invoices
+  - Status transitions following allowed state transitions
+  - Sufficient payment required before marking invoice paid
+  - Non-finite and non-positive amounts rejected (nan, inf, -inf, 0, negative)
+- Includes comprehensive seed data (5 invoices covering all statuses, 6 payments)
+- All templates properly extend base layout and use correct styling (Bootstrap classes, status badges)
+- Error handling with proper status codes and input preservation
+- Correct monetary calculations with 2-decimal rounding throughout
+- JSON API returns all required fields with ISO 8601 timestamps
+- All exact text requirements met (tagline, balance due line, total lines)
+
+## Verification
+
+### Implementation Tests (tests/)
+```
+22 passed, 9 warnings in 0.15s
+```
+
+**Pass**: All implementation tests passed.
+
+### Acceptance Tests (acceptance/tier3/)
+```
+32 passed, 9 warnings in 0.16s
+```
+
+**Pass**: All acceptance tests passed, validating:
+- HTML structure and required elements
+- Bootstrap CDN links and favicon
+- Data model specifications
+- Form validation and error handling
+- Status transitions and business logic
+- Financial calculations
+- API response structure
+
+### Smoke Tests (scripts/smoke_tier3.sh)
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -&gt; sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -&gt; paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+**Pass**: All smoke tests passed, validating end-to-end workflows.
+
+## Summary
+
+The implementation is complete, correct, and production-ready. All 54 verification tests passed (22 unit, 32 acceptance, 14 smoke). No defects, missing features, or spec violations detected.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-haiku-4-5-20251001 | 54 | 26 | 438 | 116,579 | 1,381,510 | 9,287 | $0.331 |
+| Sub-agent | claude-haiku-4-5-20251001 | 45 | 20 | 363 | 78,835 | 1,245,986 | 34,382 | $0.395 |
+| **Total** | | | | | | | | **$0.726** |
+
+Wall-clock (main-agent session span): 264s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b3ddfecb-3f1/agent-a616efeaf19275d6a.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-nc-t3-hh/cd95c401-6155-43d6-a3de-52d61cf165dc.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded in a shuffled anonymized batch of 4 (key: scratchpad/grading-key-nc.txt)
+by two parallel graders (trees A-B / C-D), all scripted checks re-run on the
+anonymized copies against the corrected suite (commit 5f069d8). Standing
+rulings applied: required Form() for the optional note field = conformance;
+payment form rendered only on sent invoices = minor (per the XP3 precedent);
+duplicate seed client names = permitted, not a defect; weak tests (roadmap-
+listed behavior not actually asserted) = conformance.
+
+Graded as treeA (port 8511).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 32/32 |
+| Own tests passing | 22/22 |
+| Critical/functional | 0 |
+| Spec-conformance | 3 |
+| Minor/style | 6 |
+| Smoke | pass |
+
+Conformance (all weak tests; app code conformant): (1) reduced-balance
+assertion checks only the `&quot;Balance due: $&quot;` prefix, never the value
+(tests/test_app.py:184); (2) `Outstanding: $` asserted prefix-only while
+the other two stats lines get real values (tests/test_app.py:259); (3) the
+API test never asserts a JSON content type (tests/test_app.py:269-286).
+
+Minors incl. a bare `status: str = None` annotation, redundant re-parse,
+dead template guard, and all seed invoices sharing one import-time
+`created_at` (sort still correct/stable — no letter violation).
+
+All canaries dodged: `isfinite` at both points, correct route order,
+`default_factory`, exact detail strings, consistent seed money. At $0.73
+this is the cheapest tier-3 run of the campaign with a fully conformant
+app — the cost-quality frontier&#x27;s new budget anchor, with the caveat that
+its weak spot (like single Haiku&#x27;s) is test rigor.
+</pre>
+</div>
+</body>
+</html>

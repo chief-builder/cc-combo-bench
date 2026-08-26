@@ -247,6 +247,7 @@
   <a href="#setup">The setup</a>
   <a href="#apps">The 3 apps</a>
   <a href="demos/">App demos 📸</a>
+  <a href="#grid">The full grid</a>
   <a href="#traps">The hidden traps</a>
   <a href="#grading">Fair grading</a>
   <a href="#findings">5 big findings</a>
@@ -261,15 +262,15 @@
     <div class="role">
       <span class="emoji">🧭</span>
       <h3>The main agent (orchestrator)</h3>
-      <p>Reads the spec, spawns the sub-agent as a separate CLI process (<code>claude -p</code> or <code>codex exec</code>), reviews the finished code against the roadmap, runs verification, and writes a report. One strict rule: <strong>it never writes or fixes implementation code.</strong></p>
+      <p>Reads the spec, spawns the sub-agent as a separate CLI process (<code>claude -p</code> or <code>codex exec</code>), reviews the finished code against the roadmap, runs verification, and writes a report. One strict rule: <strong>it never writes or fixes implementation code.</strong> <a href="harness.html#spawning">How the spawn commands work, flag by flag &rarr;</a></p>
     </div>
     <div class="role">
       <span class="emoji">🔨</span>
       <h3>The sub-agent (implementer)</h3>
-      <p>Receives the spec and builds the app. Sometimes one sub-agent implements everything (<em>single</em>); sometimes each roadmap phase gets a <em>fresh</em> sub-agent with no memory of the previous one (<em>per-phase</em>).</p>
+      <p>Receives the spec and builds the app. Sometimes one sub-agent implements everything (<em>single</em>); sometimes each roadmap phase gets a <em>fresh</em> sub-agent with no memory of the previous one (<em>per-phase</em>). <a href="harness.html#strategies">What single vs. per-phase means at the process level &rarr;</a></p>
     </div>
   </div>
-  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. The variables were: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5), which model implements, single vs. per-phase spawning, and — in the cross-provider rounds — Codex CLI (running gpt-5.6-sol) as the implementer with its <code>model_reasoning_effort</code> dial swept low/medium/high. Change one axis at a time, hold everything else fixed: that's what makes it a benchmark instead of a vibe check.</p>
+  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. The variables were: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5), which model implements, single vs. per-phase spawning, and — in the cross-provider rounds — Codex CLI (running gpt-5.6-sol) as the implementer with its <code>model_reasoning_effort</code> dial swept low/medium/high. Change one axis at a time, hold everything else fixed.</p>
 </section>
 
 <section id="apps">
@@ -300,8 +301,58 @@
   </div>
 </section>
 
+<section id="grid">
+  <h2><span class="step">3</span>The full orchestrator &times; executor grid</h2>
+  <p>All 36 graded runs, every configuration tested. Each row links to the run's verbatim <strong>record</strong> — the exact prompts it used, the review findings, the verification output, the cost table, and the blind-graded scorecard. Where a run's built app was archived, <strong>app</strong> opens a full-page screenshot of <em>that run's</em> actual output; earlier runs' anonymized grading copies expired before archiving, marked "—". (Scores marked /31 or /24 predate the spec amendment that added the non-finite-amount tests.)</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th>App</th><th class="n">Score</th><th>Links</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">15/16</td><td><a href="runs/cc_sonnet-5_sonnet-5.html">record</a> · —</td></tr>
+        <tr><td>2</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_sonnet-5x2.html">record</a> · —</td></tr>
+        <tr><td>3</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase, replicate)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_sonnet-5x2_rep2.html">record</a> · —</td></tr>
+        <tr><td>4</td><td>Sonnet 5</td><td>Haiku 4.5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_haiku-4.5x2.html">record</a> · —</td></tr>
+        <tr><td>5</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td>SpendLog</td><td class="n">15/16</td><td><a href="runs/cc_sonnet-5_haiku-4.5.html">record</a> · —</td></tr>
+        <tr><td>6</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5.html">record</a> · —</td></tr>
+        <tr><td>7</td><td>Sonnet 5</td><td>Opus 5 (single, replicate)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5_rep2.html">record</a> · —</td></tr>
+        <tr><td>8</td><td>Sonnet 5</td><td>Opus 5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5x2.html">record</a> · —</td></tr>
+        <tr><td>9</td><td>Haiku 4.5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_haiku-4.5_sonnet-5.html">record</a> · —</td></tr>
+        <tr><td>10</td><td>Opus 5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_opus-5_sonnet-5.html">record</a> · —</td></tr>
+        <tr><td>11</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex.html">record</a> · —</td></tr>
+        <tr><td>12</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>13</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr><td>14</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_sonnet-5_opus-5.html">record</a> · —</td></tr>
+        <tr><td>15</td><td>Sonnet 5</td><td>Sonnet 5 ×3 (per-phase)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_sonnet-5_sonnet-5x3.html">record</a> · —</td></tr>
+        <tr><td>16</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5.html">record</a> · —</td></tr>
+        <tr><td>17</td><td>Haiku 4.5</td><td>Opus 5 (single, replicate)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5_rep2.html">record</a> · —</td></tr>
+        <tr><td>18</td><td>Haiku 4.5</td><td>Sonnet 5 ×3 (per-phase)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_haiku-4.5_sonnet-5x3.html">record</a> · —</td></tr>
+        <tr><td>19</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_sonnet-5_codex.html">record</a> · —</td></tr>
+        <tr><td>20</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>ExpenseHub</td><td class="n">24/25</td><td><a href="runs/cc_tier2_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_tier2_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>21</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_tier2_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr><td>22</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_sonnet-5_opus-5.html">record</a> · —</td></tr>
+        <tr><td>23</td><td>Sonnet 5</td><td>Opus 5 (single, replicate)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_sonnet-5_opus-5_rep2.html">record</a> · —</td></tr>
+        <tr><td>24</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">30/31</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4.html">record</a> · —</td></tr>
+        <tr><td>25</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase, replicate)</td><td>InvoiceDesk</td><td class="n">30/31</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4_rep2.html">record</a> · —</td></tr>
+        <tr><td>26</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5.html">record</a> · —</td></tr>
+        <tr><td>27</td><td>Haiku 4.5</td><td>Opus 5 (single, replicate)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5_rep2.html">record</a> · —</td></tr>
+        <tr><td>28</td><td>Haiku 4.5</td><td>Sonnet 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">29/31</td><td><a href="runs/cc_tier3_haiku-4.5_sonnet-5x4.html">record</a> · —</td></tr>
+        <tr><td>29</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_sonnet-5.png">app</a></td></tr>
+        <tr><td>30</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>31</td><td>Sonnet 5</td><td>Opus 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_opus-5x4.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_opus-5x4.png">app</a></td></tr>
+        <tr><td>32</td><td>Haiku 4.5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_haiku-4.5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_haiku-4.5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>33</td><td>Opus 5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">31/32</td><td><a href="runs/cc_tier3_opus-5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_opus-5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>34</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex.html">record</a> · —</td></tr>
+        <tr><td>35</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>36</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_codex-high.png">app</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="foot">Score alone doesn't tell the whole story — the blind-graded defect counts in each record do. Run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own.</p>
+</section>
+
 <section id="traps">
-  <h2><span class="step">3</span>The hidden traps</h2>
+  <h2><span class="step">4</span>The hidden traps</h2>
   <p>Each roadmap plants a few one-line requirements that <em>look</em> boring but hide classic bugs — tripwires (we call them <strong>canaries</strong>) that separate reading the spec from pattern-matching it. Three favorites:</p>
   <div class="traps">
     <div class="trap-card">
@@ -323,7 +374,7 @@
 </section>
 
 <section id="grading">
-  <h2><span class="step">4</span>Grading it fairly (this is the important part)</h2>
+  <h2><span class="step">5</span>Grading it fairly (this is the important part)</h2>
   <p>If you let an agent grade its own homework, it gives itself an A. So the grading is built like an exam with a sealed answer key:</p>
   <ul class="checks">
     <li><strong>Held-out acceptance suites.</strong> Each app has a secret pytest suite — 16, 25, and 32 tests — that implementers <em>never see</em>: the suites are stripped from every working copy before the run starts. Agent-written tests aren't comparable across runs; the held-out suite is the primary score.</li>
@@ -334,7 +385,7 @@
 </section>
 
 <section id="findings">
-  <h2><span class="step">5</span>The five big findings</h2>
+  <h2><span class="step">6</span>The five big findings</h2>
 
   <div class="finding">
     <div class="num">Finding 1</div>
@@ -397,7 +448,7 @@
 </section>
 
 <section id="you">
-  <h2><span class="step">6</span>Why it matters for you</h2>
+  <h2><span class="step">7</span>Why it matters for you</h2>
   <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons transfer:</p>
   <ul class="checks">
     <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 36 runs came from adding one precise sentence to the spec. Vague prompts get plausible-looking, quietly-wrong code.</li>
@@ -411,7 +462,7 @@
 </section>
 
 <section id="glossary">
-  <h2><span class="step">7</span>Glossary</h2>
+  <h2><span class="step">8</span>Glossary</h2>
   <div class="glossary">
     <div class="term"><b>Agent harness</b><p>The scaffolding that lets a model act: file edits, shell, tests, the loop. Claude Code and Codex CLI are harnesses; Sonnet 5 and gpt-5.6-sol are models running inside them.</p></div>
     <div class="term"><b>Run</b><p>One complete attempt: a configuration gets the spec, builds the app, gets graded.</p></div>

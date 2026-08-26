@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cc_sonnet-5_haiku-4.5 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>cc_sonnet-5_haiku-4.5</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># cc_sonnet-5_haiku-4.5
+
+Combo: main agent = Sonnet 5 (orchestrator, this run), sub-agent = Haiku 4.5 (`claude -p --model haiku`), single sub-agent implementing all phases.
+
+## Prompts used
+
+Verbatim sub-agent prompt (from `prompts/subagent-both-phases.md`, placeholders filled):
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo4/specs/tier1-spendlog/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo4 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/combo4 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+## Review findings
+
+### Critical / functional
+
+1. **Sub-agent deleted pre-existing tracked harness files from the worktree, outside its task scope.**
+   `git status` in the worktree after the sub-agent run shows these HEAD-tracked files removed from disk (unstaged deletions):
+   `PLAN.md`, `acceptance/tier1/test_spec.py`, `acceptance/tier2/test_spec.py`, `acceptance/tier3/test_spec.py`,
+   `prompts/README.md`, `prompts/kickoff-per-phase-multi.md`, `prompts/kickoff-per-phase.md`, `prompts/kickoff-single-xp.md`,
+   `prompts/kickoff-single.md`, `prompts/subagent-both-phases.md`, `prompts/subagent-phase-later.md`,
+   `prompts/subagent-phase1.md`, `prompts/subagent-phase2.md`, `results/.gitkeep`, `scripts/new_worktree.sh`,
+   `scripts/smoke_tier1.sh`, `scripts/smoke_tier2.sh`, `scripts/smoke_tier3.sh` (18 files, 1802 lines).
+   These are unrelated to SpendLog and were never part of the roadmap; the sub-agent&#x27;s own prompt said &quot;Work only
+   inside the worktree — create every file there&quot; and &quot;do not add features, files, or dependencies the roadmap
+   doesn&#x27;t ask for,&quot; but this was a destructive action against pre-existing files, not an addition. This did not
+   break verification only because step 3&#x27;s acceptance-suite and smoke-script commands reference the intact copies
+   in `MAIN_REPO` rather than the worktree&#x27;s own (now-deleted) copies — i.e. the run was saved by the harness design,
+   not by the sub-agent&#x27;s behavior. This is a real behavioral defect in the sub-agent&#x27;s execution and should be
+   recorded as such regardless of the accidental non-impact on this particular verification path.
+
+### Spec-conformance
+
+2. **`models.py:9-13`** — `timestamp` default is implemented via a `None` default plus `__post_init__` reassignment,
+   rather than the roadmap&#x27;s literal instruction: &quot;set `timestamp` default to `datetime.now(timezone.utc)`&quot; (i.e. a
+   `field(default_factory=...)`-style per-instance default). This causes the held-out acceptance suite to fail
+   (`test_timestamp_defaults_to_aware_utc_now`, which asserts `default_factory is not MISSING`). Functionally the
+   `__post_init__` approach does avoid the classic &quot;evaluated once at class-definition time&quot; bug that a naive
+   `timestamp: datetime = datetime.now(timezone.utc)` would have, but it doesn&#x27;t match what the roadmap and
+   acceptance suite expect (`dataclasses.field(default_factory=...)`).
+
+3. **`templates/home.html:4`** — uses class `jumbotron`, a Bootstrap 4 class that no longer exists in Bootstrap 5
+   (the project&#x27;s CSS is Bootstrap 5.3.0 via CDN per `templates/base.html:8`). It renders as an unstyled `&lt;div&gt;`, not
+   the jumbotron/hero styling implied by the roadmap (&quot;hero/jumbotron section&quot;). Not caught by the acceptance suite,
+   which does not assert on the specific hero markup/class.
+
+### Minor / style
+
+4. **`app.py:3`** — `from fastapi.staticfiles import StaticFiles` is imported but never used anywhere in the file.
+   Dead import; no static files are mounted or served, and the roadmap never calls for static file handling.
+
+## Verification
+
+**1. Implementation&#x27;s own tests** — `cd .../combo4 &amp;&amp; .venv/bin/python -m pytest tests/ -v`
+**PASS** — 8 passed, 3 warnings (deprecation warnings from FastAPI/asyncio, unrelated to this app) in 0.12s.
+```
+tests/test_app.py::test_home_returns_200 PASSED
+tests/test_app.py::test_home_contains_tagline PASSED
+tests/test_app.py::test_entries_returns_200 PASSED
+tests/test_app.py::test_entries_contains_seed_entry PASSED
+tests/test_app.py::test_entries_contains_total PASSED
+tests/test_app.py::test_post_entries_redirects PASSED
+tests/test_app.py::test_post_entries_adds_entry PASSED
+tests/test_app.py::test_total_updated_after_post PASSED
+======================== 8 passed, 3 warnings in 0.12s =========================
+```
+
+**2. Held-out acceptance suite** — `APP_DIR=.../combo4 .venv/bin/pytest .../acceptance/tier1/test_spec.py -v`
+**FAIL** — 15 passed, 1 failed.
+```
+acceptance/tier1/test_spec.py::test_home_returns_200_with_tagline PASSED
+acceptance/tier1/test_spec.py::test_html_lang_en PASSED
+acceptance/tier1/test_spec.py::test_bootstrap5_css_cdn PASSED
+acceptance/tier1/test_spec.py::test_bootstrap5_js_bundle PASSED
+acceptance/tier1/test_spec.py::test_favicon_link PASSED
+acceptance/tier1/test_spec.py::test_default_title PASSED
+acceptance/tier1/test_spec.py::test_navbar_links PASSED
+acceptance/tier1/test_spec.py::test_app_has_uvicorn_run_block PASSED
+acceptance/tier1/test_spec.py::test_entry_is_dataclass_with_spec_fields PASSED
+acceptance/tier1/test_spec.py::test_timestamp_defaults_to_aware_utc_now FAILED
+acceptance/tier1/test_spec.py::test_seed_entries PASSED
+acceptance/tier1/test_spec.py::test_journal_shows_heading_seed_and_total PASSED
+acceptance/tier1/test_spec.py::test_amounts_formatted_two_decimals PASSED
+acceptance/tier1/test_spec.py::test_entries_rendered_as_cards PASSED
+acceptance/tier1/test_spec.py::test_entry_form_present PASSED
+acceptance/tier1/test_spec.py::test_post_entry_round_trip_updates_total PASSED
+
+FAILURES:
+test_timestamp_defaults_to_aware_utc_now
+    assert timestamp_field.default_factory is not MISSING
+    AssertionError: assert &lt;MISSING&gt; is not &lt;MISSING&gt;
+    (Entry.timestamp uses default=None + __post_init__, not default_factory)
+
+=================== 1 failed, 15 passed, 3 warnings in 0.14s ===================
+```
+
+**3. Smoke script** — `scripts/smoke_tier1.sh .../combo4 8104`
+**PASS**
+```
+ok    GET / (200, tagline)
+ok    GET /entries (200, heading)
+ok    POST /entries (303)
+ok    new entry visible
+SMOKE PASS
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 42 | 30 | 84 | 57,553 | 1,295,810 | 11,848 | $0.783 |
+| Sub-agent | claude-haiku-4-5-20251001 | 42 | 16 | 339 | 45,034 | 909,211 | 17,067 | $0.233 |
+| **Total** | | | | | | | | **$1.015** |
+
+Wall-clock (main-agent session span): 273s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_ade12075-cc8/agent-a4865fc4b0514231c.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-combo4/06a12fd4-e708-4c1a-b2e1-3b83b85d9fd0.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree &quot;C&quot; (port 8113), shuffled with the other five
+round-1 trees, fixed SpendLog checklist, all three scripted checks
+re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 15 / 16 |
+| Own tests passing | 8 / 8 |
+| Critical/functional mistakes | 0 |
+| Spec-conformance defects | 1 |
+| Minor/style issues | 2 |
+| Smoke script | pass |
+
+Defects:
+- S1, models.py:9-13 — `timestamp: datetime = None` plus `__post_init__` fill-in instead of the prescribed default mechanism (the acceptance failure).
+- minor, app.py:3 — dead import StaticFiles.
+- minor, tests/test_app.py:40,53,68 — unused locals / dead code.
+
+Note: the in-run review&#x27;s &quot;critical: sub-agent deleted 18 harness
+files&quot; is a false positive — those deletions are the intentional
+new_worktree.sh scaffolding strip, present before the sub-agent ran.
+The blind grader (working from implementation-only copies) confirms no
+such defect. The in-run &quot;jumbotron renders unstyled&quot; claim falls
+under the standing inert-Bootstrap-4-class ruling and is not counted.
+</pre>
+</div>
+</body>
+</html>

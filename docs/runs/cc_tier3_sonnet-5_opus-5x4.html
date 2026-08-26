@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cc_tier3_sonnet-5_opus-5x4 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>cc_tier3_sonnet-5_opus-5x4</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># cc_tier3_sonnet-5_opus-5x4
+
+Main agent: Sonnet 5 (orchestrator, review-only). Sub-agents: Opus, one per
+phase, 4 phases, spawned via `claude -p --model opus --permission-mode
+acceptEdits --allowedTools &quot;Bash&quot; --output-format text`. Spec: tier
+3 — InvoiceDesk (`specs/tier3-invoicedesk/`). Worktree:
+`cc-combo-bench-worktrees/nc-t3-opusx4`.
+
+## Prompts used
+
+### Phase 1
+
+```
+Implement Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4/specs/tier3-invoicedesk/.
+Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 — create every file there, never in any
+other directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 1 of the roadmap exactly as written — file names, routes,
+status codes, defaults, CDN links, and template contents are requirements,
+not suggestions. Do not start any later phase.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 1 calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Phase 2
+
+```
+The roadmap through Phase 1 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 2 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 2 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 2 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 3
+
+```
+The roadmap through Phase 2 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 3 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 3 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 3 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 4
+
+```
+The roadmap through Phase 3 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 4 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 4 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 4 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/nc-t3-opusx4 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+## Review findings
+
+Reviewed after each phase, before the next was spawned; main agent made no
+edits at any point.
+
+### Phase 1 — Home Page
+
+No defects found. `app.py`, `templates/base.html`, `templates/home.html`,
+`tests/test_app.py` all match the roadmap exactly: `/` route, jumbotron
+with the literal tagline, Bootstrap 5 CDN links, python.org favicon,
+navbar with the three required links, `{% block content %}`, and the
+`uvicorn.run(&quot;app:app&quot;, reload=True)` `__main__` block.
+
+### Phase 2 — Invoice Board + Detail Pages
+
+No critical or spec-conformance defects.
+
+- **Minor/style**: the status→badge-class mapping
+  (`{&quot;draft&quot;: &quot;text-bg-secondary&quot;, &quot;sent&quot;: &quot;text-bg-warning&quot;, &quot;paid&quot;:
+  &quot;text-bg-success&quot;}`) is redefined identically as a `{% set %}` in both
+  `templates/invoices.html:2` and `templates/invoice_detail.html:2`
+  instead of being defined once (e.g. in `base.html`) and reused. The
+  roadmap doesn&#x27;t require centralization, so this is not a spec
+  violation — logged as duplication only.
+- Seed data (`models.py:31-105`) correctly satisfies every roadmap
+  constraint: all three statuses present among the 5 invoices, 5
+  payments spread across 3 invoices (2, 3, 4), invoice 3 (`paid`) has
+  payments summing to exactly its amount, and no payments exist on
+  either draft invoice (1, 5).
+- `get_invoice`, `payments_for`, `paid_total`, `new_invoice_id` in
+  `models.py:108-127` match the roadmap&#x27;s signatures and rounding
+  requirement.
+
+### Phase 3 — Create Invoices, Record Payments, Lifecycle
+
+No defects found.
+
+- `app.py:68` — `GET /invoices/new` is declared before `GET
+  /invoices/{invoice_id}` (`app.py:119`), correctly avoiding the
+  int-path-converter shadowing footgun the spec plants.
+- `parse_amount()` (`app.py:24-34`) uses `math.isfinite` and rejects
+  `&lt;= 0`, correctly catching `nan`/`inf`/`-inf` per the roadmap&#x27;s
+  explicit non-finite-amount requirement.
+- 422 re-renders preserve raw submitted text (including unparsed
+  amount strings) in both the new-invoice form and the payment form;
+  400s use the exact `detail=` message templates the roadmap specifies
+  for illegal transitions and premature `sent → paid` moves
+  (`app.py:169-183`).
+- Transition condition is `paid &lt; invoice.amount` (i.e. redirect/allow
+  only when `paid &gt;= amount`), matching the roadmap&#x27;s `paid_total(id)
+  &gt;= amount` gate.
+- &quot;New invoice&quot; button present on the invoice board
+  (`templates/invoices.html:14`).
+
+### Phase 4 — Stats Page + JSON API
+
+No defects found.
+
+- `GET /stats` (`app.py:188-206`) computes all three status counts
+  (zero counts included, since the dict comprehension iterates all of
+  `STATUSES`) plus invoiced/collected/outstanding totals, each rounded
+  to 2 decimals; `templates/stats.html` renders the exact required
+  line text.
+- `GET /api/invoices` (`app.py:209-222`) returns all 7 required fields
+  per object, `created_at` via `.isoformat()`, sorted by `id` ascending.
+
+## Verification
+
+All three scripted checks were run exactly as specified, in order.
+
+### 1. Implementation&#x27;s own tests
+
+`cd .../nc-t3-opusx4 &amp;&amp; .venv/bin/python -m pytest tests/ -v`
+
+**Result: PASS — 23 passed, 9 warnings in 0.16s**
+(warnings are a pre-existing `asyncio.iscoroutinefunction` deprecation
+from FastAPI on Python 3.14, unrelated to app code)
+
+### 2. Held-out acceptance suite
+
+`APP_DIR=.../nc-t3-opusx4 .venv/bin/pytest acceptance/tier3/test_spec.py -v`
+
+**Result: PASS — 32 passed, 9 warnings in 0.16s** (all 32/32 acceptance
+tests passing; same FastAPI deprecation warning, unrelated to app code)
+
+### 3. Smoke script
+
+`scripts/smoke_tier3.sh .../nc-t3-opusx4 8503`
+
+**Result: PASS — SMOKE PASS**, all 14 checks `ok`:
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -&gt; sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -&gt; paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 56 | 38 | 112 | 134,699 | 2,204,622 | 13,773 | $1.373 |
+| Sub-agent session 1 | claude-opus-5 | 13 | 9 | 26 | 51,222 | 328,778 | 9,630 | $0.725 |
+| Sub-agent session 2 | claude-opus-5 | 18 | 13 | 36 | 70,672 | 503,420 | 14,438 | $1.055 |
+| Sub-agent session 3 | claude-opus-5 | 26 | 18 | 52 | 97,193 | 862,120 | 31,686 | $1.831 |
+| Sub-agent session 4 | claude-opus-5 | 20 | 14 | 40 | 75,097 | 641,674 | 8,547 | $1.004 |
+| **Total** | | | | | | | | **$5.988** |
+
+Wall-clock (main-agent session span): 445s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b3ddfecb-3f1/agent-a0c40e52c378e850e.jsonl`
+- Sub-agent session 1: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-nc-t3-opusx4/eb7efb30-6415-4fb6-9345-cdd4fcaa93aa.jsonl`
+- Sub-agent session 2: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-nc-t3-opusx4/fe520be3-be71-49e5-b78a-f59b98e4e0f8.jsonl`
+- Sub-agent session 3: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-nc-t3-opusx4/e1624679-7417-4a9a-833f-0600456b9ffc.jsonl`
+- Sub-agent session 4: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-nc-t3-opusx4/f0f15528-3974-463c-bfca-dacc4deae7bd.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded in a shuffled anonymized batch of 4 (key: scratchpad/grading-key-nc.txt)
+by two parallel graders (trees A-B / C-D), all scripted checks re-run on the
+anonymized copies against the corrected suite (commit 5f069d8). Standing
+rulings applied: required Form() for the optional note field = conformance;
+payment form rendered only on sent invoices = minor (per the XP3 precedent);
+duplicate seed client names = permitted, not a defect; weak tests (roadmap-
+listed behavior not actually asserted) = conformance.
+
+Graded as treeC (port 8513).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 32/32 |
+| Own tests passing | 23/23 |
+| Critical/functional | 0 |
+| Spec-conformance | 0 |
+| Minor/style | 0 |
+| Smoke | pass |
+
+Fully clean — the first per-phase tier-3 run in the campaign without the
+route-ordering critical (previous per-phase draws: 3-for-3 with Sonnet
+subs). The phase-3 Opus sub registered `/invoices/new` (app.py:68) before
+the phase-2 int route it inherited (app.py:119); validation is centralized
+in one `parse_amount` helper with `math.isfinite`; every roadmap-listed
+303 asserted directly with `follow_redirects=False` and Location use. The
+relay seam is model-dependent: a strong implementer sees and avoids it —
+at $5.99, the campaign&#x27;s most expensive run.
+</pre>
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Under the Hood — The Great AI Build-Off</title>
+<meta name="description" content="How sub-agents are spawned (claude -p, codex exec) and how the single vs per-phase strategies actually work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root {
+    --paper: #FAF3EA; --card: #FFFDF9; --inset: #F1E7D9;
+    --ink: #2C2013; --ink-2: #6B5A47; --ink-3: #9C8B76; --rule: #E5D8C5;
+    --accent: #BC5215; --accent-dark: #9A430F; --accent-wash: #F6E5D7;
+    --dot: #EADDC8;
+    --shadow: 0 1px 3px rgba(44,32,19,.06), 0 8px 24px rgba(44,32,19,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1C1510; --card: #251C14; --inset: #15100B;
+      --ink: #EDE4D7; --ink-2: #B3A38E; --ink-3: #7E6F5C; --rule: #3A2F23;
+      --accent: #E0793C; --accent-dark: #E8935C; --accent-wash: #332417;
+      --dot: #2B2118;
+      --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background-color: var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
+    font-size: 17.5px; line-height: 1.65;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
+  h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
+  p { max-width: 74ch; margin: 0 0 16px; }
+  a { color: var(--accent-dark); }
+  code {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .85em; background: var(--inset); border: 1px solid var(--rule);
+    border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  }
+  header { padding: 56px 0 28px; border-bottom: 4px solid var(--ink); margin-bottom: 36px; }
+  .back {
+    font-family: "Outfit", sans-serif; font-weight: 600; font-size: 14px;
+    text-decoration: none; color: var(--ink-2);
+    border: 1.5px solid var(--rule); border-radius: 999px; padding: 6px 14px;
+    background: var(--card); display: inline-block; margin-bottom: 20px;
+  }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 800; line-height: 1.05; letter-spacing: -.015em; margin: 0 0 14px; text-wrap: balance; }
+  h1 .hl { color: var(--accent); }
+  .lede { font-size: 19px; color: var(--ink-2); max-width: 62ch; }
+  h2 { font-size: clamp(26px, 4vw, 34px); font-weight: 800; letter-spacing: -.01em; margin: 60px 0 12px; text-wrap: balance; }
+  h3 { font-size: 19px; font-weight: 700; margin: 28px 0 8px; }
+  pre {
+    background: var(--inset); border: 1.5px solid var(--rule); border-radius: 12px;
+    padding: 16px 20px; overflow-x: auto; font-size: 14px; line-height: 1.6;
+    font-family: "JetBrains Mono", ui-monospace, monospace; max-width: 100%;
+  }
+  pre code { background: none; border: none; padding: 0; white-space: pre; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; margin: 16px 0; }
+  .tablewrap { overflow-x: auto; border: 1.5px solid var(--rule); border-radius: 12px; background: var(--card); box-shadow: var(--shadow); }
+  th { font-family: "Outfit", sans-serif; font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); text-align: left; padding: 12px 14px 8px; border-bottom: 2.5px solid var(--ink); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .callout {
+    background: var(--accent-wash); border-left: 5px solid var(--accent);
+    border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 20px 0; font-size: 15.5px;
+  }
+  .callout p { margin: 0 0 8px; max-width: none; }
+  .callout p:last-child { margin: 0; }
+  .duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin: 20px 0; }
+  .duo .card { background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px; padding: 18px 22px; box-shadow: var(--shadow); }
+  .duo .card h3 { margin-top: 0; }
+  .duo .card p { font-size: 15px; color: var(--ink-2); max-width: none; }
+  footer { margin-top: 70px; padding-top: 20px; border-top: 4px solid var(--ink); font-size: 14px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <a class="back" href="./">&larr; Back to the write-up</a>
+  <h1>Under the <span class="hl">hood</span></h1>
+  <p class="lede">The two mechanical details everything else rests on: how an orchestrator actually spawns an implementer, and what "single" vs "per-phase" really means at the process level.</p>
+</header>
+
+<section id="spawning">
+  <h2>Spawning a sub-agent: <code>claude&nbsp;-p</code> and <code>codex&nbsp;exec</code></h2>
+  <p>A sub-agent isn't a function call — it's a <strong>separate operating-system process</strong> running a full agent harness in headless mode. The orchestrator writes the implementer's prompt to a temp file, then runs one of these commands from inside the run's working copy:</p>
+
+  <h3>Claude implementers (Claude Code, headless)</h3>
+  <pre><code>cd &lt;worktree&gt; &amp;&amp; claude -p \
+    --model sonnet|haiku|opus \
+    --permission-mode acceptEdits \
+    --allowedTools "Bash" \
+    --output-format text  &lt; prompt.txt</code></pre>
+  <div class="tablewrap"><table>
+    <tr><th>Flag</th><th>What it does</th></tr>
+    <tr><td><code>-p</code></td><td>"Print" mode: non-interactive. The agent reads one prompt from stdin, works until done, prints its final report, and exits. No human in the loop.</td></tr>
+    <tr><td><code>--model</code></td><td>Which Claude model implements — this is the experiment's executor axis (<code>sonnet</code> / <code>haiku</code> / <code>opus</code>).</td></tr>
+    <tr><td><code>--permission-mode acceptEdits</code></td><td>File creations and edits are auto-approved. Without this, a headless agent would stall waiting for a person to click "allow".</td></tr>
+    <tr><td><code>--allowedTools "Bash"</code></td><td>Grants shell access so the implementer can run its own tests. An early pilot without this produced code the agent could never execute — it shipped blind.</td></tr>
+    <tr><td><code>--output-format text</code></td><td>Plain-text final report on stdout, which the orchestrator captures as the sub-agent's handoff message.</td></tr>
+  </table></div>
+
+  <h3>Codex implementers (Codex CLI, headless)</h3>
+  <pre><code>cd &lt;worktree&gt; &amp;&amp; codex exec --full-auto \
+    --skip-git-repo-check \
+    -c 'model_reasoning_effort="low|medium|high"' \
+    -  &lt; prompt.txt</code></pre>
+  <div class="tablewrap"><table>
+    <tr><th>Flag</th><th>What it does</th></tr>
+    <tr><td><code>exec</code></td><td>Codex's non-interactive mode — the counterpart of <code>claude -p</code>.</td></tr>
+    <tr><td><code>--full-auto</code></td><td>Auto-approves actions inside a workspace-write sandbox (the worktree plus temp dirs) — no permission prompts, no writes outside the sandbox.</td></tr>
+    <tr><td><code>--skip-git-repo-check</code></td><td>Runs even though the worktree isn't a normal repo root.</td></tr>
+    <tr><td><code>-c model_reasoning_effort</code></td><td>The "think harder" dial — the axis swept low/medium/high in the effort experiment.</td></tr>
+    <tr><td><code>-</code></td><td>Read the prompt from stdin, same convention as the Claude spawn.</td></tr>
+  </table></div>
+
+  <div class="callout">
+    <p><strong>Hard-won spawn rules</strong> (each one exists because a run failed without it): the prompt file is created with <code>mktemp</code> so parallel runs can't collide on a shared path; the spawn runs in the <em>foreground</em> with a 10-minute timeout, because backgrounding it orphaned sub-agents in early runs; and each sub-agent is started <em>exactly once</em> — a duplicate spawn would double-implement and corrupt the run's cost accounting.</p>
+    <p>Costs are measured from these processes' session transcripts afterward — every token each spawn read and wrote, priced at published rates. That's why a worktree path is never reused: its transcript folder is the run's receipt.</p>
+  </div>
+</section>
+
+<section id="strategies">
+  <h2>Single vs. per-phase: one builder or a relay</h2>
+  <p>Both strategies deliver the same roadmap. The difference is how many sub-agent processes it takes and what each one knows.</p>
+
+  <div class="duo">
+    <div class="card">
+      <h3>Single</h3>
+      <p>One spawn implements <strong>every phase</strong> in one sitting. Its prompt is the whole assignment; it designs the app end-to-end, sees the entire route table, and its tests grow alongside the code. One process, one context, one coherent mental model.</p>
+    </div>
+    <div class="card">
+      <h3>Per-phase (the relay)</h3>
+      <p>One spawn <strong>per roadmap phase</strong>, in order — four separate processes for InvoiceDesk. Each is a brand-new agent with <em>zero memory</em> of its predecessors: a fresh process has a fresh context window. The only things that carry forward are the files on disk and the sub-agent's final report, which the orchestrator does <em>not</em> relay onward.</p>
+    </div>
+  </div>
+
+  <p>Mechanically, a per-phase run works like this: phase 1's sub-agent gets a "you're starting from scratch, build phase 1" prompt. Every later phase N gets a different prompt: "phases 1 through N−1 are already built by someone else — <strong>read the existing code first</strong>, then implement phase N on top of it, without breaking what's there." Between spawns, the orchestrator reviews the new phase's code (it may record defects, but it may not fix them or warn the next sub-agent — that would contaminate the axis being measured).</p>
+
+  <p>Why test this at all? Because the relay models how real teams — human and AI — actually ship: nobody holds the whole system in their head, and work arrives in increments built on other people's code. The campaign's sharpest results live exactly here: the relay's phase boundaries created an integration seam where a route-registration bug appeared <strong>3 times out of 3</strong> with Sonnet implementers, was invisible to every in-run review, and never happened when one agent saw the whole app — yet a relay of Opus implementers read the inherited code carefully enough to avoid it. Same roadmap, same prompts, different number of minds.</p>
+
+  <div class="callout">
+    <p>Both strategies use fixed, version-controlled prompt files, filled mechanically per run — the wording is never improvised, so the strategy itself is the only thing that varies between a "single" run and a "per-phase" run of the same models.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Exact prompt texts live in the repository's <code>prompts/</code> directory; every run record links the verbatim prompt it used. <a href="./">Back to the write-up &rarr;</a></p>
+</footer>
+
+</div>
+</body>
+</html>

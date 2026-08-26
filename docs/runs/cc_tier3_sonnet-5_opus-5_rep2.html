@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cc_tier3_sonnet-5_opus-5_rep2 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>cc_tier3_sonnet-5_opus-5_rep2</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># cc_tier3_sonnet-5_opus-5_rep2
+
+Main agent: Sonnet 5 (orchestrator). Sub-agent: Opus 5, single spawn, all 4 phases.
+Spec: `specs/tier3-invoicedesk`. Worktree: `cc-combo-bench-worktrees/rep-t3-opus`.
+
+## Prompts used
+
+Verbatim sub-agent prompt (from `prompts/subagent-both-phases.md`, placeholders filled):
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-t3-opus/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-t3-opus — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-t3-opus &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+Spawn command (foreground, 600000ms timeout):
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/rep-t3-opus &amp;&amp; claude -p --model opus --permission-mode acceptEdits --allowedTools &quot;Bash&quot; --output-format text &lt; &lt;tmpfile&gt;
+```
+
+## Review findings
+
+Reviewed `app.py`, `models.py`, all five templates (`base.html`, `home.html`,
+`invoices.html`, `invoice_detail.html`, `invoice_new.html`, `stats.html`), and
+`tests/test_app.py` against `specs/tier3-invoicedesk/roadmap.md` phase by phase.
+
+**Critical/functional:** none found.
+
+**Spec-conformance:** none found.
+
+**Minor/style:**
+- `app.py:22-30` (`parse_amount`) — `float(raw)` accepts the strings `&quot;nan&quot;`
+  and `&quot;inf&quot;`/`&quot;-inf&quot;` without raising `ValueError`, and the guard
+  `if value &lt;= 0: return None` does not catch them (`nan &lt;= 0` and
+  `inf &lt;= 0` are both `False` in Python). A client posting
+  `amount=nan` (invoice create or payment record) would pass validation and
+  create an `Invoice`/`Payment` with a non-finite amount, corrupting later
+  `%.2f` formatting, `paid_total` sums, and the `sent -&gt; paid` money-gate
+  comparison. The roadmap&#x27;s literal test list never exercises this, so it
+  does not fail any scripted check, but it is a real gap versus &quot;amount must
+  parse as a number and be strictly greater than 0.&quot;
+
+Notes on things specifically checked and found conformant:
+- `Invoice`/`Payment` dataclass field order and defaults match the roadmap;
+  `created_at`/`paid_at` use `field(default_factory=lambda: datetime.now(timezone.utc))`,
+  which is the correct way to get a per-instance &quot;evaluated at construction time&quot;
+  default (a bare `datetime.now(timezone.utc)` default would be evaluated once at
+  import time and shared by every instance).
+- `STATUSES` and `ALLOWED_TRANSITIONS` module constants match verbatim.
+- Seed data: 5 invoices (id 1-5) covering all three statuses (2 paid, 2 sent,
+  1 draft); 6 payments across invoices 1, 2, 4, 5. Every paid seed invoice&#x27;s
+  payments sum to at least its amount (invoice 1: 1250.00 == 1250.00; invoice 4:
+  940.25 == 940.25). Payments exist only on sent/paid invoices (none on draft
+  invoice 3).
+- `GET /invoices/new` (app.py:69) is registered before `GET /invoices/{invoice_id}`
+  (app.py:123), so `/invoices/new` is not swallowed by the int path parameter.
+- Status-filter validation (app.py:50-66), 404 on unknown invoice (app.py:123-130),
+  payment-status gate returning the exact `Cannot record a payment on a {status}
+  invoice` detail message (app.py:143-147), lifecycle transition and money-gate
+  checks with the exact `Cannot move invoice from {x} to {y}` and `Cannot mark
+  invoice paid: $P.PP of $A.AA paid` detail messages (app.py:173-186), and the
+  `/api/invoices` route sorted by id ascending with all seven required fields
+  (app.py:212-225) all match the roadmap literally.
+- 422 re-renders preserve raw submitted text for both the invoice-create form
+  (`invoice_new.html`) and the payment form (`invoice_detail.html`), including
+  non-numeric amount text.
+- Amounts are rendered via `&quot;%.2f&quot;|format(...)` (no thousands separator) in every
+  template, consistent with the roadmap&#x27;s literal `$X.XX` format.
+- No dependencies added; `requirements.txt`/`requirements.lock` unchanged from
+  the stripped worktree baseline (`fastapi[standard]==0.115.10`, `pytest==8.3.4`).
+- The worktree&#x27;s missing `PLAN.md`/`acceptance/`/`prompts/`/`results/`/`scripts/`
+  directories are expected: `scripts/new_worktree.sh` deliberately strips them
+  when the worktree is created, not something the sub-agent deleted.
+
+## Verification
+
+### 1. Implementation&#x27;s own tests
+
+`cd rep-t3-opus &amp;&amp; .venv/bin/python -m pytest tests/ -v`
+
+**Result: PASS — 18 passed, 9 warnings in 0.15s** (warnings are an
+`asyncio.iscoroutinefunction` deprecation from FastAPI 0.115.10 on Python 3.14,
+internal to the library, unrelated to the implementation).
+
+### 2. Held-out acceptance suite
+
+`APP_DIR=rep-t3-opus .venv/bin/pytest acceptance/tier3/test_spec.py -v`
+
+**Result: PASS — 31 passed, 9 warnings in 0.16s.**
+
+### 3. Smoke script
+
+`scripts/smoke_tier3.sh rep-t3-opus 8161`
+
+**Result: PASS — SMOKE PASS**, all 14 checks `ok` (home tagline, invoice board,
+status filter valid/invalid, 404 on unknown invoice, create-invoice redirect,
+payment-on-draft 400, draft→sent, payment-on-sent, payment visible, sent→paid,
+stats page, API paid_total field).
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 49 | 30 | 98 | 177,633 | 1,808,922 | 9,585 | $1.353 |
+| Sub-agent | claude-opus-5 | 28 | 17 | 56 | 68,863 | 955,135 | 45,992 | $2.058 |
+| **Total** | | | | | | | | **$3.411** |
+
+Wall-clock (main-agent session span): 306s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_137ac7f7-28a/agent-ac29ade3bdfcafa02.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-rep-t3-opus/4b93aad7-16a3-41f4-9405-97158702f87c.jsonl`
+
+## Quality scorecard (uniform blind grading pass, 2026-08-20)
+
+Graded as anonymized tree &quot;P&quot; (port 8163), shuffled pair, same
+InvoiceDesk rubric, all three scripted checks re-run by the grader.
+
+| Metric | Value |
+|---|---|
+| Acceptance tests passing | 31 / 31 |
+| Own tests passing | 18 / 18 |
+| Critical/functional mistakes | 0 |
+| Spec-conformance defects | 0 |
+| Minor/style issues | 1 |
+| Smoke script | pass |
+
+Defects:
+- minor, app.py:22-30 — parse_amount accepts nan/inf (nan &lt;= 0 is False); non-finite amounts pass validation.
+</pre>
+</div>
+</body>
+</html>

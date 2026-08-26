@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cc_tier3_sonnet-5_codex — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>cc_tier3_sonnet-5_codex</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># Tier 3 — InvoiceDesk — Main: Claude Sonnet 5, Sub-agent: Codex (gpt-5.6-sol)
+
+## Prompts used
+
+**Spawn command:**
+
+```
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xp3 &amp;&amp; codex exec --full-auto --skip-git-repo-check - &lt; &lt;temp file&gt;
+```
+
+**Sub-agent prompt (verbatim, from `prompts/subagent-both-phases.md` with placeholders filled):**
+
+```
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xp3/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xp3 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xp3 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+The sub-agent was started exactly once; no duplicate spawn occurred.
+
+## Review findings
+
+Files created by the sub-agent: `app.py`, `models.py`, `templates/base.html`,
+`templates/home.html`, `templates/invoices.html`, `templates/invoice_detail.html`,
+`templates/invoice_new.html`, `templates/stats.html`, `tests/test_app.py`.
+
+Read against `specs/tier3-invoicedesk/{mission,tech-stack,roadmap}.md`, all
+four roadmap phases:
+
+- **Critical/functional:** none found. All routes, status codes (200/303/400/404/422),
+  form validation (`math.isfinite`, `.strip()`, `&gt; 0`), lifecycle transition
+  rules (`ALLOWED_TRANSITIONS`, the `sent → paid` payment-coverage gate), and
+  the JSON API shape match the roadmap exactly.
+- **Spec-conformance:** none found. Dataclass field names/order/defaults match
+  (`Invoice`: id, client, description, amount, status=&quot;draft&quot;, created_at;
+  `Payment`: invoice_id, amount, note, paid_at). Seed data: 5 invoices, all
+  three statuses represented (draft #1; sent #2, #4; paid #3, #5), 6 payments
+  across 3 invoices (#2, #3, #5), and every seed `paid` invoice&#x27;s payments sum
+  to at least its amount (invoice 3: 300.25+200.50=500.75; invoice 5:
+  1000.00+500.10=1500.10). Badge color mapping, `Balance due: $X.XX` wording,
+  `$P.PP of $A.AA paid` wording, base.html CDN links/favicon/navbar/title
+  block, and the `uvicorn.run(&quot;app:app&quot;, reload=True)` block all match.
+- **Minor/style:**
+  - `app.py:84-90` and `app.py:135-139` — the finite/positive amount-parsing
+    try/except block is duplicated verbatim between `create_invoice` and
+    `record_payment` rather than factored into a shared helper. Cosmetic only;
+    does not affect behavior.
+  - `templates/invoice_detail.html:40` — the payment form is only rendered
+    when `invoice.status == &#x27;sent&#x27;`; the roadmap does not explicitly require
+    hiding it on draft/paid invoices (it only requires the route to 400 in
+    that case). Reasonable UX choice, not a deviation from any stated
+    requirement, and it does not affect any test.
+
+- **Environment note (not an implementation defect):** the worktree&#x27;s git
+  status shows 39 tracked files deleted (`PLAN.md`, `acceptance/tier1-3`,
+  `prompts/*`, `scripts/*`, `results/*`). Checking the sub-agent&#x27;s transcript,
+  this deletion was already present in the very first `git status --short`
+  the sub-agent ran (before it had written or deleted anything itself) — so
+  it predates the sub-agent&#x27;s work and is not something it caused. It had no
+  effect on this run: the app&#x27;s own tests use paths inside the worktree that
+  were untouched, and the acceptance suite / smoke script were invoked via
+  their absolute paths in the main repo, both of which were present and
+  passed.
+
+## Verification
+
+All three checks pass.
+
+**1. Implementation&#x27;s own tests** (`tests/ -v`): **PASS** — 19/19
+
+```
+collected 19 items
+... (19 PASSED)
+======================== 19 passed, 9 warnings in 0.15s ========================
+```
+
+**2. Held-out acceptance suite** (`acceptance/tier3/test_spec.py -v`): **PASS** — 32/32
+
+```
+collected 32 items
+... (32 PASSED)
+======================== 32 passed, 9 warnings in 0.17s ========================
+```
+
+**3. Smoke script** (`scripts/smoke_tier3.sh &lt;worktree&gt; 8182`): **PASS**
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -&gt; sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -&gt; paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Provider stats
+
+From the codex CLI&#x27;s stdout:
+
+```
+OpenAI Codex v0.146.0
+--------
+workdir: /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/xp3
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: medium
+reasoning summaries: none
+```
+
+```
+tokens used
+56,992
+```
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 63 | 39 | 126 | 117,031 | 2,443,528 | 14,692 | $1.393 |
+| **Total** | | | | | | | | **$1.393** |
+
+Wall-clock (main-agent session span): 870s
+
+Note: Sub-agent is OpenAI Codex CLI (gpt-5.6-sol, reasoning effort medium): no Anthropic transcript exists; provider-reported usage is 56,992 tokens (see Provider stats above). No $ estimate for the sub-agent under ChatGPT-subscription auth, so the total above covers the main agent only.
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_a2fd607f-7ba/agent-ad2527a73f7319b8e.jsonl`
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded as treeB in a shuffled anonymized batch of 3 (key:
+scratchpad/grading-key-xp.txt); grader re-ran all scripted checks on
+the anonymized copy (port 8292).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 32/32 |
+| Own tests passing | 19/19 |
+| Critical/functional | 0 |
+| Spec-conformance | 0 |
+| Minor/style | 2 |
+| Smoke | pass |
+
+Minors: (1) app.py:28 — redundant `&quot;request&quot;` key in `detail_context`
+alongside the positional `request` argument (harmless duplication);
+(2) templates/invoice_detail.html:40 — payment form rendered only when
+status is `sent` (roadmap doesn&#x27;t require it on draft/paid pages;
+design choice recorded for completeness).
+
+First tier-3 run graded against the amended spec letter (32-test
+suite): `isfinite` + &gt;0 checks on both invoice create and payment
+record, exact 400 detail strings including the `$%.2f` under-payment
+message, seed data fully consistent with the money gate. Only tree in
+the batch whose tests add a seed-restoring autouse fixture. The
+per-phase route-ordering trap does not apply (single sub-agent), and
+routes are ordered correctly.
+</pre>
+</div>
+</body>
+</html>
