@@ -4,44 +4,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Great AI Build-Off</title>
-<meta name="description" content="We made teams of AI coding agents build the same three apps 31 times, graded them like exams, and wrote down what we learned.">
+<meta name="description" content="We made teams of AI coding agents build the same three apps 31 times, graded them against held-out test suites, and wrote down what we learned.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
   :root {
-    --paper: #FDFCF8;
-    --card: #FFFFFF;
-    --inset: #F2F1EA;
-    --ink: #1B2432;
-    --ink-2: #4A5568;
-    --ink-3: #8A94A3;
-    --rule: #E2E0D6;
-    --accent: #0E8A5F;
-    --accent-dark: #0B6B4A;
-    --accent-wash: #E4F2EB;
-    --trap: #B07514;
-    --trap-wash: #FBF1DC;
-    --bug: #C6403E;
-    --bug-wash: #F9E9E8;
-    --shadow: 0 1px 3px rgba(27,36,50,.06), 0 8px 24px rgba(27,36,50,.06);
+    --paper: #FAF3EA;
+    --card: #FFFDF9;
+    --inset: #F1E7D9;
+    --ink: #2C2013;
+    --ink-2: #6B5A47;
+    --ink-3: #9C8B76;
+    --rule: #E5D8C5;
+    --accent: #BC5215;
+    --accent-dark: #9A430F;
+    --accent-wash: #F6E5D7;
+    --trap: #9C7211;
+    --trap-wash: #F5EBD0;
+    --bug: #AF3029;
+    --bug-wash: #F6E1DD;
+    --shadow: 0 1px 3px rgba(44,32,19,.06), 0 8px 24px rgba(44,32,19,.06);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --paper: #151A22;
-      --card: #1D2430;
-      --inset: #10141B;
-      --ink: #E9ECF1;
-      --ink-2: #A8B2C0;
-      --ink-3: #6E7989;
-      --rule: #303947;
-      --accent: #3DBE8B;
-      --accent-dark: #5FD2A4;
-      --accent-wash: #1B3129;
+      --paper: #1C1510;
+      --card: #251C14;
+      --inset: #15100B;
+      --ink: #EDE4D7;
+      --ink-2: #B3A38E;
+      --ink-3: #7E6F5C;
+      --rule: #3A2F23;
+      --accent: #E0793C;
+      --accent-dark: #E8935C;
+      --accent-wash: #332417;
       --trap: #D9A94E;
-      --trap-wash: #33290F;
+      --trap-wash: #2E2410;
       --bug: #E0716F;
-      --bug-wash: #362020;
+      --bug-wash: #362019;
       --shadow: 0 1px 3px rgba(0,0,0,.35), 0 8px 24px rgba(0,0,0,.3);
     }
   }
@@ -69,24 +69,10 @@
     white-space: nowrap;
   }
 
-  /* hero */
   header {
     padding: 72px 0 40px;
     border-bottom: 4px solid var(--ink);
     margin-bottom: 44px;
-  }
-  .kicker {
-    display: inline-block;
-    font-family: "Outfit", sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--accent-dark);
-    background: var(--accent-wash);
-    border-radius: 999px;
-    padding: 4px 14px;
-    margin-bottom: 18px;
   }
   h1 {
     font-size: clamp(40px, 7.5vw, 66px);
@@ -131,7 +117,6 @@
   }
   h3 { font-size: 20px; font-weight: 700; margin: 30px 0 8px; }
 
-  /* role cards */
   .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin: 24px 0; }
   .role {
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px;
@@ -141,7 +126,6 @@
   .role h3 { margin: 0 0 6px; }
   .role p { font-size: 15px; color: var(--ink-2); margin: 0; max-width: none; }
 
-  /* app ladder */
   .apps { display: grid; gap: 14px; margin: 24px 0; }
   .app {
     display: grid; grid-template-columns: 58px 1fr; align-items: stretch;
@@ -159,16 +143,15 @@
   .app .tag { font-style: italic; color: var(--ink-3); }
   .app p { font-size: 15px; color: var(--ink-2); margin: 6px 0 0; max-width: none; }
 
-  /* trap cards */
   .traps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
   .trap-card {
     background: var(--trap-wash); border: 1.5px solid var(--trap); border-radius: 14px;
     padding: 18px 20px;
   }
   .trap-card h3 { margin: 0 0 8px; color: var(--trap); font-size: 17px; }
-  .trap-card p { font-size: 14.5px; margin: 0; max-width: none; }
+  .trap-card p { font-size: 14.5px; margin: 0 0 8px; max-width: none; }
+  .trap-card p:last-child { margin-bottom: 0; }
 
-  /* findings */
   .finding {
     background: var(--card); border: 1.5px solid var(--rule); border-left: 6px solid var(--accent);
     border-radius: 14px; box-shadow: var(--shadow);
@@ -187,7 +170,6 @@
   }
   .finding .so strong { color: var(--accent-dark); }
 
-  /* results table */
   .tablewrap {
     overflow-x: auto; border: 1.5px solid var(--rule); border-radius: 14px;
     background: var(--card); box-shadow: var(--shadow); margin: 22px 0 8px;
@@ -210,7 +192,6 @@
   .badge.bad { background: var(--bug-wash); color: var(--bug); }
   .foot { font-size: 14px; color: var(--ink-3); margin-top: 6px; }
 
-  /* quote/big idea */
   .bigidea {
     background: var(--ink); color: var(--paper); border-radius: 18px;
     padding: 30px 34px; margin: 40px 0;
@@ -225,7 +206,6 @@
     .bigidea { background: var(--card); color: var(--ink); border: 1.5px solid var(--rule); }
   }
 
-  /* glossary */
   .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 24px 0; }
   .term {
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px; padding: 14px 18px;
@@ -248,14 +228,13 @@
 <div class="wrap">
 
 <header>
-  <span class="kicker">A real experiment, explained for students</span>
   <h1>The Great <span class="hl">AI Build-Off</span></h1>
-  <p class="lede">We made teams of AI coding agents build the same three apps, over and over — 31 times — then graded every attempt like an exam and kept the receipts. Here's how it worked and what it taught us.</p>
+  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 31 times, then graded every attempt against held-out test suites and kept the receipts. Here's how it worked and what it taught us.</p>
   <div class="statline">
     <div class="stat"><span class="num">31</span><span class="lbl">graded runs</span></div>
     <div class="stat"><span class="num">3</span><span class="lbl">apps, easy → hard</span></div>
-    <div class="stat"><span class="num">73</span><span class="lbl">secret exam questions</span></div>
-    <div class="stat"><span class="num">~$59</span><span class="lbl">total AI cost</span></div>
+    <div class="stat"><span class="num">73</span><span class="lbl">held-out tests</span></div>
+    <div class="stat"><span class="num">~$59</span><span class="lbl">total token cost</span></div>
   </div>
 </header>
 
@@ -270,46 +249,46 @@
 </nav>
 
 <section id="setup">
-  <h2><span class="step">1</span>The setup: a manager and a builder</h2>
-  <p>An <strong>AI coding agent</strong> is an AI that doesn't just chat — it writes files, runs commands, and tests its own code, like a very fast intern with a laptop. In our experiment, every attempt (we call each one a <em>run</em>) used a two-role team, like a tiny construction company:</p>
+  <h2><span class="step">1</span>The setup: an orchestrator and an implementer</h2>
+  <p>An <strong>AI coding agent</strong> is a model wired into a harness that can write files, run shell commands, and execute tests — Anthropic's <strong>Claude Code</strong> and OpenAI's <strong>Codex CLI</strong> are the two harnesses in this experiment. Every run used a two-role team:</p>
   <div class="roles">
     <div class="role">
-      <span class="emoji">👷‍♀️</span>
-      <h3>The manager</h3>
-      <p>Reads the assignment, hires a builder, checks the finished work, and files a report. One strict rule: <strong>the manager never touches the code.</strong> Not even to fix an obvious bug.</p>
+      <span class="emoji">🧭</span>
+      <h3>The main agent (orchestrator)</h3>
+      <p>Reads the spec, spawns the sub-agent as a separate CLI process (<code>claude -p</code> or <code>codex exec</code>), reviews the finished code against the roadmap, runs verification, and writes a report. One strict rule: <strong>it never writes or fixes implementation code.</strong></p>
     </div>
     <div class="role">
       <span class="emoji">🔨</span>
-      <h3>The builder(s)</h3>
-      <p>Gets the assignment and actually writes the app. Sometimes one builder does the whole job; sometimes the work is split into phases, with a <em>brand-new</em> builder for each phase who never met the previous one.</p>
+      <h3>The sub-agent (implementer)</h3>
+      <p>Receives the spec and builds the app. Sometimes one sub-agent implements everything (<em>single</em>); sometimes each roadmap phase gets a <em>fresh</em> sub-agent with no memory of the previous one (<em>per-phase</em>).</p>
     </div>
   </div>
-  <p>Every run got the <strong>exact same assignment, word for word</strong>. The only things we changed between runs: which AI model played the manager, which played the builder, whether the work was split into phases, and (later) which company's AI did the building. Change one thing at a time, keep everything else fixed — that's what makes it an experiment instead of a vibe check.</p>
+  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. The variables were: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5), which model implements, single vs. per-phase spawning, and — in the cross-provider rounds — Codex CLI (running gpt-5.6-sol) as the implementer with its <code>model_reasoning_effort</code> dial swept low/medium/high. Change one axis at a time, hold everything else fixed: that's what makes it a benchmark instead of a vibe check.</p>
 </section>
 
 <section id="apps">
   <h2><span class="step">2</span>The three apps: easy, medium, boss level</h2>
-  <p>All three are small money-tracking websites. Each one's assignment is a written plan broken into numbered <strong>phases</strong> — build the home page, then the lists, then the forms, and so on. More phases = more features = more places where the pieces have to fit together.</p>
+  <p>All three are small money-tracking web apps on an identical stack — Python, FastAPI, Jinja2 templates, Bootstrap 5, in-memory storage, no database. Each spec is three files: a mission, a tech stack, and a <strong>roadmap</strong> that breaks the build into numbered phases with a literal test list per phase. More phases = more features = more places where the pieces must integrate.</p>
   <div class="apps">
     <div class="app">
       <div class="lv">1</div>
       <div class="body">
         <h3>SpendLog</h3> <span class="tag">"Every penny, written down."</span>
-        <p>A spending journal. One kind of record, three pages, one form, a running total. 2 phases — the warm-up.</p>
+        <p>A spending journal. One dataclass, three routes, one form, a running total. 2 phases — the warm-up.</p>
       </div>
     </div>
     <div class="app">
       <div class="lv">2</div>
       <div class="body">
         <h3>ExpenseHub</h3> <span class="tag">"Know where it all goes."</span>
-        <p>An expense browser. Detail pages, filtering by category, and a form that must politely reject bad input. 3 phases.</p>
+        <p>An expense browser. Detail pages with 404s, category filtering with recomputed totals, and a form that must return 422 with preserved input on bad data. 3 phases.</p>
       </div>
     </div>
     <div class="app">
       <div class="lv">3</div>
       <div class="body">
         <h3>InvoiceDesk</h3> <span class="tag">"Bill it. Send it. Get paid."</span>
-        <p>An invoice tracker with rules: an invoice moves draft → sent → paid, and it <em>cannot</em> be marked paid until payments actually cover the amount. Plus a stats page and a data API. 4 phases — the boss level.</p>
+        <p>An invoice tracker with a state machine: draft → sent → paid, where sent → paid is gated on payments actually covering the invoice amount. Two related entities, billing stats, and a JSON API. 4 phases — the boss level.</p>
       </div>
     </div>
   </div>
@@ -317,31 +296,34 @@
 
 <section id="traps">
   <h2><span class="step">3</span>The hidden traps</h2>
-  <p>Here's the sneaky part. Each assignment contained a few one-line requirements that <em>look</em> boring but hide classic programming mistakes — like a teacher who slips one tricky question into the homework to see who's really paying attention. We call them <strong>canaries</strong>. Three favorites:</p>
+  <p>Each roadmap plants a few one-line requirements that <em>look</em> boring but hide classic bugs — tripwires (we call them <strong>canaries</strong>) that separate reading the spec from pattern-matching it. Three favorites:</p>
   <div class="traps">
     <div class="trap-card">
       <h3>🕰️ The frozen clock</h3>
-      <p>"Each entry gets the current time by default." Write that code the lazy way and the time gets stamped <em>once, when the app starts</em> — so every entry forever shows the same moment. The app looks fine in a demo and is quietly wrong in real life.</p>
+      <p>"<code>created_at</code> defaults to the current time." Write <code>datetime.now()</code> as a plain dataclass default and it's evaluated <em>once, at import</em> — every record forever shows app-start time.</p>
+      <p>The correct form is <code>field(default_factory=...)</code>, which runs per instance. The app demos fine and is quietly wrong in production.</p>
     </div>
     <div class="trap-card">
       <h3>🚦 The route pile-up</h3>
-      <p>Web pages are matched in order. If the page <code>/expenses/new</code> is registered <em>after</em> the page <code>/expenses/{number}</code>, the app tries to read the word "new" as a number and crashes the form. Order matters, and nothing warns you.</p>
+      <p>FastAPI matches routes in registration order. Register <code>/expenses/{id}</code> (an <code>int</code> path param) before <code>/expenses/new</code>, and requests for the form page try to parse <code>"new"</code> as an integer — instant 422.</p>
+      <p>Nothing warns you; only a request to that exact URL exposes it.</p>
     </div>
     <div class="trap-card">
       <h3>🌀 The weird numbers</h3>
-      <p>Ask "is the amount bigger than zero?" and the bizarre value <code>NaN</code> (not-a-number) answers <em>no</em> to every comparison — so it slides right past the check. Someone could log a NaN expense and scramble your totals.</p>
+      <p>Python's <code>float()</code> happily parses <code>"nan"</code> and <code>"inf"</code> — and every comparison with NaN is False, so <code>nan &lt;= 0</code> fails to reject it. A NaN amount sails past "must be &gt; 0" and poisons every total.</p>
+      <p>The fix is one call: <code>math.isfinite()</code>.</p>
     </div>
   </div>
 </section>
 
 <section id="grading">
   <h2><span class="step">4</span>Grading it fairly (this is the important part)</h2>
-  <p>If you let an AI grade its own homework, it gives itself an A. So we built the grading to be as tamper-proof as a real exam:</p>
+  <p>If you let an agent grade its own homework, it gives itself an A. So the grading is built like an exam with a sealed answer key:</p>
   <ul class="checks">
-    <li><strong>A sealed answer key.</strong> For each app we wrote a secret test suite — 16, 25, and 32 automated checks — that the builders <em>never see</em>. Their folder is scrubbed before the run starts. You can't teach to a test you've never seen.</li>
-    <li><strong>Blind grading.</strong> After the runs, a separate grader scores anonymized, shuffled copies of the code — it can't tell which team produced which project, so there's no favoritism.</li>
-    <li><strong>Receipts for everything.</strong> Every run's cost is computed from the actual usage logs, and every prompt, finding, and test result is saved to a results file. No "trust me."</li>
-    <li><strong>Repeats.</strong> One good run can be luck. The important results were run twice (or more) before we believed them.</li>
+    <li><strong>Held-out acceptance suites.</strong> Each app has a secret pytest suite — 16, 25, and 32 tests — that implementers <em>never see</em>: the suites are stripped from every working copy before the run starts. Agent-written tests aren't comparable across runs; the held-out suite is the primary score.</li>
+    <li><strong>Blind grading.</strong> A separate grader scores anonymized, shuffled copies of each implementation against a fixed rubric, re-running every scripted check itself. It can't tell which configuration produced which tree.</li>
+    <li><strong>Receipts for everything.</strong> Costs are computed from the actual session transcripts at published per-token rates; every prompt, review finding, and test result is committed to a results file in git.</li>
+    <li><strong>Replicates.</strong> One good run is luck. Decision-relevant results were re-run before we ranked anything on them.</li>
   </ul>
 </section>
 
@@ -350,90 +332,92 @@
 
   <div class="finding">
     <div class="num">Finding 1</div>
-    <h3>The cheap manager did just as well 💸</h3>
-    <p>We swapped the expensive manager model for the cheapest one — and quality didn't drop at all. The best team overall was the <strong>cheapest manager + the strongest single builder</strong>: perfect scores at every difficulty level, at about half the cost of the fancy-manager version.</p>
-    <p class="so"><strong>So what?</strong> Spend your budget where the actual work happens. Management is real work, but it doesn't need the most expensive brain in the building.</p>
+    <h3>The cheap orchestrator lost nothing 💸</h3>
+    <p>Swapping the Sonnet 5 orchestrator for <strong>Haiku 4.5</strong> — a model about a third the price — changed quality not at all. The best configuration in all 31 runs was <strong>Haiku 4.5 orchestrating a single Opus 5 implementer</strong>: blind-graded clean at every tier, twice ($1.21–$2.44 per app), 26–45% cheaper than the same implementer under Sonnet 5.</p>
+    <p class="so"><strong>So what?</strong> Quality tracked the implementer, not the orchestrator. Spend your token budget where the actual work happens.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 2</div>
     <h3>Relay teams drop the baton 🏃</h3>
-    <p>On the hardest app, teams that split the build across phases — a fresh builder per phase, like a relay race — broke the app <strong>3 times out of 3</strong>, with the exact same bug: builder #2 set up the pages one way, builder #3 bolted a new page on after, and the route pile-up trap sprang. Each builder's own work was fine. The bug lived <em>between</em> them, in the handoff. A single builder who saw the whole app never made this mistake.</p>
-    <p class="so"><strong>So what?</strong> Every handoff is a place where a bug can hide — the same reason group projects fall apart when nobody looks at the whole thing. If you must split work, someone has to own the seams.</p>
+    <p>On InvoiceDesk, per-phase teams (Sonnet 5 ×4, a fresh implementer per phase) shipped a broken app <strong>3 times out of 3</strong>, under two different orchestrator models — always the same bug. The phase-2 agent registered <code>/invoices/{id}</code>; the phase-3 agent appended <code>/invoices/new</code> after it; the route pile-up sprang. Each agent's own work was fine, its own tests passed, and the orchestrator's code review missed it every time — the bug lived in the <em>handoff</em>, and only the held-out suite caught it. A single implementer who saw the whole app never once made this mistake.</p>
+    <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. If you must split work, someone has to own the whole.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
-    <p>The weird-numbers trap caught <strong>9 out of 10</strong> teams while the requirement was unwritten — everyone checked "bigger than zero" and called it done. Then we added <em>one sentence</em> to the assignment ("reject NaN and infinity") — and the next <strong>5 out of 5</strong> teams, across two different AI companies, got it right.</p>
-    <p class="so"><strong>So what?</strong> AI does what the instructions say, not what you meant. One clear sentence beat nine smart models' intuition. Writing precise instructions is a superpower — for prompting AI and for working with humans.</p>
+    <p>While the NaN requirement was unwritten, <strong>9 of 10</strong> implementations — Sonnet, Opus, Haiku, every spawn strategy — validated <code>amount &gt; 0</code> and stopped there. Then we added one sentence to the spec ("reject non-finite amounts; check with <code>math.isfinite</code>") plus a matching test. The next <strong>5 of 5</strong> runs — Opus 5 and Codex both — wrote the guard and tested it.</p>
+    <p class="so"><strong>So what?</strong> Models implement the spec's letter, not your intent. One precise sentence outperformed nine strong models' intuition. Spec-writing is the leverage point.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 4</div>
-    <h3>"Think harder" mode prevents the sloppy mistakes 🧠</h3>
-    <p>One AI has an adjustable "reasoning effort" dial. On <strong>high</strong>, it produced the only flawless sweep of all three apps in the whole experiment. On <strong>low</strong>, it could still build everything — but it fell for the frozen-clock trap and quietly skipped some of the tests it was told to write. Extra thinking didn't add ability; it removed carelessness.</p>
-    <p class="so"><strong>So what?</strong> Sound familiar? Rushing doesn't make you unable to do the problem — it makes you skip the step where you'd have caught your own mistake.</p>
+    <h3>Reasoning effort removes carelessness, not inability 🧠</h3>
+    <p>Codex CLI exposes a <code>model_reasoning_effort</code> dial. On <strong>high</strong>, gpt-5.6-sol produced the experiment's only zero-defect sweep of all three tiers — it even URL-encoded user text in links, which no other run in 31 had done. On <strong>low</strong>, it still built everything — but shipped the frozen-clock bug at tier 2 and silently compressed its tier-3 test suite, dropping two assertions the roadmap required. Notably, even low effort honored the explicit <code>math.isfinite</code> bullet.</p>
+    <p class="so"><strong>So what?</strong> Extra thinking didn't add capability — it removed the skipped-the-double-check class of error. Explicit instructions survive effort reduction; unwritten expectations don't.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 5</div>
-    <h3>Different AIs, same blind spots 👓</h3>
-    <p>We ran the same experiment with a completely different company's AI. It did great — and it made some of the <em>same</em> mistakes in the same places, because the assignment's shape invited them. The blind spots belonged to the task, not the brand. (And only "think harder" mode ever fixed the subtlest one.)</p>
-    <p class="so"><strong>So what?</strong> Switching tools doesn't rescue you from an unclear assignment. Fixing the assignment does.</p>
+    <h3>Different vendors, same blind spots 👓</h3>
+    <p>Running the whole ladder with OpenAI's Codex as the implementer under a Claude orchestrator worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded category links, the frozen clock at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the vendor.</p>
+    <p class="so"><strong>So what?</strong> Switching models doesn't rescue an ambiguous spec. Fixing the spec does.</p>
   </div>
 
-  <h3>The final scoreboard (hardest app, best teams)</h3>
+  <h3>The scoreboard (InvoiceDesk, the hardest app)</h3>
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Team</th><th class="n">Score</th><th class="n">Serious bugs</th><th class="n">Cost</th><th>Verdict</th></tr></thead>
+      <thead><tr><th>Configuration</th><th class="n">Held-out score</th><th class="n">Serious defects</th><th class="n">Cost</th><th>Verdict</th></tr></thead>
       <tbody>
-        <tr><td><span class="medal">🥇</span> Cheap manager + one strong builder</td><td class="n">32/32</td><td class="n">0</td><td class="n">~$2</td><td><span class="badge good">best value</span></td></tr>
-        <tr><td><span class="medal">🥈</span> Standard manager + one strong builder</td><td class="n">31/31</td><td class="n">0</td><td class="n">~$3.30</td><td><span class="badge good">rock solid</span></td></tr>
-        <tr><td><span class="medal">🥉</span> Other company's AI, "think harder" mode</td><td class="n">32/32</td><td class="n">0</td><td class="n">n/a*</td><td><span class="badge good">flawless run</span></td></tr>
-        <tr><td>Relay team (new builder per phase)</td><td class="n">30/31</td><td class="n">1–3</td><td class="n">~$5</td><td><span class="badge bad">dropped the baton</span></td></tr>
+        <tr><td><span class="medal">🥇</span> Haiku 4.5 main + single Opus 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$1.85–$2.44</td><td><span class="badge good">best value, clean ×2</span></td></tr>
+        <tr><td><span class="medal">🥈</span> Sonnet 5 main + single Opus 5</td><td class="n">31/31</td><td class="n">0</td><td class="n">~$3.30</td><td><span class="badge good">clean ×2</span></td></tr>
+        <tr><td><span class="medal">🥉</span> Codex CLI (gpt-5.6-sol), high effort</td><td class="n">32/32</td><td class="n">0</td><td class="n">n/a*</td><td><span class="badge good">zero-defect run</span></td></tr>
+        <tr><td>Sonnet 5 ×4 per-phase (relay)</td><td class="n">30/31</td><td class="n">1–3</td><td class="n">~$5.10</td><td><span class="badge bad">route bug, 3-for-3</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="foot">Score = secret test suite. Some runs used a 31-question version of the exam, before we added the weird-numbers question. *That AI ran on a subscription, so per-run cost isn't published — one honest gap in our receipts.</p>
+  <p class="foot">Score = held-out pytest suite; some runs predate the NaN amendment and faced the 31-test version. *Codex ran under ChatGPT-subscription auth, which reports tokens (26k–57k per run) but no dollar price — one honest gap in our receipts.</p>
 
   <div class="bigidea">
-    <p>The most expensive team was also the one that shipped the broken app. In this experiment, <span class="hl">clear instructions and real testing</span> beat raw spending — every single time.</p>
+    <p>The most expensive configuration was also the one that shipped the broken app. In this experiment, <span class="hl">precise specs and held-out tests</span> beat raw spending — every single time.</p>
   </div>
 </section>
 
 <section id="you">
-  <h2><span class="step">6</span>Why this matters for you</h2>
-  <p>You'll probably never run this exact benchmark. But you <em>will</em> work with AI — and with people — on things that matter. The experiment's lessons travel:</p>
+  <h2><span class="step">6</span>Why it matters for you</h2>
+  <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons transfer:</p>
   <ul class="checks">
-    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 31 runs came from adding one precise sentence to the instructions. Vague asks get plausible-looking, quietly-wrong results.</li>
-    <li><strong>Don't grade your own homework.</strong> Every builder's own tests passed — including the broken apps'. Real checking is done by someone (or something) that didn't do the work and can't be sweet-talked.</li>
-    <li><strong>Watch the handoffs.</strong> Whether it's AI phases or your group project, the bugs live between people's parts. Someone has to look at the whole thing.</li>
-    <li><strong>Working ≠ correct.</strong> Every broken app in this experiment ran fine and looked fine. The bugs only appeared under tests designed to probe the edges. "It runs" is the start of checking, not the end.</li>
-    <li><strong>Measure, then believe.</strong> One run is a story; a repeated, blind-graded result is evidence. That mindset is the whole scientific method, wearing a programming costume.</li>
+    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 31 runs came from adding one precise sentence to the spec. Vague prompts get plausible-looking, quietly-wrong code.</li>
+    <li><strong>Don't grade your own homework.</strong> Every implementer's own tests passed — including the broken apps'. Real verification is done by tests the author never saw and can't overfit to.</li>
+    <li><strong>Watch the handoffs.</strong> Whether it's per-phase sub-agents or your group project, the bugs live between the parts. Someone has to look at the whole.</li>
+    <li><strong>Working ≠ correct.</strong> Every broken app here ran fine, demoed fine, and passed its own tests. The defects only surfaced under tests designed to probe the edges.</li>
+    <li><strong>Measure, then believe.</strong> One run is an anecdote; a replicated, blind-graded result is evidence. n=1 rankings are how you fool yourself.</li>
   </ul>
-  <h3>Try it yourself (no giant budget needed)</h3>
-  <p>Pick any AI coding tool and give it a small, written assignment with one hidden trap you know the answer to — like the frozen clock. Then write three tests it never sees, and grade it. Change <em>one</em> word of your instructions and run it again. Congratulations: you're benchmarking.</p>
+  <h3>Try it yourself</h3>
+  <p>Take any agent harness — Claude Code, Codex CLI — and give it a small written spec with one trap you know the answer to, like the frozen clock. Write three pytest checks it never sees. Run it, grade it, change <em>one sentence</em> of the spec, and run it again. Congratulations: you're benchmarking.</p>
 </section>
 
 <section id="glossary">
   <h2><span class="step">7</span>Glossary</h2>
   <div class="glossary">
-    <div class="term"><b>AI coding agent</b><p>An AI that acts, not just chats: it creates files, writes code, runs it, and reads the errors.</p></div>
-    <div class="term"><b>Run</b><p>One complete attempt: a team gets the assignment, builds the app, gets graded.</p></div>
-    <div class="term"><b>Spec</b><p>The written assignment — what to build, feature by feature. Short for "specification."</p></div>
-    <div class="term"><b>Phase</b><p>One numbered chunk of the spec's build plan. More phases = more handoffs when work is split.</p></div>
-    <div class="term"><b>Canary</b><p>A requirement planted to detect a specific classic mistake — an early-warning tripwire.</p></div>
-    <div class="term"><b>Held-out tests</b><p>The secret exam. Automated checks the builders never see, so they can't teach to the test.</p></div>
-    <div class="term"><b>Blind grading</b><p>Scoring shuffled, anonymized work so the grader can't play favorites.</p></div>
-    <div class="term"><b>NaN</b><p>"Not a Number" — a special float value that answers <em>no</em> to every comparison, letting it sneak past naive checks.</p></div>
-    <div class="term"><b>Token</b><p>The unit AI text is measured (and billed) in — roughly three-quarters of a word.</p></div>
-    <div class="term"><b>Orchestrator</b><p>The manager role: delegates, verifies, reports — never implements. (The fancy word for it.)</p></div>
+    <div class="term"><b>Agent harness</b><p>The scaffolding that lets a model act: file edits, shell, tests, the loop. Claude Code and Codex CLI are harnesses; Sonnet 5 and gpt-5.6-sol are models running inside them.</p></div>
+    <div class="term"><b>Run</b><p>One complete attempt: a configuration gets the spec, builds the app, gets graded.</p></div>
+    <div class="term"><b>Spec</b><p>The written assignment — mission, tech stack, and a phase-by-phase roadmap with a literal test list.</p></div>
+    <div class="term"><b>Orchestrator / main agent</b><p>Spawns and reviews; never implements. The experiment's manager role.</p></div>
+    <div class="term"><b>Sub-agent</b><p>The implementer, spawned as a separate CLI process (<code>claude -p</code> / <code>codex exec</code>).</p></div>
+    <div class="term"><b>Canary</b><p>A requirement planted to detect one specific classic bug — an early-warning tripwire.</p></div>
+    <div class="term"><b>Held-out tests</b><p>The sealed answer key: pytest suites the implementers never see, stripped from their working copy.</p></div>
+    <div class="term"><b>Blind grading</b><p>Scoring shuffled, anonymized code against a fixed rubric, so the grader can't favor a configuration.</p></div>
+    <div class="term"><b>NaN</b><p>"Not a Number" — an IEEE-754 float for which every comparison is False, letting it slip past naive validation.</p></div>
+    <div class="term"><b>Token</b><p>The unit models read, write, and bill in — roughly three-quarters of an English word.</p></div>
+    <div class="term"><b>Reasoning effort</b><p>A dial (low/medium/high) for how much hidden thinking a model does before answering. Codex CLI exposes it per run.</p></div>
+    <div class="term"><b>Replicate</b><p>A repeat run of the same cell. The antidote to being fooled by one lucky draw.</p></div>
   </div>
 </section>
 
 <footer>
-  <p>Built from a real 31-run benchmark (August 2026) comparing agent/sub-agent configurations of Claude and Codex models building SpendLog, ExpenseHub, and InvoiceDesk. Full methodology, per-run records, prompts, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
+  <p>Built from a real 31-run benchmark (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
 </footer>
 
 </div>
