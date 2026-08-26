@@ -155,9 +155,13 @@ def test_expenses_page_heading_seeds_newest_first_and_total(client, impl):
     live = impl["models"].expenses
     assert f"Total: {money(sum(e.amount for e in live))}" in response.text
     ordered = sorted(impl["seeds"], key=lambda e: e.spent_at, reverse=True)
-    positions = [response.text.find(safe_fragment(e.title)) for e in ordered]
-    assert all(p >= 0 for p in positions)
-    assert positions == sorted(positions)
+    # Sequential search, robust to duplicate titles (permitted by the roadmap);
+    # independent find() positions break the order check on duplicates.
+    idx = 0
+    for expense in ordered:
+        pos = response.text.find(safe_fragment(expense.title), idx)
+        assert pos >= 0
+        idx = pos + 1
 
 
 def test_expense_titles_link_to_detail_and_badges(client):

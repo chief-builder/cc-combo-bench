@@ -200,9 +200,15 @@ def test_board_status_badges_use_spec_colors(client):
 def test_board_sorted_newest_first(client, impl):
     html = client.get("/invoices").text
     ordered = sorted(impl["seed_invoices"], key=lambda i: i.created_at, reverse=True)
-    positions = [html.find(safe_fragment(i.client)) for i in ordered]
-    assert all(p >= 0 for p in positions)
-    assert positions == sorted(positions)
+    # Sequential search: each client name must appear at or after the previous
+    # match. Robust to duplicate client names, which the roadmap permits —
+    # independent find() positions are not (both duplicates match the first
+    # occurrence, breaking the order check for a correct sort).
+    idx = 0
+    for invoice in ordered:
+        pos = html.find(safe_fragment(invoice.client), idx)
+        assert pos >= 0
+        idx = pos + 1
 
 
 def test_status_filter_includes_and_excludes(client, impl):

@@ -39,6 +39,15 @@ not pattern-matched). Every behavior a roadmap requires must also
 appear in its test list — an omission there reads as an agent miss
 when it's really a spec bug.
 
+Suite changelog: 2026-08-25 — the tier-2/3 newest-first sort tests
+assumed unique seed client names/titles (independent `find()`
+positions), which the roadmaps never require; a run with two seeds
+sharing a client name failed the sort test despite a correct sort.
+Fixed to a sequential search robust to duplicates; the affected run's
+grader re-ran the corrected suite (31/32 → 32/32). Same instrument-bug
+class as the 2026-08-20 money-formatter fix: the suite demanded
+something the roadmap's letter does not.
+
 Spec changelog: 2026-08-20 — tier-2/3 roadmaps now explicitly require
 rejecting non-finite amounts (`nan`/`inf`; check with
 `math.isfinite`), with matching test-list bullets and acceptance
