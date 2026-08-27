@@ -402,7 +402,8 @@
       </tbody>
     </table>
   </div>
-  <p class="foot">Every Season 2 row has an app link. The confirmations: Haiku&#8202;&rarr;&#8202;Opus clean in all three draws (n=4 clean at tier 3 across seasons); the Sonnet relay's route bug recurred in <strong>both</strong> fresh draws (5-for-5 lifetime), while the Opus relay swept clean again. The revision: the all-Haiku "budget anchor" shipped two criticals this draw — a crash after creating an invoice and an XSS hole — that <em>passed all 32 acceptance tests</em> and were caught only by the human-style close reading in blind grading. Cheap implementers are a lottery; scripted checks are necessary, not sufficient.</p>
+  <p class="foot"><strong>What happened this season:</strong> ten of the twelve runs passed every held-out test with nothing worse than cosmetic findings. The two exceptions: both Sonnet-relay draws shipped the identical route-registration bug (31/32 each), and the all-Haiku run built an app that <em>crashes after you create an invoice</em> and renders user text unescaped (an XSS hole) — yet still passed all 32 acceptance tests. Those last two bugs were caught only by the line-by-line review in blind grading; no automated check saw them.</p>
+  <p class="foot"><strong>Compared with Season 1:</strong> Haiku&#8202;&rarr;&#8202;Opus stayed clean in all three of its draws, making that configuration 4-for-4 clean at tier 3 across both seasons. The Sonnet relay's route bug has now appeared in every relay draw ever run (5-for-5), while the Opus relay stayed clean in both seasons. The all-Haiku result <em>reverses</em> its clean Season 1 draw — cheap implementers swing between draws, and scripted checks are necessary but not sufficient. Every Season 2 row links both its record and its app.</p>
 </section>
 
 <section id="traps">
