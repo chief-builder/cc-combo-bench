@@ -148,6 +148,12 @@ path is assigned too late to fill prompts.
   and blind scorecards are appended post-run.
 - **Pilot first**: any new harness element (provider, spawn mechanism,
   tier) gets one pilot run before a matrix.
+- **App archival** (standard since Season 2; earlier runs lack it —
+  their copies were cleaned before archiving existed): after grading
+  and BEFORE any worktree sweep, boot each run's app and save a
+  full-page screenshot of its main data page (t1 `/entries`, t2
+  `/expenses`, t3 `/invoices`) to `docs/demos/apps/<results-stem>.png`
+  so every run's built app stays linkable from the teaching site.
 
 ## Failure/retry policy (decided up front)
 
@@ -164,6 +170,19 @@ path is assigned too late to fill prompts.
 verbatim prompts + exact spawn command, review findings, verification
 output, provider stats (cross-provider), then appended cost stats and
 blind scorecard, and source transcript paths.
+
+## Season 2 (confirmatory, 2026-08-27)
+
+Season 1 (36 runs) was exploratory: the spec was amended mid-campaign,
+three instrument bugs were found and fixed, and app archival started
+late. Season 2 re-runs the decision-relevant cells under frozen clean
+conditions — post-amendment specs and suites (16/25/32), corrected
+sort tests, archival from run one. Results files are prefixed `s2_`
+(same naming convention otherwise); Season 1 files stand as the
+exploratory record. 12 cells: Haiku+Opus t2 and t3 ×2 (headline),
+Sonnet+Sonnet single t3, Sonnet relay ×4 t3 ×2 (route-trap
+recurrence), Opus relay ×4 t3, Haiku+Haiku t3, Codex low/high t3,
+Haiku+Sonnet t1, Codex high t2. Ports 8701-8712, worktrees s2-01..12.
 
 ## Run matrices
 
