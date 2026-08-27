@@ -1,0 +1,170 @@
+# Benchmark Results: tier3-invoicedesk (Haiku 4.5)
+
+## Prompts Used
+
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+
+## Review Findings
+
+### Spec-Conformance Issues
+
+**Issue 1: Naive datetime instead of timezone-aware (app.py)**
+- **Location**: app.py, line 81 (Invoice creation) and line 153 (Payment creation)
+- **Summary**: New invoices and payments use naive datetime instead of timezone-aware
+- **Detail**: The roadmap specifies `created_at: datetime (default `datetime.now(timezone.utc)`)` in models.py, which is correctly implemented as a default_factory. However, when creating new Invoice and Payment instances at runtime, the code uses `datetime.now()` instead of `datetime.now(timezone.utc)`. This creates inconsistency between seed data (timezone-aware) and user-created data (naive).
+- **Impact**: Minor - does not affect functional correctness or test passage; inconsistent datetime representation in the data model.
+
+### No Critical or Functional Defects Detected
+
+All routes, status codes, templates, validation rules, and lifecycle enforcement work as specified.
+
+## Verification
+
+### 1. Implementation Tests
+**Command**: `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+
+**Result**: PASS (33/33 tests)
+
+```
+tests/test_app.py::test_home_page_returns_200 PASSED
+tests/test_app.py::test_home_page_contains_tagline PASSED
+tests/test_app.py::test_invoices_page_returns_200 PASSED
+tests/test_app.py::test_invoices_page_contains_seed_client PASSED
+tests/test_app.py::test_invoices_filter_by_draft PASSED
+tests/test_app.py::test_invoices_filter_by_invalid_status PASSED
+tests/test_app.py::test_invoice_detail_returns_200 PASSED
+tests/test_app.py::test_invoice_detail_contains_payment PASSED
+tests/test_app.py::test_invoice_detail_shows_balance_due PASSED
+tests/test_app.py::test_invoice_detail_404_for_unknown PASSED
+tests/test_app.py::test_create_invoice_valid PASSED
+tests/test_app.py::test_create_invoice_valid_shows_draft PASSED
+tests/test_app.py::test_create_invoice_empty_client PASSED
+tests/test_app.py::test_create_invoice_non_numeric_amount PASSED
+tests/test_app.py::test_payment_on_draft_invoice_returns_400 PASSED
+tests/test_app.py::test_payment_on_unknown_invoice_returns_404 PASSED
+tests/test_app.py::test_status_transition_draft_to_sent PASSED
+tests/test_app.py::test_status_transition_invalid_draft_to_paid PASSED
+tests/test_app.py::test_status_transition_invalid_on_paid PASSED
+tests/test_app.py::test_record_valid_payment PASSED
+tests/test_app.py::test_record_payment_with_zero_amount PASSED
+tests/test_app.py::test_record_payment_with_nan PASSED
+tests/test_app.py::test_create_invoice_with_nan PASSED
+tests/test_app.py::test_record_payment_with_inf PASSED
+tests/test_app.py::test_status_transition_sent_to_paid_insufficient_payment PASSED
+tests/test_app.py::test_status_transition_sent_to_paid_sufficient_payment PASSED
+tests/test_app.py::test_stats_page_returns_200 PASSED
+tests/test_app.py::test_stats_page_shows_correct_totals PASSED
+tests/test_app.py::test_api_invoices_returns_json PASSED
+tests/test_app.py::test_api_invoices_list_length PASSED
+tests/test_app.py::test_api_invoices_contains_all_fields PASSED
+tests/test_app.py::test_api_invoices_correct_paid_total PASSED
+tests/test_app.py::test_api_invoices_created_at_is_iso8601 PASSED
+
+33 passed
+```
+
+### 2. Acceptance Test Suite
+**Command**: `APP_DIR=/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08 /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/pytest /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/acceptance/tier3/test_spec.py -v`
+
+**Result**: PASS (32/32 tests)
+
+```
+acceptance/tier3/test_spec.py::test_home_returns_200_with_tagline PASSED
+acceptance/tier3/test_spec.py::test_html_lang_en PASSED
+acceptance/tier3/test_spec.py::test_bootstrap5_css_cdn PASSED
+acceptance/tier3/test_spec.py::test_bootstrap5_js_bundle PASSED
+acceptance/tier3/test_spec.py::test_favicon_link PASSED
+acceptance/tier3/test_spec.py::test_default_title PASSED
+acceptance/tier3/test_spec.py::test_navbar_links PASSED
+acceptance/tier3/test_spec.py::test_app_has_uvicorn_run_block PASSED
+acceptance/tier3/test_spec.py::test_invoice_is_dataclass_with_spec_fields_and_defaults PASSED
+acceptance/tier3/test_spec.py::test_payment_is_dataclass_with_spec_fields PASSED
+acceptance/tier3/test_spec.py::test_status_constants PASSED
+acceptance/tier3/test_spec.py::test_seed_data_consistent_with_rules PASSED
+acceptance/tier3/test_spec.py::test_helpers PASSED
+acceptance/tier3/test_spec.py::test_board_shows_seed_filter_links_and_paid_line PASSED
+acceptance/tier3/test_spec.py::test_board_status_badges_use_spec_colors PASSED
+acceptance/tier3/test_spec.py::test_board_sorted_newest_first PASSED
+acceptance/tier3/test_spec.py::test_status_filter_includes_and_excludes PASSED
+acceptance/tier3/test_spec.py::test_status_filter_rejects_unknown_value PASSED
+acceptance/tier3/test_spec.py::test_detail_shows_payment_and_balance_due PASSED
+acceptance/tier3/test_spec.py::test_detail_unknown_id_404 PASSED
+acceptance/tier3/test_spec.py::test_new_invoice_form PASSED
+acceptance/tier3/test_spec.py::test_create_invoice_round_trip PASSED
+acceptance/tier3/test_spec.py::test_create_invoice_empty_client_422_preserves_description PASSED
+acceptance/tier3/test_spec.py::test_create_invoice_bad_amount_422_preserves_raw_text PASSED
+acceptance/tier3/test_spec.py::test_payment_on_draft_invoice_400 PASSED
+acceptance/tier3/test_spec.py::test_payment_on_unknown_invoice_404 PASSED
+acceptance/tier3/test_spec.py::test_lifecycle_with_money_rules PASSED
+acceptance/tier3/test_spec.py::test_status_change_on_unknown_invoice_404 PASSED
+acceptance/tier3/test_spec.py::test_transition_buttons_match_allowed_moves PASSED
+acceptance/tier3/test_spec.py::test_stats_page_money_lines PASSED
+acceptance/tier3/test_spec.py::test_api_invoices PASSED
+acceptance/tier3/test_spec.py::test_non_finite_amounts_rejected PASSED
+
+32 passed
+```
+
+### 3. Smoke Test Script
+**Command**: `/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/scripts/smoke_tier3.sh /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-08 8708`
+
+**Result**: PASS
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Summary
+
+**Overall Result**: PASS
+
+All verification tests pass (33 + 32 + smoke). One minor spec-conformance issue detected regarding datetime timezone consistency in app.py, but this does not affect functional correctness or test passage. The implementation fulfills all roadmap requirements for phases 1-4 and is ready for production.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-haiku-4-5-20251001 | 48 | 25 | 394 | 107,724 | 1,208,625 | 9,632 | $0.304 |
+| Sub-agent | claude-haiku-4-5-20251001 | 77 | 30 | 619 | 146,034 | 2,932,607 | 72,000 | $0.836 |
+| **Total** | | | | | | | | **$1.140** |
+
+Wall-clock (main-agent session span): 368s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b5fd4a3a-a70/agent-aaba9295f0db14fcd.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-08/54fe8bdd-a8ca-46a7-881c-3199f124376e.jsonl`

@@ -1,0 +1,154 @@
+# Benchmark Results: s2-tier3 (Haiku 4.5 → Opus 5)
+
+## Prompts used
+
+Implement the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-02/specs/tier3-invoicedesk/. Work only
+inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-02 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then implement
+ALL phases of the roadmap exactly as written — file names, routes, status
+codes, defaults, CDN links, and template contents are requirements, not
+suggestions.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests the roadmap calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-02 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+
+## Review findings
+
+No defects found. Implementation follows the roadmap exactly:
+
+- All four phases (Home, Invoice Board, Lifecycle, Stats/API) implemented
+- All file names, routes, status codes, and defaults match specifications
+- Seed data includes 5 invoices covering all three statuses with consistent payment history
+- Error handling and validation complete (amount parsing with isfinite checks, status transitions, payment rules)
+- All 21 unit tests pass
+- All 32 acceptance tests pass
+- Smoke test passes
+
+## Verification
+
+### Implementation's own tests (tests/test_app.py)
+**Status: PASS (21/21)**
+
+```
+collected 21 items
+
+tests/test_app.py::test_home_page PASSED                                 [  4%]
+tests/test_app.py::test_invoice_board_lists_seed_client PASSED           [  9%]
+tests/test_app.py::test_invoice_board_filter_by_status PASSED            [ 14%]
+tests/test_app.py::test_invoice_board_rejects_unknown_status PASSED      [ 19%]
+tests/test_app.py::test_invoice_detail_shows_payments_and_balance PASSED [ 23%]
+tests/test_app.py::test_unknown_invoice_detail_returns_404 PASSED        [ 28%]
+tests/test_app.py::test_create_invoice_redirects_to_detail PASSED        [ 33%]
+tests/test_app.py::test_create_invoice_empty_client_returns_422 PASSED   [ 38%]
+tests/test_app.py::test_create_invoice_bad_amount_preserves_input PASSED [ 42%]
+tests/test_app.py::test_create_invoice_rejects_nan PASSED                [ 47%]
+tests/test_app.py::test_payment_on_draft_invoice_returns_400 PASSED      [ 52%]
+tests/test_app.py::test_payment_on_unknown_invoice_returns_404 PASSED    [ 57%]
+tests/test_app.py::test_payment_zero_amount_returns_422 PASSED           [ 61%]
+tests/test_app.py::test_payment_infinite_amount_returns_422 PASSED       [ 66%]
+tests/test_app.py::test_valid_transition_draft_to_sent PASSED            [ 71%]
+tests/test_app.py::test_invalid_transition_draft_to_paid_returns_400 PASSED [ 76%]
+tests/test_app.py::test_transition_on_paid_invoice_returns_400 PASSED    [ 80%]
+tests/test_app.py::test_record_payment_reduces_balance_due PASSED        [ 85%]
+tests/test_app.py::test_mark_paid_requires_full_payment PASSED           [ 90%]
+tests/test_app.py::test_stats_page_money_lines PASSED                    [ 95%]
+tests/test_app.py::test_api_invoices PASSED                              [100%]
+
+======================== 21 passed, 9 warnings in 0.15s ========================
+```
+
+### Held-out acceptance suite (acceptance/tier3/test_spec.py)
+**Status: PASS (32/32)**
+
+```
+collected 32 items
+
+acceptance/tier3/test_spec.py::test_home_returns_200_with_tagline PASSED [  3%]
+acceptance/tier3/test_spec.py::test_html_lang_en PASSED                  [  6%]
+acceptance/tier3/test_spec.py::test_bootstrap5_css_cdn PASSED            [  9%]
+acceptance/tier3/test_spec.py::test_bootstrap5_js_bundle PASSED          [ 12%]
+acceptance/tier3/test_spec.py::test_favicon_link PASSED                  [ 15%]
+acceptance/tier3/test_spec.py::test_default_title PASSED                 [ 18%]
+acceptance/tier3/test_spec.py::test_navbar_links PASSED                  [ 21%]
+acceptance/tier3/test_spec.py::test_app_has_uvicorn_run_block PASSED     [ 25%]
+acceptance/tier3/test_spec.py::test_invoice_is_dataclass_with_spec_fields_and_defaults PASSED [ 28%]
+acceptance/tier3/test_spec.py::test_payment_is_dataclass_with_spec_fields PASSED [ 31%]
+acceptance/tier3/test_spec.py::test_status_constants PASSED              [ 34%]
+acceptance/tier3/test_spec.py::test_seed_data_consistent_with_rules PASSED [ 37%]
+acceptance/tier3/test_spec.py::test_helpers PASSED                       [ 40%]
+acceptance/tier3/test_spec.py::test_board_shows_seed_filter_links_and_paid_line PASSED [ 43%]
+acceptance/tier3/test_spec.py::test_board_status_badges_use_spec_colors PASSED [ 46%]
+acceptance/tier3/test_spec.py::test_board_sorted_newest_first PASSED     [ 50%]
+acceptance/tier3/test_spec.py::test_status_filter_includes_and_excludes PASSED [ 53%]
+acceptance/tier3/test_spec.py::test_status_filter_rejects_unknown_value PASSED [ 56%]
+acceptance/tier3/test_spec.py::test_detail_shows_payment_and_balance_due PASSED [ 59%]
+acceptance/tier3/test_spec.py::test_detail_unknown_id_404 PASSED         [ 62%]
+acceptance/tier3/test_spec.py::test_new_invoice_form PASSED              [ 65%]
+acceptance/tier3/test_spec.py::test_create_invoice_round_trip PASSED     [ 68%]
+acceptance/tier3/test_spec.py::test_create_invoice_empty_client_422_preserves_description PASSED [ 71%]
+acceptance/tier3/test_spec.py::test_create_invoice_bad_amount_422_preserves_raw_text PASSED [ 75%]
+acceptance/tier3/test_spec.py::test_payment_on_draft_invoice_400 PASSED  [ 78%]
+acceptance/tier3/test_spec.py::test_payment_on_unknown_invoice_404 PASSED [ 81%]
+acceptance/tier3/test_spec.py::test_lifecycle_with_money_rules PASSED    [ 84%]
+acceptance/tier3/test_spec.py::test_status_change_on_unknown_invoice_404 PASSED [ 87%]
+acceptance/tier3/test_spec.py::test_transition_buttons_match_allowed_moves PASSED [ 90%]
+acceptance/tier3/test_spec.py::test_stats_page_money_lines PASSED        [ 93%]
+acceptance/tier3/test_spec.py::test_api_invoices PASSED                  [ 96%]
+acceptance/tier3/test_spec.py::test_non_finite_amounts_rejected PASSED   [100%]
+
+======================== 32 passed, 9 warnings in 0.16s ========================
+```
+
+### Smoke test
+**Status: PASS**
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+## Summary
+
+All verification checks pass. The implementation is complete, correct, and adheres fully to the roadmap specifications. The sub-agent (Opus 5) delivered a production-ready invoicing application with proper error handling, validation, and comprehensive test coverage.
+
+**Total test results: 21 + 32 + smoke = PASS**
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-haiku-4-5-20251001 | 49 | 21 | 398 | 71,664 | 1,236,145 | 8,292 | $0.255 |
+| Sub-agent | claude-opus-5 | 25 | 16 | 50 | 67,911 | 878,739 | 36,840 | $1.785 |
+| **Total** | | | | | | | | **$2.040** |
+
+Wall-clock (main-agent session span): 292s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b5fd4a3a-a70/agent-ace8ac4073914d541.jsonl`
+- Sub-agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-02/dc2683f3-691a-40b1-a015-d6fa29d5c450.jsonl`

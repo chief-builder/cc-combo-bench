@@ -1,0 +1,244 @@
+# s2 — tier3-invoicedesk — sonnet-5 (orchestrator) x sonnet-5x4 (sub-agents)
+
+## Prompts used
+
+### Phase 1
+
+```
+Implement Phase 1 of the app specified in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05/specs/tier3-invoicedesk/.
+Work only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 — create every file there, never in any
+other directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 1 of the roadmap exactly as written — file names, routes,
+status codes, defaults, CDN links, and template contents are requirements,
+not suggestions. Do not start any later phase.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 1 calls for and run them with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until they pass.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created and the
+  final test output.
+```
+
+### Phase 2
+
+```
+The roadmap through Phase 1 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 2 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 2 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 2 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 3
+
+```
+The roadmap through Phase 2 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 3 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 3 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 3 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+### Phase 4
+
+```
+The roadmap through Phase 3 of the app specified in
+/Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05/specs/tier3-invoicedesk/ is already implemented in /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05. Work
+only inside /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 — create every file there, never in any other
+directory. Read mission.md, tech-stack.md, and roadmap.md, then
+implement Phase 4 of the roadmap exactly as written — file
+names, routes, status codes, defaults, CDN links, and template contents
+are requirements, not suggestions. Do not start any later phase. Modify
+existing files only where Phase 4 requires it; leave the rest
+of the earlier code as you found it, even if you disagree with it.
+
+- Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
+  run.
+- Write the tests Phase 4 calls for and run the full suite with
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-05 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  until it passes.
+- Do not start a long-running server; the tests use TestClient.
+- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- When finished, reply with a brief summary: the files you created or
+  changed and the final test output.
+```
+
+## Review findings
+
+### Phase 1
+
+No defects found. `app.py`, `templates/base.html`, `templates/home.html`, and
+`tests/test_app.py` conform exactly to the roadmap: FastAPI instance, `/`
+route, base layout with Bootstrap 5 CDN CSS/JS, favicon link, navbar
+(Home/Invoices/Stats), `{% block content %}`, hero section with the exact
+tagline, `uvicorn.run("app:app", reload=True)` entrypoint, and a smoke test
+asserting 200 + tagline text.
+
+### Phase 2
+
+No defects found. `models.py` defines `Invoice`/`Payment` dataclasses with
+the specified fields/defaults, `STATUSES`, `ALLOWED_TRANSITIONS`, in-memory
+lists, and the four required helpers. Seed data (5 invoices, ids 1–5,
+covering all three statuses; 5 payments across invoices 1, 2, 4) satisfies
+the roadmap's consistency rules: invoice 1 (`paid`, amount 1200.00) has
+payments summing to exactly 1200.00 (`models.py:98-109`), and no payments
+exist on the two `draft` invoices (3, 5). `GET /invoices` (`app.py:29-37`)
+and `GET /invoices/{invoice_id}` (`app.py:40-56`) implement the filter/400
+and detail/404 behavior correctly. `templates/invoices.html` and
+`templates/invoice_detail.html` match the required content, badge colors,
+and formatting.
+
+### Phase 3
+
+**Critical/functional — route-shadowing bug, `GET /invoices/new` unreachable.**
+`app.py:40` registers `GET /invoices/{invoice_id}` before `app.py:59`
+registers `GET /invoices/new`. Starlette/FastAPI matches routes in
+registration order, so a request to `/invoices/new` is captured by the
+`{invoice_id}` path route first, `invoice_id` fails int coercion, and the
+server returns `422 Unprocessable Entity` (an int-parsing validation error)
+instead of the empty invoice-creation form the roadmap requires
+(`GET /invoices/new route returning the empty form`). Confirmed directly:
+
+```
+$ python -c "... c.get('/invoices/new') ..."
+422
+{"detail":[{"type":"int_parsing","loc":["path","invoice_id"],...,"input":"new"}]}
+```
+
+This is the same defect the held-out acceptance suite caught
+(`test_new_invoice_form FAILED — assert 422 == 200`). The sub-agent's own
+test suite never exercises `GET /invoices/new` directly (only the "New
+invoice" link's `href` and the `POST /invoices` success/failure paths are
+tested), so the bug went undetected by the sub-agent's own 17-test run.
+The "New invoice" link on `templates/invoices.html:6` also points at this
+broken route, so the primary UI path to invoice creation is broken in a
+real server.
+
+No other defects found. Validation logic (`math.isfinite` finite/positive
+checks on `amount`, `.strip()` on `client`/`description`, 422 with
+preserved input on failure, 303 redirect on success), the payment route's
+404/400/422/303 behavior, the lifecycle transition route's 404/400/303 and
+`sent → paid` payment-coverage gate, and all templates otherwise match the
+roadmap exactly.
+
+### Phase 4
+
+No defects found. `GET /stats` (`app.py:155-170`) and
+`templates/stats.html` compute and render per-status counts (including
+zero counts), `Total invoiced`, `Total collected`, and `Outstanding` lines
+exactly as specified. `GET /api/invoices` (`app.py:173-186`) returns the
+seven required fields per invoice, `created_at` via `.isoformat()`, sorted
+by `id` ascending. Tests cover both routes correctly.
+
+## Verification
+
+### 1. Implementation's own tests — PASS
+
+`cd .../s2-05 && .venv/bin/python -m pytest tests/ -v`
+
+```
+19 passed, 9 warnings in 0.15s
+```
+
+All 19 tests pass. The 9 warnings are a pre-existing `asyncio.iscoroutinefunction`
+`DeprecationWarning` from FastAPI's internals on Python 3.14, unrelated to
+the implementation.
+
+### 2. Held-out acceptance suite — FAIL (1 of 32)
+
+`APP_DIR=.../s2-05 .venv/bin/pytest acceptance/tier3/test_spec.py -v`
+
+```
+31 passed, 1 failed, 9 warnings in 0.17s
+
+FAILED acceptance/tier3/test_spec.py::test_new_invoice_form - assert 422 == 200
+```
+
+The single failure is the route-shadowing bug recorded above under Phase 3
+(`GET /invoices/new` returns 422 instead of 200 because it is shadowed by
+the earlier-registered `GET /invoices/{invoice_id}` route). All other 31
+acceptance tests pass, including the full lifecycle, money-math, validation,
+stats, and API checks.
+
+### 3. Smoke script — PASS
+
+`scripts/smoke_tier3.sh .../s2-05 8705`
+
+```
+ok    GET / (200, tagline)
+ok    GET /invoices (200, heading)
+ok    GET /invoices?status=draft (200)
+ok    GET /invoices?status=bogus (400)
+ok    GET /invoices/999999 (404)
+ok    POST /invoices (303 to detail)
+ok    new invoice detail shows client
+ok    payment on draft invoice (400)
+ok    draft -> sent (303)
+ok    payment on sent invoice (303)
+ok    payment visible on detail
+ok    sent -> paid (303)
+ok    GET /stats (200)
+ok    GET /api/invoices (200, paid_total field)
+SMOKE PASS
+```
+
+The smoke script never issues a `GET /invoices/new` request, so it does not
+exercise the route-shadowing bug and passes cleanly.
+
+## Cost stats (added post-run from session transcripts)
+
+Pricing basis: standard per-MTok rates (Sonnet 5 $3 in / $15 out; Opus 5 $5 / $25;
+Haiku 4.5 $1 / $5); cache write billed at 1.25x input rate, cache read at 0.1x.
+Sonnet 5 has intro pricing ($2 / $10) through 2026-08-31; standard rates are used
+here for long-run comparability.
+
+| Role | Model | Turns | Tool calls | Fresh in | Cache write | Cache read | Output | Est. $ |
+|---|---|---|---|---|---|---|---|---|
+| Main agent | claude-sonnet-5 | 66 | 40 | 132 | 132,091 | 2,859,292 | 15,533 | $1.587 |
+| Sub-agent session 1 | claude-sonnet-5 | 16 | 11 | 32 | 32,705 | 435,938 | 4,395 | $0.319 |
+| Sub-agent session 2 | claude-sonnet-5 | 25 | 16 | 50 | 68,984 | 735,730 | 15,066 | $0.706 |
+| Sub-agent session 3 | claude-sonnet-5 | 31 | 20 | 62 | 104,049 | 1,094,847 | 30,632 | $1.178 |
+| Sub-agent session 4 | claude-sonnet-5 | 23 | 15 | 46 | 70,388 | 726,785 | 8,565 | $0.611 |
+| **Total** | | | | | | | | **$4.400** |
+
+Wall-clock (main-agent session span): 457s
+
+## Source transcripts
+
+- Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b5fd4a3a-a70/agent-a3c23c5ec347eaf0e.jsonl`
+- Sub-agent session 1: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-05/d91ad512-f066-4622-bc41-c0ad5c338985.jsonl`
+- Sub-agent session 2: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-05/eb04a959-545e-48a5-983e-f3fd20897194.jsonl`
+- Sub-agent session 3: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-05/8c6b3f76-88f0-4baa-b103-1b05b3534062.jsonl`
+- Sub-agent session 4: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench-worktrees-s2-05/ace291cf-cb5e-49cd-b9a8-d966f4b3e499.jsonl`
