@@ -179,6 +179,20 @@
     overflow-x: auto; border: 1.5px solid var(--rule); border-radius: 14px;
     background: var(--card); box-shadow: var(--shadow); margin: 22px 0 8px;
   }
+  .tablewrap.tall { max-height: 78vh; overflow: auto; }
+  .tablewrap.tall th {
+    position: sticky; top: 0; background: var(--card); z-index: 2;
+    border-bottom: none; box-shadow: 0 2.5px 0 var(--ink);
+  }
+  tr.group td {
+    font-family: "Outfit", sans-serif; font-weight: 700; font-size: 13px;
+    text-transform: uppercase; letter-spacing: .07em;
+    color: var(--accent-dark); background: var(--accent-wash);
+    padding: 9px 14px;
+  }
+  .badge.rep { background: var(--inset); color: var(--ink-2); }
+  .noapp { color: var(--ink-3); }
+  .dcrit { color: var(--bug); font-weight: 700; }
   table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
   th {
     font-family: "Outfit", sans-serif; font-size: 12.5px; font-weight: 700;
@@ -303,52 +317,55 @@
 
 <section id="grid">
   <h2><span class="step">3</span>The full orchestrator &times; executor grid</h2>
-  <p>All 36 graded runs, every configuration tested. Each row links to the run's verbatim <strong>record</strong> — the exact prompts it used, the review findings, the verification output, the cost table, and the blind-graded scorecard. Where a run's built app was archived, <strong>app</strong> opens a full-page screenshot of <em>that run's</em> actual output; earlier runs' anonymized grading copies expired before archiving, marked "—". (Scores marked /31 or /24 predate the spec amendment that added the non-finite-amount tests.)</p>
+  <p>All 36 graded runs, every configuration tested. Each row links to the run's verbatim <strong>record</strong> — the exact prompts it used, the review findings, the verification output, the cost table, and the blind-graded scorecard. Where a run's built app was archived, <strong>app</strong> opens a full-page screenshot of <em>that run's</em> actual output; earlier runs' anonymized grading copies expired before archiving. <strong>Defects</strong> reads critical · conformance · minor from the blind grade — the column that separates equal-looking scores. Scores of /31 or /24 predate the spec amendment that added the non-finite-amount tests; $ on Codex rows covers the orchestrator only (subscription auth reports no sub-agent price).</p>
 
-  <div class="tablewrap">
+  <div class="tablewrap tall">
     <table>
-      <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th>App</th><th class="n">Score</th><th>Links</th></tr></thead>
+      <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th class="n">Score</th><th class="n">Defects</th><th class="n">Est. $</th><th>Record &middot; App</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">15/16</td><td><a href="runs/cc_sonnet-5_sonnet-5.html">record</a> · —</td></tr>
-        <tr><td>2</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_sonnet-5x2.html">record</a> · —</td></tr>
-        <tr><td>3</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase, replicate)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_sonnet-5x2_rep2.html">record</a> · —</td></tr>
-        <tr><td>4</td><td>Sonnet 5</td><td>Haiku 4.5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_haiku-4.5x2.html">record</a> · —</td></tr>
-        <tr><td>5</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td>SpendLog</td><td class="n">15/16</td><td><a href="runs/cc_sonnet-5_haiku-4.5.html">record</a> · —</td></tr>
-        <tr><td>6</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5.html">record</a> · —</td></tr>
-        <tr><td>7</td><td>Sonnet 5</td><td>Opus 5 (single, replicate)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5_rep2.html">record</a> · —</td></tr>
-        <tr><td>8</td><td>Sonnet 5</td><td>Opus 5 ×2 (per-phase)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_opus-5x2.html">record</a> · —</td></tr>
-        <tr><td>9</td><td>Haiku 4.5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_haiku-4.5_sonnet-5.html">record</a> · —</td></tr>
-        <tr><td>10</td><td>Opus 5</td><td>Sonnet 5 (single)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_opus-5_sonnet-5.html">record</a> · —</td></tr>
-        <tr><td>11</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex.html">record</a> · —</td></tr>
-        <tr><td>12</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_sonnet-5_codex-low.png">app</a></td></tr>
-        <tr><td>13</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>SpendLog</td><td class="n">16/16</td><td><a href="runs/cc_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_sonnet-5_codex-high.png">app</a></td></tr>
-        <tr><td>14</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_sonnet-5_opus-5.html">record</a> · —</td></tr>
-        <tr><td>15</td><td>Sonnet 5</td><td>Sonnet 5 ×3 (per-phase)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_sonnet-5_sonnet-5x3.html">record</a> · —</td></tr>
-        <tr><td>16</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5.html">record</a> · —</td></tr>
-        <tr><td>17</td><td>Haiku 4.5</td><td>Opus 5 (single, replicate)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5_rep2.html">record</a> · —</td></tr>
-        <tr><td>18</td><td>Haiku 4.5</td><td>Sonnet 5 ×3 (per-phase)</td><td>ExpenseHub</td><td class="n">24/24</td><td><a href="runs/cc_tier2_haiku-4.5_sonnet-5x3.html">record</a> · —</td></tr>
-        <tr><td>19</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_sonnet-5_codex.html">record</a> · —</td></tr>
-        <tr><td>20</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>ExpenseHub</td><td class="n">24/25</td><td><a href="runs/cc_tier2_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_tier2_sonnet-5_codex-low.png">app</a></td></tr>
-        <tr><td>21</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>ExpenseHub</td><td class="n">25/25</td><td><a href="runs/cc_tier2_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_tier2_sonnet-5_codex-high.png">app</a></td></tr>
-        <tr><td>22</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_sonnet-5_opus-5.html">record</a> · —</td></tr>
-        <tr><td>23</td><td>Sonnet 5</td><td>Opus 5 (single, replicate)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_sonnet-5_opus-5_rep2.html">record</a> · —</td></tr>
-        <tr><td>24</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">30/31</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4.html">record</a> · —</td></tr>
-        <tr><td>25</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase, replicate)</td><td>InvoiceDesk</td><td class="n">30/31</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4_rep2.html">record</a> · —</td></tr>
-        <tr><td>26</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td>InvoiceDesk</td><td class="n">31/31</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5.html">record</a> · —</td></tr>
-        <tr><td>27</td><td>Haiku 4.5</td><td>Opus 5 (single, replicate)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5_rep2.html">record</a> · —</td></tr>
-        <tr><td>28</td><td>Haiku 4.5</td><td>Sonnet 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">29/31</td><td><a href="runs/cc_tier3_haiku-4.5_sonnet-5x4.html">record</a> · —</td></tr>
-        <tr><td>29</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_sonnet-5.png">app</a></td></tr>
-        <tr><td>30</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_haiku-4.5.png">app</a></td></tr>
-        <tr><td>31</td><td>Sonnet 5</td><td>Opus 5 ×4 (per-phase)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_opus-5x4.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_opus-5x4.png">app</a></td></tr>
-        <tr><td>32</td><td>Haiku 4.5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_haiku-4.5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_haiku-4.5_haiku-4.5.png">app</a></td></tr>
-        <tr><td>33</td><td>Opus 5</td><td>Haiku 4.5 (single)</td><td>InvoiceDesk</td><td class="n">31/32</td><td><a href="runs/cc_tier3_opus-5_haiku-4.5.html">record</a> · <a href="demos/apps/cc_tier3_opus-5_haiku-4.5.png">app</a></td></tr>
-        <tr><td>34</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex.html">record</a> · —</td></tr>
-        <tr><td>35</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex-low.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_codex-low.png">app</a></td></tr>
-        <tr><td>36</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td>InvoiceDesk</td><td class="n">32/32</td><td><a href="runs/cc_tier3_sonnet-5_codex-high.html">record</a> · <a href="demos/apps/cc_tier3_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr class="group"><td colspan="7">SpendLog &mdash; tier 1 &middot; 16 held-out tests</td></tr>
+        <tr><td>1</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td class="n">15/16</td><td class="n"><span class="dcrit">1</span>&middot;1&middot;1</td><td class="n">$1.00</td><td><a href="runs/cc_sonnet-5_sonnet-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>2</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.79</td><td><a href="runs/cc_sonnet-5_sonnet-5x2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>3</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase) <span class="badge rep">replicate</span></td><td class="n">16/16</td><td class="n">0&middot;1&middot;0</td><td class="n">$1.52</td><td><a href="runs/cc_sonnet-5_sonnet-5x2_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>4</td><td>Sonnet 5</td><td>Haiku 4.5 ×2 (per-phase)</td><td class="n">16/16</td><td class="n">0&middot;2&middot;1</td><td class="n">$1.30</td><td><a href="runs/cc_sonnet-5_haiku-4.5x2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>5</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td class="n">15/16</td><td class="n">0&middot;1&middot;2</td><td class="n">$1.02</td><td><a href="runs/cc_sonnet-5_haiku-4.5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>6</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.41</td><td><a href="runs/cc_sonnet-5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>7</td><td>Sonnet 5</td><td>Opus 5 (single) <span class="badge rep">replicate</span></td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.76</td><td><a href="runs/cc_sonnet-5_opus-5_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>8</td><td>Sonnet 5</td><td>Opus 5 ×2 (per-phase)</td><td class="n">16/16</td><td class="n">0&middot;1&middot;0</td><td class="n">$2.06</td><td><a href="runs/cc_sonnet-5_opus-5x2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>9</td><td>Haiku 4.5</td><td>Sonnet 5 (single)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.66</td><td><a href="runs/cc_haiku-4.5_sonnet-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>10</td><td>Opus 5</td><td>Sonnet 5 (single)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.63</td><td><a href="runs/cc_opus-5_sonnet-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>11</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;1</td><td class="n">$0.73*</td><td><a href="runs/cc_sonnet-5_codex.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>12</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.87*</td><td><a href="runs/cc_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/cc_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>13</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.85*</td><td><a href="runs/cc_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/cc_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr class="group"><td colspan="7">ExpenseHub &mdash; tier 2 &middot; 24-25 held-out tests</td></tr>
+        <tr><td>14</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$2.17</td><td><a href="runs/cc_tier2_sonnet-5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>15</td><td>Sonnet 5</td><td>Sonnet 5 ×3 (per-phase)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$3.27</td><td><a href="runs/cc_tier2_sonnet-5_sonnet-5x3.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>16</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.21</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>17</td><td>Haiku 4.5</td><td>Opus 5 (single) <span class="badge rep">replicate</span></td><td class="n">25/25</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.61</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>18</td><td>Haiku 4.5</td><td>Sonnet 5 ×3 (per-phase)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$2.26</td><td><a href="runs/cc_tier2_haiku-4.5_sonnet-5x3.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>19</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td class="n">25/25</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.12*</td><td><a href="runs/cc_tier2_sonnet-5_codex.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>20</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">24/25</td><td class="n"><span class="dcrit">1</span>&middot;1&middot;1</td><td class="n">$0.63*</td><td><a href="runs/cc_tier2_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/cc_tier2_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>21</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">25/25</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.18*</td><td><a href="runs/cc_tier2_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/cc_tier2_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr class="group"><td colspan="7">InvoiceDesk &mdash; tier 3 &middot; 31-32 held-out tests</td></tr>
+        <tr><td>22</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td class="n">31/31</td><td class="n">0&middot;0&middot;1</td><td class="n">$3.24</td><td><a href="runs/cc_tier3_sonnet-5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>23</td><td>Sonnet 5</td><td>Opus 5 (single) <span class="badge rep">replicate</span></td><td class="n">31/31</td><td class="n">0&middot;0&middot;1</td><td class="n">$3.41</td><td><a href="runs/cc_tier3_sonnet-5_opus-5_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>24</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase)</td><td class="n">30/31</td><td class="n"><span class="dcrit">1</span>&middot;0&middot;0</td><td class="n">$5.01</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>25</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase) <span class="badge rep">replicate</span></td><td class="n">30/31</td><td class="n"><span class="dcrit">1</span>&middot;0&middot;4</td><td class="n">$5.15</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>26</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td class="n">31/31</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.85</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>27</td><td>Haiku 4.5</td><td>Opus 5 (single) <span class="badge rep">replicate</span></td><td class="n">32/32</td><td class="n">0&middot;0&middot;1</td><td class="n">$2.44</td><td><a href="runs/cc_tier3_haiku-4.5_opus-5_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>28</td><td>Haiku 4.5</td><td>Sonnet 5 ×4 (per-phase)</td><td class="n">29/31</td><td class="n"><span class="dcrit">3</span>&middot;0&middot;4</td><td class="n">$3.70</td><td><a href="runs/cc_tier3_haiku-4.5_sonnet-5x4.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>29</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td class="n">32/32</td><td class="n">0&middot;1&middot;3</td><td class="n">$2.13</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5.html">record</a> &middot; <a href="demos/apps/cc_tier3_sonnet-5_sonnet-5.png">app</a></td></tr>
+        <tr><td>30</td><td>Sonnet 5</td><td>Haiku 4.5 (single)</td><td class="n">32/32</td><td class="n">0&middot;3&middot;5</td><td class="n">$1.88</td><td><a href="runs/cc_tier3_sonnet-5_haiku-4.5.html">record</a> &middot; <a href="demos/apps/cc_tier3_sonnet-5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>31</td><td>Sonnet 5</td><td>Opus 5 ×4 (per-phase)</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$5.99</td><td><a href="runs/cc_tier3_sonnet-5_opus-5x4.html">record</a> &middot; <a href="demos/apps/cc_tier3_sonnet-5_opus-5x4.png">app</a></td></tr>
+        <tr><td>32</td><td>Haiku 4.5</td><td>Haiku 4.5 (single)</td><td class="n">32/32</td><td class="n">0&middot;3&middot;6</td><td class="n">$0.73</td><td><a href="runs/cc_tier3_haiku-4.5_haiku-4.5.html">record</a> &middot; <a href="demos/apps/cc_tier3_haiku-4.5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>33</td><td>Opus 5</td><td>Haiku 4.5 (single)</td><td class="n">31/32</td><td class="n"><span class="dcrit">1</span>&middot;2&middot;2</td><td class="n">$4.16</td><td><a href="runs/cc_tier3_opus-5_haiku-4.5.html">record</a> &middot; <a href="demos/apps/cc_tier3_opus-5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>34</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td class="n">32/32</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.39*</td><td><a href="runs/cc_tier3_sonnet-5_codex.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
+        <tr><td>35</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">32/32</td><td class="n">0&middot;3&middot;1</td><td class="n">$0.99*</td><td><a href="runs/cc_tier3_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/cc_tier3_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>36</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.17*</td><td><a href="runs/cc_tier3_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/cc_tier3_sonnet-5_codex-high.png">app</a></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="foot">Score alone doesn't tell the whole story — the blind-graded defect counts in each record do. Run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own.</p>
+  <p class="foot">Defects = critical &middot; conformance &middot; minor, from the blind grade. Score alone doesn't tell the whole story: run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own &mdash; and runs 2 and 4 share a 16/16 that hides a 0&middot;0&middot;0 vs a 0&middot;2&middot;1.</p>
 </section>
 
 <section id="traps">
