@@ -117,3 +117,24 @@ Note: Sub-agent is OpenAI Codex CLI (gpt-5.6-sol, reasoning effort high): no Ant
 ## Source transcripts
 
 - Main agent: `/Users/chiefbuilder/.claude/projects/-Users-chiefbuilder-Documents-Projects-cloud-to-local-course-cc-combo-bench/1cd203d2-4e3b-44ad-94a1-90213d51bbbf/subagents/workflows/wf_b5fd4a3a-a70/agent-a1e72e56511320e86.jsonl`
+
+
+## Quality scorecard (uniform blind grading pass)
+
+Graded in a shuffled anonymized batch of 12 (key: scratchpad/grading-key-s2.txt)
+by three parallel graders (trees A-D / E-H / I-L), all scripted checks re-run
+on the anonymized copies. Standing rubric rulings applied uniformly (see
+PLAN.md and prior scorecards).
+
+Graded as treeE (port 8905).
+
+| Metric | Result |
+|---|---|
+| Acceptance tests passing | 25/25 |
+| Own tests passing | 11/11 |
+| Critical/functional | 0 |
+| Spec-conformance | 0 |
+| Minor/style | 2 |
+| Smoke | pass |
+
+Minors: un-URL-encoded category links ×2 — notably, Season 1's Codex-high t2 draw was the only tree ever to URL-encode them; this draw did not. That behavior is draw variance, not a stable model trait.

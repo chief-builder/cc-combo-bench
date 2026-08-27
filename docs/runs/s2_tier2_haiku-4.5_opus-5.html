@@ -1,4 +1,42 @@
-# Tier 2 ExpenseHub Implementation - Haiku 4.5 (Main) + Opus 5 (Sub-agent)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s2_tier2_haiku-4.5_opus-5 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>s2_tier2_haiku-4.5_opus-5</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># Tier 2 ExpenseHub Implementation - Haiku 4.5 (Main) + Opus 5 (Sub-agent)
 
 ## Prompts used
 
@@ -13,10 +51,10 @@ suggestions.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests the roadmap calls for and run them with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-01 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-01 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until they pass.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created and the
   final test output.
 ```
@@ -29,10 +67,10 @@ suggestions.
 - All routes, templates, and helpers present and functional
 - Data model (Expense dataclass) matches spec perfectly
 - Seed data includes all required categories (food, transport, software)
-- Form validation logic correct: checks non-empty, finite numbers > 0, preserves raw input on error
+- Form validation logic correct: checks non-empty, finite numbers &gt; 0, preserves raw input on error
 - Sorting (newest-first by spent_at) correct
 - Amount formatting ($X.XX) consistent throughout
-- Category filtering implemented with "Show all" link and heading change
+- Category filtering implemented with &quot;Show all&quot; link and heading change
 - Bootstrap integration complete (CSS/JS CDN links, favicon, classes)
 - 303 redirect on successful POST/expenses
 - 404 on unknown expense detail page
@@ -40,7 +78,7 @@ suggestions.
 
 ## Verification
 
-### Implementation's own tests
+### Implementation&#x27;s own tests
 ```
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.7, pytest-8.3.4, pluggy-1.6.0
@@ -161,3 +199,7 @@ Graded as treeH (port 8908).
 | Smoke | pass |
 
 Minors: templates/expenses.html:32 + expense_detail.html:12 — un-URL-encoded category links (the recurring cross-run minor). All else to the letter: default_factory, optional notes, isfinite, correct route order, every roadmap-listed test behavior directly asserted.
+</pre>
+</div>
+</body>
+</html>

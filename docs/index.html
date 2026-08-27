@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Great AI Build-Off</title>
-<meta name="description" content="We made teams of AI coding agents build the same three apps 36 times, graded them against held-out test suites, and wrote down what we learned.">
+<meta name="description" content="We made teams of AI coding agents build the same three apps 48 times, graded them against held-out test suites, and wrote down what we learned.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -254,12 +254,12 @@
 
 <header>
   <h1>The Great <span class="hl">AI Build-Off</span></h1>
-  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 36 times, then graded every attempt against held-out test suites and kept the receipts. Here's how it worked and what it taught us.</p>
+  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 48 times, then graded every attempt against held-out test suites and kept the receipts. Here's how it worked and what it taught us.</p>
   <div class="statline">
-    <div class="stat"><span class="num">36</span><span class="lbl">graded runs</span></div>
+    <div class="stat"><span class="num">48</span><span class="lbl">graded runs</span></div>
     <div class="stat"><span class="num">3</span><span class="lbl">apps, easy → hard</span></div>
     <div class="stat"><span class="num">73</span><span class="lbl">held-out tests</span></div>
-    <div class="stat"><span class="num">~$74</span><span class="lbl">total token cost</span></div>
+    <div class="stat"><span class="num">~$102</span><span class="lbl">total token cost</span></div>
   </div>
 </header>
 
@@ -380,6 +380,29 @@
     </table>
   </div>
   <p class="foot">Defects = critical &middot; conformance &middot; minor, from the blind grade. Score alone doesn't tell the whole story: run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own &mdash; and runs 2 and 4 share a 16/16 that hides a 0&middot;0&middot;0 vs a 0&middot;2&middot;1.</p>
+
+  <h3 id="season2">Season 2 — the confirmatory rerun</h3>
+  <p>The 36 runs above were <em>exploratory</em>: the spec was amended mid-campaign, three instrument bugs were found and fixed along the way, and app archiving started late. So we re-ran the 12 decision-relevant cells under frozen clean conditions — final specs and suites, nothing changing mid-flight, every app archived from run one. That's the difference between finding a result and confirming it.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th class="n">Tier</th><th class="n">Score</th><th class="n">Defects</th><th class="n">Est. $</th><th>Record &middot; App</th></tr></thead>
+      <tbody>
+        <tr><td>S2-1</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td class="n">T2</td><td class="n">25/25</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.20</td><td><a href="runs/s2_tier2_haiku-4.5_opus-5.html">record</a> &middot; <a href="demos/apps/s2_tier2_haiku-4.5_opus-5.png">app</a></td></tr>
+        <tr><td>S2-2</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$2.04</td><td><a href="runs/s2_tier3_haiku-4.5_opus-5.html">record</a> &middot; <a href="demos/apps/s2_tier3_haiku-4.5_opus-5.png">app</a></td></tr>
+        <tr><td>S2-3</td><td>Haiku 4.5</td><td>Opus 5 (single, draw b)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$2.18</td><td><a href="runs/s2_tier3_haiku-4.5_opus-5_rep2.html">record</a> &middot; <a href="demos/apps/s2_tier3_haiku-4.5_opus-5_rep2.png">app</a></td></tr>
+        <tr><td>S2-4</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;3</td><td class="n">$2.38</td><td><a href="runs/s2_tier3_sonnet-5_sonnet-5.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_sonnet-5.png">app</a></td></tr>
+        <tr><td>S2-5</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase)</td><td class="n">T3</td><td class="n">31/32</td><td class="n"><span class="dcrit">1</span>&middot;0&middot;0</td><td class="n">$4.40</td><td><a href="runs/s2_tier3_sonnet-5_sonnet-5x4.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_sonnet-5x4.png">app</a></td></tr>
+        <tr><td>S2-6</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase, draw b)</td><td class="n">T3</td><td class="n">31/32</td><td class="n"><span class="dcrit">1</span>&middot;0&middot;2</td><td class="n">$4.98</td><td><a href="runs/s2_tier3_sonnet-5_sonnet-5x4_rep2.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_sonnet-5x4_rep2.png">app</a></td></tr>
+        <tr><td>S2-7</td><td>Sonnet 5</td><td>Opus 5 ×4 (per-phase)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$5.86</td><td><a href="runs/s2_tier3_sonnet-5_opus-5x4.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_opus-5x4.png">app</a></td></tr>
+        <tr><td>S2-8</td><td>Haiku 4.5</td><td>Haiku 4.5 (single)</td><td class="n">T3</td><td class="n">32/32</td><td class="n"><span class="dcrit">2</span>&middot;2&middot;4</td><td class="n">$1.14</td><td><a href="runs/s2_tier3_haiku-4.5_haiku-4.5.html">record</a> &middot; <a href="demos/apps/s2_tier3_haiku-4.5_haiku-4.5.png">app</a></td></tr>
+        <tr><td>S2-9</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.54*</td><td><a href="runs/s2_tier3_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_codex-low.png">app</a></td></tr>
+        <tr><td>S2-10</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">T3</td><td class="n">32/32</td><td class="n">0&middot;0&middot;1</td><td class="n">$1.17*</td><td><a href="runs/s2_tier3_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/s2_tier3_sonnet-5_codex-high.png">app</a></td></tr>
+        <tr><td>S2-11</td><td>Haiku 4.5</td><td>Sonnet 5 (single)</td><td class="n">T1</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.61</td><td><a href="runs/s2_haiku-4.5_sonnet-5.html">record</a> &middot; <a href="demos/apps/s2_haiku-4.5_sonnet-5.png">app</a></td></tr>
+        <tr><td>S2-12</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">T2</td><td class="n">25/25</td><td class="n">0&middot;0&middot;2</td><td class="n">$0.88*</td><td><a href="runs/s2_tier2_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/s2_tier2_sonnet-5_codex-high.png">app</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="foot">Every Season 2 row has an app link. The confirmations: Haiku&#8202;&rarr;&#8202;Opus clean in all three draws (n=4 clean at tier 3 across seasons); the Sonnet relay's route bug recurred in <strong>both</strong> fresh draws (5-for-5 lifetime), while the Opus relay swept clean again. The revision: the all-Haiku "budget anchor" shipped two criticals this draw — a crash after creating an invoice and an XSS hole — that <em>passed all 32 acceptance tests</em> and were caught only by the human-style close reading in blind grading. Cheap implementers are a lottery; scripted checks are necessary, not sufficient.</p>
 </section>
 
 <section id="traps">
@@ -511,7 +534,7 @@
 </section>
 
 <footer>
-  <p>Built from a real 36-run benchmark (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
+  <p>Built from a real 48-run benchmark (36 exploratory + 12 confirmatory) (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
 </footer>
 
 </div>

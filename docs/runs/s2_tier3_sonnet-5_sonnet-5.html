@@ -1,4 +1,42 @@
-# s2_tier3_sonnet-5_sonnet-5
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s2_tier3_sonnet-5_sonnet-5 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>s2_tier3_sonnet-5_sonnet-5</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># s2_tier3_sonnet-5_sonnet-5
 
 Tier 3 (InvoiceDesk), main agent: sonnet-5, sub-agent: sonnet-5.
 
@@ -17,10 +55,10 @@ suggestions.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests the roadmap calls for and run them with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-04 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-04 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until they pass.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created and the
   final test output.
 ```
@@ -45,8 +83,8 @@ test case.
 - None found. `models.py:23-24` reproduces `STATUSES` and
   `ALLOWED_TRANSITIONS` verbatim. Seed data (`app.py:26-97`) has 5
   invoices covering all three statuses and 4 payments spread across 3
-  invoices (2, 3, 5), satisfying "4-6 payments spread across at least 2
-  invoices"; both seed `paid` invoices (`id=3` sums to 800/800, `id=5`
+  invoices (2, 3, 5), satisfying &quot;4-6 payments spread across at least 2
+  invoices&quot;; both seed `paid` invoices (`id=3` sums to 800/800, `id=5`
   sums to 650/650) have payments summing to at least their amount, and
   payments exist only on `sent`/`paid` invoices (none on draft `id=1`).
   Exact required strings match: `Balance due: $X.XX`
@@ -57,9 +95,9 @@ test case.
 ### Minor / style
 
 - `templates/invoices.html:26` and `templates/invoice_detail.html:9,29` —
-  `created_at`/`paid_at` are rendered via Jinja's default `str(datetime)`
+  `created_at`/`paid_at` are rendered via Jinja&#x27;s default `str(datetime)`
   (e.g. `2024-01-05 00:00:00+00:00`) rather than a friendlier format.
-  The roadmap only says "formatted `created_at`" without specifying a
+  The roadmap only says &quot;formatted `created_at`&quot; without specifying a
   format, so this is not a violation, just a plain rendering choice.
 - `app.py:191-192` — the detail route always passes `form: None, errors:
   None` into the template context even on the happy-path `GET`; harmless,
@@ -68,10 +106,10 @@ test case.
 
 ## Verification
 
-### 1. Implementation's own tests — PASS
+### 1. Implementation&#x27;s own tests — PASS
 
 ```
-cd .../s2-04 && .venv/bin/python -m pytest tests/ -v
+cd .../s2-04 &amp;&amp; .venv/bin/python -m pytest tests/ -v
 ...
 20 passed, 9 warnings in 0.14s
 ```
@@ -98,10 +136,10 @@ ok    GET /invoices/999999 (404)
 ok    POST /invoices (303 to detail)
 ok    new invoice detail shows client
 ok    payment on draft invoice (400)
-ok    draft -> sent (303)
+ok    draft -&gt; sent (303)
 ok    payment on sent invoice (303)
 ok    payment visible on detail
-ok    sent -> paid (303)
+ok    sent -&gt; paid (303)
 ok    GET /stats (200)
 ok    GET /api/invoices (200, paid_total field)
 SMOKE PASS
@@ -146,4 +184,8 @@ Graded as treeG (port 8907).
 | Minor/style | 3 |
 | Smoke | pass |
 
-Minors: seed data built in app.py rather than models.py (worked in every check); raw str(datetime) rendering where the roadmap says 'formatted' (borderline, no explicit format mandated); one order-dependent test. App code fully conformant.
+Minors: seed data built in app.py rather than models.py (worked in every check); raw str(datetime) rendering where the roadmap says &#x27;formatted&#x27; (borderline, no explicit format mandated); one order-dependent test. App code fully conformant.
+</pre>
+</div>
+</body>
+</html>

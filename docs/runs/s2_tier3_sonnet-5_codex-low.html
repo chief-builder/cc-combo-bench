@@ -1,11 +1,49 @@
-# s2 · tier3-invoicedesk · sonnet-5 (orchestrator) + codex-low (sub-agent)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s2_tier3_sonnet-5_codex-low — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>s2_tier3_sonnet-5_codex-low</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># s2 · tier3-invoicedesk · sonnet-5 (orchestrator) + codex-low (sub-agent)
 
 ## Prompts used
 
 **Spawn command:**
 
 ```
-cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-09 && codex exec --full-auto --skip-git-repo-check -c 'model_reasoning_effort="low"' - < <temp-file>
+cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-09 &amp;&amp; codex exec --full-auto --skip-git-repo-check -c &#x27;model_reasoning_effort=&quot;low&quot;&#x27; - &lt; &lt;temp-file&gt;
 ```
 
 **Sub-agent prompt (verbatim, placeholders filled):**
@@ -21,10 +59,10 @@ suggestions.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests the roadmap calls for and run them with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-09 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-09 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until they pass.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created and the
   final test output.
 ```
@@ -43,12 +81,12 @@ against every bullet of `roadmap.md` phases 1–4:
   spec exactly, including positional construction order in the seed data
   and in `record_payment`.
 - Seed data (5 invoices across all three statuses, 5 payments across 3
-  invoices) satisfies the "paid seed invoice's payments sum to at least
-  its amount" and "payments exist only on sent/paid invoices" rules
-  (invoice 1's two payments sum exactly to its amount).
+  invoices) satisfies the &quot;paid seed invoice&#x27;s payments sum to at least
+  its amount&quot; and &quot;payments exist only on sent/paid invoices&quot; rules
+  (invoice 1&#x27;s two payments sum exactly to its amount).
 - All required error-detail strings (`Cannot record a payment on a
   {status} invoice`, `Cannot move invoice from {a} to {b}`, `Cannot mark
-  invoice paid: ${paid:.2f} of ${amount:.2f} paid`) match the spec's
+  invoice paid: ${paid:.2f} of ${amount:.2f} paid`) match the spec&#x27;s
   f-strings verbatim.
 - `math.isfinite` guards reject `nan`/`inf`/`-inf` for both invoice
   creation and payment amounts, per spec.
@@ -59,7 +97,7 @@ against every bullet of `roadmap.md` phases 1–4:
 - `/api/invoices` returns the seven required fields, ISO 8601
   `created_at`, sorted by `id` ascending.
 
-**Environmental anomaly (not a defect in the sub-agent's work):** before
+**Environmental anomaly (not a defect in the sub-agent&#x27;s work):** before
 the sub-agent ran any command of its own, its very first `git status
 --short` check (line ~188 of the transcript) already showed a large set
 of pre-existing repo files in the `s2-09` worktree as deleted from disk —
@@ -67,7 +105,7 @@ of pre-existing repo files in the `s2-09` worktree as deleted from disk —
 most of `results/`, and `scripts/new_worktree.sh` /
 `scripts/smoke_tier{1,2,3}.sh`. This predates any action taken in this
 session (the worktree was reported clean at session start) and the
-sub-agent's one attempt at an `rm -rf` (targeting only its own
+sub-agent&#x27;s one attempt at an `rm -rf` (targeting only its own
 `__pycache__`/`.pytest_cache` dirs) was rejected by its sandbox, so it
 did not cause the deletions either. It appears to be a side effect of a
 concurrent benchmark run sharing this worktree path/scratch directory.
@@ -81,7 +119,7 @@ started; nothing was killed.
 
 All three checks pass.
 
-**1. Implementation's own tests** — `tests/ -v`: **8 passed**, 9 warnings
+**1. Implementation&#x27;s own tests** — `tests/ -v`: **8 passed**, 9 warnings
 (FastAPI/Starlette `asyncio.iscoroutinefunction` deprecation warnings
 under Python 3.14, unrelated to app code).
 
@@ -116,10 +154,10 @@ ok    GET /invoices/999999 (404)
 ok    POST /invoices (303 to detail)
 ok    new invoice detail shows client
 ok    payment on draft invoice (400)
-ok    draft -> sent (303)
+ok    draft -&gt; sent (303)
 ok    payment on sent invoice (303)
 ok    payment visible on detail
-ok    sent -> paid (303)
+ok    sent -&gt; paid (303)
 ok    GET /stats (200)
 ok    GET /api/invoices (200, paid_total field)
 SMOKE PASS
@@ -181,4 +219,8 @@ Graded as treeI (port 8909).
 | Minor/style | 0 |
 | Smoke | pass |
 
-Fully clean — Season 1's low-effort stumbles (frozen clock at t2, weak tests at t3) did not recur in this draw: autouse restore fixture, direct 303 assertions, exact balance values. Draw variance at low effort cuts both ways.
+Fully clean — Season 1&#x27;s low-effort stumbles (frozen clock at t2, weak tests at t3) did not recur in this draw: autouse restore fixture, direct 303 assertions, exact balance values. Draw variance at low effort cuts both ways.
+</pre>
+</div>
+</body>
+</html>

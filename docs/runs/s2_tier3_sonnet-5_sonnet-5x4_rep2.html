@@ -1,4 +1,42 @@
-# s2_tier3_sonnet-5_sonnet-5x4_rep2
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s2_tier3_sonnet-5_sonnet-5x4_rep2 — run record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"JetBrains Mono", ui-monospace, monospace; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 40px 0 20px; border-bottom: 4px solid var(--ink); margin-bottom: 24px;
+    font-family:"Outfit", system-ui, sans-serif; }
+  .back { font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-size: clamp(20px,3.5vw,30px); font-weight:800; margin:0 0 6px; word-break: break-all; }
+  .sub { color: var(--ink-2); font-size: 14px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:13px; line-height:1.6; white-space: pre-wrap;
+    word-wrap: break-word; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>s2_tier3_sonnet-5_sonnet-5x4_rep2</h1>
+  <p class="sub">Verbatim run record: prompts used, review findings, verification output, cost stats, and the blind-graded scorecard.</p>
+</header>
+<pre># s2_tier3_sonnet-5_sonnet-5x4_rep2
 
 Main agent: Sonnet 5 (orchestrator/reviewer only). Sub-agents: Sonnet 5,
 one per phase, 4 phases (tier 3 — InvoiceDesk). Repetition 2.
@@ -20,10 +58,10 @@ not suggestions. Do not start any later phase.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests Phase 1 calls for and run them with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until they pass.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created and the
   final test output.
 ```
@@ -44,10 +82,10 @@ of the earlier code as you found it, even if you disagree with it.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests Phase 2 calls for and run the full suite with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until it passes.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created or
   changed and the final test output.
 ```
@@ -68,10 +106,10 @@ of the earlier code as you found it, even if you disagree with it.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests Phase 3 calls for and run the full suite with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until it passes.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created or
   changed and the final test output.
 ```
@@ -92,10 +130,10 @@ of the earlier code as you found it, even if you disagree with it.
 - Use the virtual environment at /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv for everything you
   run.
 - Write the tests Phase 4 calls for and run the full suite with
-  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+  `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
   until it passes.
 - Do not start a long-running server; the tests use TestClient.
-- Do not add features, files, or dependencies the roadmap doesn't ask for.
+- Do not add features, files, or dependencies the roadmap doesn&#x27;t ask for.
 - When finished, reply with a brief summary: the files you created or
   changed and the final test output.
 ```
@@ -106,8 +144,8 @@ of the earlier code as you found it, even if you disagree with it.
 
 No defects found. `app.py`, `templates/base.html`, `templates/home.html`
 match the roadmap exactly (doctype, viewport, favicon, Bootstrap 5 CDN
-CSS/JS, navbar with Home/Invoices/Stats, tagline "Bill it. Send it. Get
-paid.", `__main__` block with `uvicorn.run("app:app", reload=True)`).
+CSS/JS, navbar with Home/Invoices/Stats, tagline &quot;Bill it. Send it. Get
+paid.&quot;, `__main__` block with `uvicorn.run(&quot;app:app&quot;, reload=True)`).
 Smoke test present and passing.
 
 ### Phase 2 — Invoice Board + Detail Pages
@@ -117,7 +155,7 @@ No defects found. `models.py` — `Invoice`/`Payment` dataclasses with
 pattern), `STATUSES`, `ALLOWED_TRANSITIONS`, `get_invoice`,
 `payments_for`, `paid_total`, `new_invoice_id` all match spec. Seed
 data: 5 invoices covering all three statuses, 5 payments across 4
-invoices, every `paid` seed invoice's payments sum to ≥ its amount,
+invoices, every `paid` seed invoice&#x27;s payments sum to ≥ its amount,
 payments only on `sent`/`paid` invoices — all rules satisfied.
 `GET /invoices` (optional `status` filter, 400 on invalid status,
 newest-first sort) and `GET /invoices/{invoice_id}` (404 on unknown
@@ -127,34 +165,34 @@ line exactly as specified.
 
 ### Phase 3 — Create Invoices, Record Payments, Work the Lifecycle
 
-**Critical/functional defect** — `app.py:93` (`@app.get("/invoices/new")`)
-is registered *after* `app.py:42` (`@app.get("/invoices/{invoice_id}")`,
+**Critical/functional defect** — `app.py:93` (`@app.get(&quot;/invoices/new&quot;)`)
+is registered *after* `app.py:42` (`@app.get(&quot;/invoices/{invoice_id}&quot;)`,
 added in Phase 2, `invoice_id: int`). Starlette/FastAPI matches routes
 in registration order, so a `GET /invoices/new` request is first
 matched against `/invoices/{invoice_id}` and fails `int` conversion of
-the literal `"new"`, returning **422** instead of ever reaching the
-new-invoice-form handler. The roadmap-required "New invoice" button on
+the literal `&quot;new&quot;`, returning **422** instead of ever reaching the
+new-invoice-form handler. The roadmap-required &quot;New invoice&quot; button on
 the invoice board links to `/invoices/new`, so clicking it in a real
-browser hits a broken form page — the invoice-creation UI's entry
+browser hits a broken form page — the invoice-creation UI&#x27;s entry
 point is non-functional via GET. (`POST /invoices` at `app.py:98` still
 works correctly since there is no path collision on the POST verb, so
-invoice creation was reachable in this run's own tests only because
+invoice creation was reachable in this run&#x27;s own tests only because
 they never issued a `GET /invoices/new` request.) This is the same
-route-ordering footgun class the project's PLAN.md flags for tier 2's
-`/expenses/new`; the sub-agent's own test suite did not include a
+route-ordering footgun class the project&#x27;s PLAN.md flags for tier 2&#x27;s
+`/expenses/new`; the sub-agent&#x27;s own test suite did not include a
 `GET /invoices/new` test, so it never surfaced there — only the
 held-out acceptance suite caught it.
 
 Other than the above, all other Phase 3 work is correct: `POST
 /invoices` validation (`client`/`description` non-empty after
 `.strip()`, `amount` parsed via `float()` then checked with
-`math.isfinite` and `> 0`, 422 re-render with preserved raw input,
+`math.isfinite` and `&gt; 0`, 422 re-render with preserved raw input,
 303 redirect on success), `POST /invoices/{id}/payments` (404 on
-unknown invoice, 400 when not `"sent"`, same finite/positive
+unknown invoice, 400 when not `&quot;sent&quot;`, same finite/positive
 validation, 303 on success), lifecycle transition buttons driven by
 `ALLOWED_TRANSITIONS`, and `POST /invoices/{id}/status` (400 on
 disallowed transition, the `sent → paid` money-gate comparing
-`paid_total(id) >= amount` with the exact required error message,
+`paid_total(id) &gt;= amount` with the exact required error message,
 303 on success) all match the roadmap. All roadmap-listed Phase 3
 test cases are present and pass.
 
@@ -174,9 +212,9 @@ None noted beyond the critical item above.
 
 ## Verification
 
-### 1. Implementation's own tests
+### 1. Implementation&#x27;s own tests
 
-Command: `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 && /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
+Command: `cd /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench-worktrees/s2-06 &amp;&amp; /Users/chiefbuilder/Documents/Projects/cloud_to_local_course/cc-combo-bench/.venv/bin/python -m pytest tests/ -v`
 
 **Result: PASS — 21/21**
 
@@ -251,10 +289,10 @@ acceptance/tier3/test_spec.py::test_non_finite_amounts_rejected PASSED
 FAILURES:
 test_new_invoice_form:
     def test_new_invoice_form(client):
-        response = client.get("/invoices/new")
->       assert response.status_code == 200
+        response = client.get(&quot;/invoices/new&quot;)
+&gt;       assert response.status_code == 200
 E       assert 422 == 200
-E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+E        +  where 422 = &lt;Response [422 Unprocessable Entity]&gt;.status_code
 
 1 failed, 31 passed, 9 warnings in 0.17s
 ```
@@ -277,10 +315,10 @@ ok    GET /invoices/999999 (404)
 ok    POST /invoices (303 to detail)
 ok    new invoice detail shows client
 ok    payment on draft invoice (400)
-ok    draft -> sent (303)
+ok    draft -&gt; sent (303)
 ok    payment on sent invoice (303)
 ok    payment visible on detail
-ok    sent -> paid (303)
+ok    sent -&gt; paid (303)
 ok    GET /stats (200)
 ok    GET /api/invoices (200, paid_total field)
 SMOKE PASS
@@ -335,3 +373,7 @@ Graded as treeJ (port 8910).
 | Smoke | pass |
 
 Critical: app.py:42 vs app.py:93 — same route-ordering bug as every prior Sonnet-relay draw (5-for-5 lifetime). Minors: navbar collapse wrapper without a toggler; order-dependent tests. Everything else conformant, isfinite at both points.
+</pre>
+</div>
+</body>
+</html>

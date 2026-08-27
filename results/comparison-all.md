@@ -281,6 +281,57 @@ post-amendment (32-test suite, corrected per 5f069d8).
   corrected suite: 32/32. Cross-checked "failures" keep turning out
   to be the instrument — audit the suite before blaming the agent.
 
+## Season 2 — the confirmatory rerun (2026-08-27)
+
+12 cells under frozen clean conditions (post-amendment specs, corrected
+suites, archival from run one; files prefixed `s2_`). Zero harness
+anomalies; every app archived.
+
+| Run | Tier | Acceptance | Crit | Conf | Minor | Est. $ | Wall-clock |
+|---|---|---|---|---|---|---|---|
+| Haiku main + single Opus | 2 | 25/25 | 0 | **0** | 2 | $1.20 | 174s |
+| Haiku main + single Opus (a) | 3 | 32/32 | 0 | **0** | **0** | $2.04 | 292s |
+| Haiku main + single Opus (b) | 3 | 32/32 | 0 | **0** | **0** | $2.18 | 312s |
+| Sonnet main + single Sonnet | 3 | 32/32 | 0 | **0** | 3 | $2.38 | 285s |
+| Sonnet main + Sonnet ×4 (a) | 3 | **31/32** | **1** | 0 | 0 | $4.40 | 457s |
+| Sonnet main + Sonnet ×4 (b) | 3 | **31/32** | **1** | 0 | 2 | $4.98 | 467s |
+| Sonnet main + Opus ×4 | 3 | 32/32 | 0 | **0** | **0** | $5.86 | 444s |
+| Haiku main + single Haiku | 3 | 32/32 | **2** | 2 | 4 | $1.14 | 368s |
+| Sonnet main + Codex low | 3 | 32/32 | 0 | **0** | **0** | $1.54* | 384s |
+| Sonnet main + Codex high | 3 | 32/32 | 0 | **0** | 1 | $1.17* | 355s |
+| Haiku main + single Sonnet | 1 | 16/16 | 0 | **0** | **0** | $0.61 | 139s |
+| Sonnet main + Codex high | 2 | 25/25 | 0 | **0** | 2 | $0.88* | 284s |
+
+Confirmed under clean conditions:
+- **Haiku main + single Opus: clean in all three draws** (t2 + t3 ×2,
+  two of them 0/0/0) — the best-value recommendation now rests on n=4
+  clean tier-3 draws across seasons.
+- **The Sonnet-relay route trap is 5-for-5 lifetime** — both fresh
+  draws shipped the identical critical, invisible to own tests and
+  smoke, caught only by the held-out suite. The Opus relay swept clean
+  again (n=2 across seasons): the seam is real, and model strength
+  buys seam awareness, at ~2.5× the single-Opus price.
+- Single Sonnet, Haiku→Sonnet t1, and Codex high replicated their
+  Season 1 grades almost exactly.
+
+Revised by Season 2:
+- **The budget anchor comes with variance.** The Haiku+Haiku draw
+  shipped TWO criticals that passed all 32 acceptance tests: naive
+  `datetime.now()` on POST-created invoices (tz-aware seeds → board
+  sort TypeError → **GET /invoices returns 500 after any create**,
+  grader-verified live) and a hand-rolled `jinja2.Environment` without
+  autoescape (**stored XSS**, grader-verified). Season 1's draw was
+  app-clean with weak tests; this draw inverts that. Cheap
+  implementers are a lottery at the boss tier.
+- **Instrument blind spot discovered**: the acceptance suite never
+  re-fetches the board after a create, so a post-create 500 passes
+  32/32. Logged as a candidate suite amendment (would be the fourth
+  instrument fix; per precedent, denominators change if adopted).
+- Codex low was fully clean this draw — its Season 1 stumbles were
+  draw variance, not a stable effort signature; and Season 1's
+  URL-encoding by Codex high (the only tree ever to do it) did NOT
+  recur — also variance.
+
 ## Findings
 
 - **Two fully clean scorecards in the opening round** — per-phase
