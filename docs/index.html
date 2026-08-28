@@ -435,7 +435,7 @@
     <li><strong>Held-out acceptance suites.</strong> Each app has a secret pytest suite — 16, 25, and 32 tests — that implementers <em>never see</em>: the suites are stripped from every working copy before the run starts. Agent-written tests aren't comparable across runs; the held-out suite is the primary score.</li>
     <li><strong>Blind grading.</strong> A separate grader scores anonymized, shuffled copies of each implementation against a fixed rubric, re-running every scripted check itself. It can't tell which configuration produced which tree.</li>
     <li><strong>Receipts for everything.</strong> Costs are computed from the actual session transcripts at published per-token rates; every prompt, review finding, and test result is committed to a results file in git.</li>
-    <li><strong>Replicates.</strong> One good run is luck. Decision-relevant results were re-run before we ranked anything on them.</li>
+    <li><strong>Run it twice.</strong> One good run might just be luck. Before trusting any result that mattered, we ran the same configuration again and checked that it held up.</li>
   </ul>
 </section>
 
