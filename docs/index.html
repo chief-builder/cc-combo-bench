@@ -290,7 +290,7 @@
       <p>Receives the spec and builds the app. Sometimes one sub-agent implements everything (<em>single</em>); sometimes each roadmap phase gets a <em>fresh</em> sub-agent with no memory of the previous one (<em>per-phase</em>). <a href="harness.html#strategies">What single vs. per-phase means at the process level &rarr;</a></p>
     </div>
   </div>
-  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. The variables were: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5), which model implements, single vs. per-phase spawning, and — in the cross-provider rounds — Codex CLI (running gpt-5.6-sol) as the implementer with its <code>model_reasoning_effort</code> dial swept low/medium/high. Change one axis at a time, hold everything else fixed.</p>
+  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. Only four things ever varied between runs: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5); which model implements; whether one sub-agent builds everything or each phase gets its own (<em>single</em> vs. <em>per-phase</em>); and, in some runs, swapping the implementer for OpenAI's Codex (gpt-5.6-sol) — whose <code>model_reasoning_effort</code> dial we also tested at low, medium, and high. Change one thing at a time, hold everything else fixed.</p>
 </section>
 
 <section id="apps">
