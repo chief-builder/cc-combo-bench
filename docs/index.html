@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Great AI Build-Off</title>
-<meta name="description" content="We made teams of AI coding agents build the same three apps 48 times, graded every attempt with tests the agents never saw, and wrote down what we learned.">
+<meta name="description" content="I made teams of AI coding agents build the same three apps 48 times, graded every attempt with tests the agents never saw, and wrote down what it taught me.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -248,7 +248,7 @@
 
 <header>
   <h1>The Great <span class="hl">AI Build-Off</span></h1>
-  <p class="lede">We made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 48 times, then graded every attempt against tests the agents never saw — and kept the receipts. Here's how it worked and what it taught me.</p>
+  <p class="lede">I made teams of AI coding agents — Claude and Codex models in different manager/builder configurations — build the same three FastAPI apps, 48 times, then graded every attempt against tests the agents never saw — and kept the receipts. Here's how it worked and what it taught me.</p>
   <div class="statline">
     <div class="stat"><span class="num">48</span><span class="lbl">graded runs</span></div>
     <div class="stat"><span class="num">3</span><span class="lbl">apps, easy → hard</span></div>
@@ -283,7 +283,7 @@
       <p>Receives the spec and builds the app. Sometimes one sub-agent implements everything (<em>single</em>); sometimes each roadmap phase gets a <em>fresh</em> sub-agent with no memory of the previous one (<em>per-phase</em>). <a href="harness.html#strategies">What single vs. per-phase means at the process level &rarr;</a></p>
     </div>
   </div>
-  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. Only four things ever varied between runs: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5); which model implements; whether one sub-agent builds everything or each phase gets its own (<em>single</em> vs. <em>per-phase</em>); and, in some runs, swapping the implementer for OpenAI's Codex (gpt-5.6-sol) — whose <code>model_reasoning_effort</code> dial we also tested at low, medium, and high. Change one thing at a time, hold everything else fixed.</p>
+  <p>Every run got the <strong>exact same prompts, verbatim</strong> — they're version-controlled files, filled mechanically. Only four things ever varied between runs: which model orchestrates (Sonnet 5, Opus 5, or Haiku 4.5); which model implements; whether one sub-agent builds everything or each phase gets its own (<em>single</em> vs. <em>per-phase</em>); and, in some runs, swapping the implementer for OpenAI's Codex (gpt-5.6-sol) — whose <code>model_reasoning_effort</code> dial I also tested at low, medium, and high. Change one thing at a time, hold everything else fixed.</p>
 </section>
 
 <section id="apps">
@@ -322,7 +322,7 @@
     <div class="key"><b>record</b>Every run has one: the exact prompts it used, the review findings, the test output, the cost table, and the scorecard from anonymous grading.</div>
     <div class="key"><b>app</b>A full-page screenshot of <em>that run's</em> actual built app. Working copies are deleted after grading, and Season 1 only started archiving screenshots near its end — so its older rows say "no app". Every Season 2 run has one.</div>
     <div class="key"><b>replicate</b>The same configuration run again — fresh workspace, identical prompts — to check the result wasn't luck. Each pill names the run it repeats. Unmarked rows ran once: treat their exact numbers as one sample, not a law.</div>
-    <div class="key"><b>Two exam versions</b>Mid-campaign, after 9 of 10 runs let <code>NaN</code> past validation, we added a reject-<code>NaN</code> rule and matching tests to the tier-2/3 specs. Each run is graded against the exam that existed when it ran: /24 and /31 are before the change, /25 and /32 after. SpendLog's exam never changed.</div>
+    <div class="key"><b>Two exam versions</b>Mid-campaign, after 9 of 10 runs let <code>NaN</code> past validation, I added a reject-<code>NaN</code> rule and matching tests to the tier-2/3 specs. Each run is graded against the exam that existed when it ran: /24 and /31 are before the change, /25 and /32 after. SpendLog's exam never changed.</div>
   </div>
   <p class="foot">Defects count critical &middot; conformance &middot; minor problems found in grading (conformance = the spec's letter was broken but the app still works; minor = style only). $ on Codex rows covers the orchestrator only &mdash; subscription auth reports the sub-agent's tokens but no price.</p>
 
@@ -375,7 +375,7 @@
   <p class="foot">Defects = critical &middot; conformance &middot; minor, from the anonymous grading. Score alone doesn't tell the whole story: run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own &mdash; and runs 2 and 4 share a 16/16 that hides a 0&middot;0&middot;0 vs a 0&middot;2&middot;1.</p>
 
   <h3 id="season2">Season 2 — the clean rerun</h3>
-  <p>Season 1 came with mess: the spec changed mid-campaign, we found three bugs in our own test suites, and app archiving started late. So we re-ran the 12 configurations that mattered under frozen conditions — final specs, final exams, nothing changing mid-flight, every app archived. That's the difference between finding a result and confirming it.</p>
+  <p>Season 1 came with mess: the spec changed mid-campaign, I found three bugs in my own test suites, and app archiving started late. So I re-ran the 12 configurations that mattered under frozen conditions — final specs, final exams, nothing changing mid-flight, every app archived. That's the difference between finding a result and confirming it.</p>
   <div class="tablewrap">
     <table>
       <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th class="n">Tier</th><th class="n">Score</th><th class="n">Defects</th><th class="n">Est. $</th><th>Record &middot; App</th></tr></thead>
@@ -401,7 +401,7 @@
 
 <section id="traps">
   <h2><span class="step">4</span>The hidden traps</h2>
-  <p>Each app's spec hides a few innocent-looking, one-line requirements that conceal classic bugs. We call them <strong>canaries</strong> — tripwires that catch an agent skimming the spec instead of actually reading it. Three favorites:</p>
+  <p>Each app's spec hides a few innocent-looking, one-line requirements that conceal classic bugs. I call them <strong>canaries</strong> — tripwires that catch an agent skimming the spec instead of actually reading it. Three favorites:</p>
   <div class="traps">
     <div class="trap-card">
       <h3>🕰️ The frozen clock</h3>
@@ -428,7 +428,7 @@
     <li><strong>Secret tests.</strong> Each app has a hidden test suite — 16, 25, and 32 checks — that the builders never see; it's removed from their workspace before the run starts. Passing it is the official score, because you can't study for a test you've never seen.</li>
     <li><strong>Anonymous grading.</strong> A separate grader scores shuffled, unlabeled copies of the code, re-running every check itself. It can't tell which team built which app, so it can't play favorites.</li>
     <li><strong>Receipts for everything.</strong> Every run's cost comes from its actual usage logs, and every prompt, finding, and test result is saved in the repo. No "trust me."</li>
-    <li><strong>Run it twice.</strong> One good run might just be luck. Before trusting any result that mattered, we ran the same configuration again and checked that it held up.</li>
+    <li><strong>Run it twice.</strong> One good run might just be luck. Before trusting any result that mattered, I ran the same configuration again and checked that it held up.</li>
   </ul>
 </section>
 
@@ -453,7 +453,7 @@
   <div class="finding">
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
-    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then we added one sentence to the spec ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
+    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then I added one sentence to the spec ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
     <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. One precise sentence beat nine strong models' intuition. Writing the spec well is the highest-leverage work.</p>
   </div>
 
@@ -487,7 +487,7 @@
       </tbody>
     </table>
   </div>
-  <p class="foot">Score = the secret test suite; runs before the NaN rule faced its 31-test version. *Codex ran on a subscription that reports tokens but no dollar price — one honest gap in our receipts. †The all-Haiku cell is a lottery: its Season 1 app was fully correct (only its own tests were weak), while its Season 2 draw crashed after creating an invoice — yet passed every scripted check both times.</p>
+  <p class="foot">Score = the secret test suite; runs before the NaN rule faced its 31-test version. *Codex ran on a subscription that reports tokens but no dollar price — one honest gap in the receipts. †The all-Haiku cell is a lottery: its Season 1 app was fully correct (only its own tests were weak), while its Season 2 draw crashed after creating an invoice — yet passed every scripted check both times.</p>
 
   <div class="bigidea">
     <p>The most expensive configuration was also the one that shipped the broken app. In this experiment, <span class="hl">precise specs and secret tests</span> beat raw spending — every single time.</p>
