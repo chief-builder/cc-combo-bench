@@ -56,10 +56,10 @@
     background-size: 28px 28px;
     color: var(--ink);
     font-family: "Atkinson Hyperlegible", system-ui, sans-serif;
-    font-size: 17.5px;
+    font-size: clamp(17px, 15px + 0.25vw, 20px);
     line-height: 1.65;
   }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(22px, 5vw, 56px) 90px; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 0 clamp(22px, 4vw, 48px) 90px; }
   h1, h2, h3, .num { font-family: "Outfit", system-ui, sans-serif; }
   code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
   p { max-width: 74ch; margin: 0 0 16px; }
@@ -87,7 +87,7 @@
     text-wrap: balance;
   }
   h1 .hl { color: var(--accent); }
-  .lede { font-size: 21px; color: var(--ink-2); max-width: 64ch; }
+  .lede { font-size: clamp(21px, 18px + 0.3vw, 24px); color: var(--ink-2); max-width: 64ch; }
   .statline { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
   .stat {
     flex: 1 1 160px;
@@ -129,7 +129,7 @@
   }
   .role .emoji { font-size: 34px; display: block; margin-bottom: 8px; }
   .role h3 { margin: 0 0 6px; }
-  .role p { font-size: 15px; color: var(--ink-2); margin: 0; max-width: none; }
+  .role p { font-size: 16px; color: var(--ink-2); margin: 0; max-width: none; }
 
   .apps { display: grid; gap: 14px; margin: 24px 0; }
   .app {
@@ -146,7 +146,7 @@
   .app .body { padding: 16px 20px; }
   .app h3 { margin: 0; display: inline; }
   .app .tag { font-style: italic; color: var(--ink-3); }
-  .app p { font-size: 15px; color: var(--ink-2); margin: 6px 0 0; max-width: none; }
+  .app p { font-size: 16px; color: var(--ink-2); margin: 6px 0 0; max-width: none; }
 
   .traps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
   .trap-card {
@@ -154,7 +154,7 @@
     padding: 18px 20px;
   }
   .trap-card h3 { margin: 0 0 8px; color: var(--trap); font-size: 17px; }
-  .trap-card p { font-size: 14.5px; margin: 0 0 8px; max-width: none; }
+  .trap-card p { font-size: 15.5px; margin: 0 0 8px; max-width: none; }
   .trap-card p:last-child { margin-bottom: 0; }
 
   .finding {
@@ -171,7 +171,7 @@
   .finding p:last-child { margin-bottom: 0; }
   .finding .so {
     background: var(--accent-wash); border-radius: 10px; padding: 10px 16px;
-    font-size: 15px; color: var(--ink);
+    font-size: 16px; color: var(--ink);
   }
   .finding .so strong { color: var(--accent-dark); }
 
@@ -191,22 +191,22 @@
     padding: 9px 14px;
   }
   .badge.rep { background: var(--inset); color: var(--ink-2); }
-  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 12px; margin: 18px 0 8px; }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 12px; margin: 18px 0 8px; }
   .legend .key {
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px;
-    padding: 12px 16px; font-size: 14.5px; color: var(--ink-2);
+    padding: 14px 18px; font-size: 15.5px; color: var(--ink-2);
   }
   .legend .key b { font-family: "Outfit", sans-serif; color: var(--ink); display: block; margin-bottom: 3px; }
   .noapp { color: var(--ink-3); }
   .dcrit { color: var(--bug); font-weight: 700; }
-  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 15px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 16px; }
   th {
-    font-family: "Outfit", sans-serif; font-size: 12.5px; font-weight: 700;
+    font-family: "Outfit", sans-serif; font-size: 13.5px; font-weight: 700;
     text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2);
     text-align: left; padding: 14px 14px 10px; border-bottom: 2.5px solid var(--ink);
   }
   td { padding: 11px 14px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
-  td.n, th.n { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 14px; }
+  td.n, th.n { text-align: right; font-family: "JetBrains Mono", monospace; font-size: 15px; }
   tr:last-child td { border-bottom: 0; }
   .medal { font-size: 16px; }
   .badge {
@@ -215,7 +215,7 @@
   }
   .badge.good { background: var(--accent-wash); color: var(--accent-dark); }
   .badge.bad { background: var(--bug-wash); color: var(--bug); }
-  .foot { font-size: 14px; color: var(--ink-3); margin-top: 6px; }
+  .foot { font-size: 15px; color: var(--ink-3); margin-top: 6px; }
 
   .bigidea {
     background: var(--ink); color: var(--paper); border-radius: 18px;
@@ -236,7 +236,7 @@
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px; padding: 14px 18px;
   }
   .term b { font-family: "Outfit", sans-serif; }
-  .term p { font-size: 14.5px; color: var(--ink-2); margin: 4px 0 0; max-width: none; }
+  .term p { font-size: 15.5px; color: var(--ink-2); margin: 4px 0 0; max-width: none; }
 
   ul.checks { padding-left: 4px; list-style: none; max-width: 74ch; }
   ul.checks li { padding-left: 30px; position: relative; margin-bottom: 10px; }
