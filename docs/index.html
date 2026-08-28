@@ -191,7 +191,7 @@
     padding: 9px 14px;
   }
   .badge.rep { background: var(--inset); color: var(--ink-2); }
-  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; margin: 18px 0 8px; }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 12px; margin: 18px 0 8px; }
   .legend .key {
     background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px;
     padding: 12px 16px; font-size: 14.5px; color: var(--ink-2);
@@ -323,13 +323,13 @@
 
 <section id="grid">
   <h2><span class="step">3</span>The full orchestrator &times; executor grid</h2>
-  <p>All 36 graded runs, every configuration tested, grouped by app. Four things to know before reading it:</p>
+  <p>Every graded run in the campaign: Season 1's 36 exploratory runs in the table below, then Season 2's 12 confirmatory reruns after it. Four things to know first:</p>
 
   <div class="legend">
-    <div class="key"><b>record</b>Every run has one: the verbatim prompts it used, the review findings, the verification output, the cost table, and the blind-graded scorecard.</div>
-    <div class="key"><b>app</b>A full-page screenshot of <em>that run's</em> actual built app. Only the 11 most recent runs have one — each run's working copy is deleted after grading (that's what keeps cost accounting clean), and we only started archiving screenshots late in the campaign. "no app" means the code was graded, recorded, and then cleaned up before anyone thought to photograph it.</div>
-    <div class="key"><b>replicate</b>The same configuration run a second time — fresh workspace, byte-identical prompts — to check the first result wasn't a lucky draw. Each pill names the run it repeats. Only decision-relevant configurations earned a replicate (the clean leaders and the failing relay); every unmarked row is a single draw, so treat its exact numbers as one sample, not a law.</div>
-    <div class="key"><b>Two suite sizes per app</b>Halfway through the campaign, after 9 of 10 runs let <code>NaN</code> through validation, we amended the tier-2/3 specs to require rejecting it — and added matching tests. Runs are graded against the suite that existed when they ran: /24 and /31 are pre-amendment scores, /25 and /32 post-amendment. SpendLog's suite never changed.</div>
+    <div class="key"><b>record</b>Every run has one: the exact prompts it used, the review findings, the test output, the cost table, and the blind-graded scorecard.</div>
+    <div class="key"><b>app</b>A full-page screenshot of <em>that run's</em> actual built app. Working copies are deleted after grading, and Season 1 only started archiving screenshots near its end — so its older rows say "no app". Every Season 2 run has one.</div>
+    <div class="key"><b>replicate</b>The same configuration run again — fresh workspace, identical prompts — to check the result wasn't luck. Each pill names the run it repeats. Unmarked rows ran once: treat their exact numbers as one sample, not a law.</div>
+    <div class="key"><b>Two exam versions</b>Mid-campaign, after 9 of 10 runs let <code>NaN</code> past validation, we added a reject-<code>NaN</code> rule and matching tests to the tier-2/3 specs. Each run is graded against the exam that existed when it ran: /24 and /31 are before the change, /25 and /32 after. SpendLog's exam never changed.</div>
   </div>
   <p class="foot">Defects read critical &middot; conformance &middot; minor from the blind grade. $ on Codex rows covers the orchestrator only &mdash; subscription auth reports the sub-agent's tokens but no price.</p>
 
