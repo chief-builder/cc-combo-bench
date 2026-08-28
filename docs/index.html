@@ -231,12 +231,6 @@
     .bigidea { background: var(--card); color: var(--ink); border: 1.5px solid var(--rule); }
   }
 
-  .glossary { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 24px 0; }
-  .term {
-    background: var(--card); border: 1.5px solid var(--rule); border-radius: 12px; padding: 14px 18px;
-  }
-  .term b { font-family: "Outfit", sans-serif; }
-  .term p { font-size: 15.5px; color: var(--ink-2); margin: 4px 0 0; max-width: none; }
 
   ul.checks { padding-left: 4px; list-style: none; }
   ul.checks li { padding-left: 30px; position: relative; margin-bottom: 10px; }
@@ -272,7 +266,6 @@
   <a href="#grading">Fair grading</a>
   <a href="#findings">5 big findings</a>
   <a href="#you">Why it matters for you</a>
-  <a href="#glossary">Glossary</a>
 </nav>
 
 <section id="setup">
@@ -323,21 +316,21 @@
 
 <section id="grid">
   <h2><span class="step">3</span>All 48 runs, side by side</h2>
-  <p>Every graded run in the campaign: Season 1's 36 exploratory runs in the table below, then Season 2's 12 confirmatory reruns after it. Four things to know first:</p>
+  <p>Every graded run in the campaign: Season 1's 36 original runs in the table below, then Season 2's 12 clean reruns after it. Four things to know first:</p>
 
   <div class="legend">
-    <div class="key"><b>record</b>Every run has one: the exact prompts it used, the review findings, the test output, the cost table, and the blind-graded scorecard.</div>
+    <div class="key"><b>record</b>Every run has one: the exact prompts it used, the review findings, the test output, the cost table, and the scorecard from anonymous grading.</div>
     <div class="key"><b>app</b>A full-page screenshot of <em>that run's</em> actual built app. Working copies are deleted after grading, and Season 1 only started archiving screenshots near its end — so its older rows say "no app". Every Season 2 run has one.</div>
     <div class="key"><b>replicate</b>The same configuration run again — fresh workspace, identical prompts — to check the result wasn't luck. Each pill names the run it repeats. Unmarked rows ran once: treat their exact numbers as one sample, not a law.</div>
     <div class="key"><b>Two exam versions</b>Mid-campaign, after 9 of 10 runs let <code>NaN</code> past validation, we added a reject-<code>NaN</code> rule and matching tests to the tier-2/3 specs. Each run is graded against the exam that existed when it ran: /24 and /31 are before the change, /25 and /32 after. SpendLog's exam never changed.</div>
   </div>
-  <p class="foot">Defects read critical &middot; conformance &middot; minor from the blind grade. $ on Codex rows covers the orchestrator only &mdash; subscription auth reports the sub-agent's tokens but no price.</p>
+  <p class="foot">Defects count critical &middot; conformance &middot; minor problems found in grading (conformance = the spec's letter was broken but the app still works; minor = style only). $ on Codex rows covers the orchestrator only &mdash; subscription auth reports the sub-agent's tokens but no price.</p>
 
   <div class="tablewrap tall">
     <table>
       <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th class="n">Score</th><th class="n">Defects</th><th class="n">Est. $</th><th>Record &middot; App</th></tr></thead>
       <tbody>
-        <tr class="group"><td colspan="7">SpendLog &mdash; tier 1 &middot; graded against 16 held-out tests</td></tr>
+        <tr class="group"><td colspan="7">SpendLog &mdash; tier 1 &middot; a 16-test exam</td></tr>
         <tr><td>1</td><td>Sonnet 5</td><td>Sonnet 5 (single)</td><td class="n">15/16</td><td class="n"><span class="dcrit">1</span>&middot;1&middot;1</td><td class="n">$1.00</td><td><a href="runs/cc_sonnet-5_sonnet-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>2</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.79</td><td><a href="runs/cc_sonnet-5_sonnet-5x2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>3</td><td>Sonnet 5</td><td>Sonnet 5 ×2 (per-phase) <span class="badge rep">replicate of #2</span></td><td class="n">16/16</td><td class="n">0&middot;1&middot;0</td><td class="n">$1.52</td><td><a href="runs/cc_sonnet-5_sonnet-5x2_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
@@ -351,7 +344,7 @@
         <tr><td>11</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;1</td><td class="n">$0.73*</td><td><a href="runs/cc_sonnet-5_codex.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>12</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.87*</td><td><a href="runs/cc_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/cc_sonnet-5_codex-low.png">app</a></td></tr>
         <tr><td>13</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">16/16</td><td class="n">0&middot;0&middot;0</td><td class="n">$0.85*</td><td><a href="runs/cc_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/cc_sonnet-5_codex-high.png">app</a></td></tr>
-        <tr class="group"><td colspan="7">ExpenseHub &mdash; tier 2 &middot; 24 held-out tests, 25 after the NaN amendment</td></tr>
+        <tr class="group"><td colspan="7">ExpenseHub &mdash; tier 2 &middot; a 24-test exam, 25 after the NaN rule</td></tr>
         <tr><td>14</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$2.17</td><td><a href="runs/cc_tier2_sonnet-5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>15</td><td>Sonnet 5</td><td>Sonnet 5 ×3 (per-phase)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$3.27</td><td><a href="runs/cc_tier2_sonnet-5_sonnet-5x3.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>16</td><td>Haiku 4.5</td><td>Opus 5 (single)</td><td class="n">24/24</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.21</td><td><a href="runs/cc_tier2_haiku-4.5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
@@ -360,7 +353,7 @@
         <tr><td>19</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (medium effort)</td><td class="n">25/25</td><td class="n">0&middot;0&middot;2</td><td class="n">$1.12*</td><td><a href="runs/cc_tier2_sonnet-5_codex.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>20</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (low effort)</td><td class="n">24/25</td><td class="n"><span class="dcrit">1</span>&middot;1&middot;1</td><td class="n">$0.63*</td><td><a href="runs/cc_tier2_sonnet-5_codex-low.html">record</a> &middot; <a href="demos/apps/cc_tier2_sonnet-5_codex-low.png">app</a></td></tr>
         <tr><td>21</td><td>Sonnet 5</td><td>Codex gpt-5.6-sol (high effort)</td><td class="n">25/25</td><td class="n">0&middot;0&middot;0</td><td class="n">$1.18*</td><td><a href="runs/cc_tier2_sonnet-5_codex-high.html">record</a> &middot; <a href="demos/apps/cc_tier2_sonnet-5_codex-high.png">app</a></td></tr>
-        <tr class="group"><td colspan="7">InvoiceDesk &mdash; tier 3 &middot; 31 held-out tests, 32 after the NaN amendment</td></tr>
+        <tr class="group"><td colspan="7">InvoiceDesk &mdash; tier 3 &middot; a 31-test exam, 32 after the NaN rule</td></tr>
         <tr><td>22</td><td>Sonnet 5</td><td>Opus 5 (single)</td><td class="n">31/31</td><td class="n">0&middot;0&middot;1</td><td class="n">$3.24</td><td><a href="runs/cc_tier3_sonnet-5_opus-5.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>23</td><td>Sonnet 5</td><td>Opus 5 (single) <span class="badge rep">replicate of #22</span></td><td class="n">31/31</td><td class="n">0&middot;0&middot;1</td><td class="n">$3.41</td><td><a href="runs/cc_tier3_sonnet-5_opus-5_rep2.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
         <tr><td>24</td><td>Sonnet 5</td><td>Sonnet 5 ×4 (per-phase)</td><td class="n">30/31</td><td class="n"><span class="dcrit">1</span>&middot;0&middot;0</td><td class="n">$5.01</td><td><a href="runs/cc_tier3_sonnet-5_sonnet-5x4.html">record</a> &middot; <span class="noapp">no app</span></td></tr>
@@ -379,10 +372,10 @@
       </tbody>
     </table>
   </div>
-  <p class="foot">Defects = critical &middot; conformance &middot; minor, from the blind grade. Score alone doesn't tell the whole story: run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own &mdash; and runs 2 and 4 share a 16/16 that hides a 0&middot;0&middot;0 vs a 0&middot;2&middot;1.</p>
+  <p class="foot">Defects = critical &middot; conformance &middot; minor, from the anonymous grading. Score alone doesn't tell the whole story: run 35 scores 32/32 with a fully working app; run 33 scores 31/32 with an unreachable form page hiding under 40 green tests of its own &mdash; and runs 2 and 4 share a 16/16 that hides a 0&middot;0&middot;0 vs a 0&middot;2&middot;1.</p>
 
-  <h3 id="season2">Season 2 — the confirmatory rerun</h3>
-  <p>The 36 runs above were <em>exploratory</em>: the spec was amended mid-campaign, three instrument bugs were found and fixed along the way, and app archiving started late. So we re-ran the 12 decision-relevant cells under frozen clean conditions — final specs and suites, nothing changing mid-flight, every app archived from run one. That's the difference between finding a result and confirming it.</p>
+  <h3 id="season2">Season 2 — the clean rerun</h3>
+  <p>Season 1 came with mess: the spec changed mid-campaign, we found three bugs in our own test suites, and app archiving started late. So we re-ran the 12 configurations that mattered under frozen conditions — final specs, final exams, nothing changing mid-flight, every app archived. That's the difference between finding a result and confirming it.</p>
   <div class="tablewrap">
     <table>
       <thead><tr><th>#</th><th>Orchestrator</th><th>Implementer</th><th class="n">Tier</th><th class="n">Score</th><th class="n">Defects</th><th class="n">Est. $</th><th>Record &middot; App</th></tr></thead>
@@ -402,7 +395,7 @@
       </tbody>
     </table>
   </div>
-  <p><strong>What happened this season:</strong> ten of the twelve runs passed every held-out test with nothing worse than cosmetic findings. The two exceptions: both Sonnet-relay draws shipped the identical route-registration bug (31/32 each), and the all-Haiku run built an app that <em>crashes after you create an invoice</em> and renders user text unescaped (an XSS hole) — yet still passed all 32 acceptance tests. Those last two bugs were caught only by the line-by-line review in blind grading; no automated check saw them.</p>
+  <p><strong>What happened this season:</strong> ten of the twelve runs passed every secret test with nothing worse than cosmetic findings. The two exceptions: both Sonnet-relay draws shipped the identical route-registration bug (31/32 each), and the all-Haiku run built an app that <em>crashes after you create an invoice</em> and renders user text unescaped (an XSS hole) — yet still passed all 32 secret tests. Those last two bugs were caught only by the line-by-line review during anonymous grading; no automated check saw them.</p>
   <p><strong>Compared with Season 1:</strong> Haiku&#8202;&rarr;&#8202;Opus stayed clean in all three of its draws, making that configuration 4-for-4 clean at tier 3 across both seasons. The Sonnet relay's route bug has now appeared in every relay draw ever run (5-for-5), while the Opus relay stayed clean in both seasons. The all-Haiku result <em>reverses</em> its clean Season 1 draw — cheap implementers swing between draws, and scripted checks are necessary but not sufficient. Every Season 2 row links both its record and its app.</p>
 </section>
 
@@ -430,11 +423,11 @@
 
 <section id="grading">
   <h2><span class="step">5</span>Grading it fairly (this is the important part)</h2>
-  <p>If you let an agent grade its own homework, it gives itself an A. So the grading is built like an exam with a sealed answer key:</p>
+  <p>If you let an agent grade its own homework, it gives itself an A. So grading works like an exam with a sealed answer key:</p>
   <ul class="checks">
-    <li><strong>Held-out acceptance suites.</strong> Each app has a secret pytest suite — 16, 25, and 32 tests — that implementers <em>never see</em>: the suites are stripped from every working copy before the run starts. Agent-written tests aren't comparable across runs; the held-out suite is the primary score.</li>
-    <li><strong>Blind grading.</strong> A separate grader scores anonymized, shuffled copies of each implementation against a fixed rubric, re-running every scripted check itself. It can't tell which configuration produced which tree.</li>
-    <li><strong>Receipts for everything.</strong> Costs are computed from the actual session transcripts at published per-token rates; every prompt, review finding, and test result is committed to a results file in git.</li>
+    <li><strong>Secret tests.</strong> Each app has a hidden test suite — 16, 25, and 32 checks — that the builders never see; it's removed from their workspace before the run starts. Passing it is the official score, because you can't study for a test you've never seen.</li>
+    <li><strong>Anonymous grading.</strong> A separate grader scores shuffled, unlabeled copies of the code, re-running every check itself. It can't tell which team built which app, so it can't play favorites.</li>
+    <li><strong>Receipts for everything.</strong> Every run's cost comes from its actual usage logs, and every prompt, finding, and test result is saved in the repo. No "trust me."</li>
     <li><strong>Run it twice.</strong> One good run might just be luck. Before trusting any result that mattered, we ran the same configuration again and checked that it held up.</li>
   </ul>
 </section>
@@ -445,97 +438,79 @@
   <div class="finding">
     <div class="num">Finding 1</div>
     <h3>The cheap orchestrator lost nothing 💸</h3>
-    <p>Swapping the Sonnet 5 orchestrator for <strong>Haiku 4.5</strong> — a model about a third the price — changed quality not at all. The best configuration in all 36 runs was <strong>Haiku 4.5 orchestrating a single Opus 5 implementer</strong>: blind-graded clean at every tier, twice ($1.21–$2.44 per app), 26–45% cheaper than the same implementer under Sonnet 5.</p>
-    <p class="so"><strong>So what?</strong> Quality tracked the implementer, not the orchestrator. Spend your token budget where the actual work happens.</p>
+    <p>Swapping the Sonnet 5 orchestrator for <strong>Haiku 4.5</strong> — a model about a third the price — changed quality not at all. The best setup in all 48 runs was <strong>Haiku 4.5 managing a single Opus 5 builder</strong>: a clean scorecard in every one of its draws, at every difficulty ($1.20–$2.44 per app), roughly 30–45% cheaper than the same builder under Sonnet 5.</p>
+    <p class="so"><strong>So what?</strong> Quality followed the builder, not the manager. Spend your budget where the actual work happens.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 2</div>
     <h3>Relay teams drop the baton 🏃</h3>
-    <p>On InvoiceDesk, per-phase teams (Sonnet 5 ×4, a fresh implementer per phase) shipped a broken app <strong>3 times out of 3</strong>, under two different orchestrator models — always the same bug. The phase-2 agent registered <code>/invoices/{id}</code>; the phase-3 agent appended <code>/invoices/new</code> after it; the route pile-up sprang. Each agent's own work was fine, its own tests passed, and the orchestrator's code review missed it every time — the bug lived in the <em>handoff</em>, and only the held-out suite caught it. Single implementers almost never made this mistake — one Haiku 4.5 draw eventually did, solo, with 40 green tests of its own, because not one of them ever requested the broken page.</p>
-    <p>Two control runs completed the picture: single Sonnet 5 built the same app with the routes ordered correctly — and an <strong>Opus 5 ×4 relay ran flawlessly</strong>, reading the inherited route table before adding its page. So the seam needs both the relay <em>and</em> a mid-tier implementer; a stronger model buys seam awareness, at triple the price of just using it solo.</p>
-    <p>And one more twist: pairing the <em>smartest orchestrator</em> (Opus 5) with the cheapest implementer didn't help. Opus's code review caught the route bug precisely — the same bug class every other reviewer missed — but a reviewer who can't fix anything can only watch. $4.16 for a broken app; the insight was stranded.</p>
+    <p>On InvoiceDesk, relay teams of Sonnet 5 (a fresh builder per phase) shipped the same broken page in <strong>every draw — five out of five, across both seasons</strong>. Builder 2 registered <code>/invoices/{id}</code>; builder 3 added <code>/invoices/new</code> after it; the route pile-up sprang. Each builder's own work looked fine, its own tests passed, and the manager's code review missed it every time. Only the secret tests caught it.</p>
+    <p>Control runs completed the picture. A single Sonnet 5 building alone ordered the routes correctly, and a relay of <strong>Opus 5 builders ran flawlessly</strong> — it read the existing routes before adding its page. So the trap needs both the relay <em>and</em> a mid-tier builder. And pairing the smartest manager (Opus 5) with the cheapest builder didn't help either: its review spotted the bug precisely, but a reviewer who isn't allowed to fix anything can only watch — $4.16 for a broken app.</p>
     <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. Splitting work is a tax: either someone strong owns the seams, or the seams own you.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
-    <p>While the NaN requirement was unwritten, <strong>9 of 10</strong> implementations — Sonnet, Opus, Haiku, every spawn strategy — validated <code>amount &gt; 0</code> and stopped there. Then we added one sentence to the spec ("reject non-finite amounts; check with <code>math.isfinite</code>") plus a matching test. The next <strong>5 of 5</strong> runs — Opus 5 and Codex both — wrote the guard and tested it.</p>
-    <p class="so"><strong>So what?</strong> Models implement the spec's letter, not your intent. One precise sentence outperformed nine strong models' intuition. Spec-writing is the leverage point.</p>
+    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then we added one sentence to the spec ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
+    <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. One precise sentence beat nine strong models' intuition. Writing the spec well is the highest-leverage work.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 4</div>
     <h3>Reasoning effort removes carelessness, not inability 🧠</h3>
-    <p>Codex CLI exposes a <code>model_reasoning_effort</code> dial. On <strong>high</strong>, gpt-5.6-sol produced the experiment's only zero-defect sweep of all three tiers — it even URL-encoded user text in links, which no other run in 31 had done. On <strong>low</strong>, it still built everything — but shipped the frozen-clock bug at tier 2 and silently compressed its tier-3 test suite, dropping two assertions the roadmap required. Notably, even low effort honored the explicit <code>math.isfinite</code> bullet.</p>
-    <p class="so"><strong>So what?</strong> Extra thinking didn't add capability — it removed the skipped-the-double-check class of error. Explicit instructions survive effort reduction; unwritten expectations don't.</p>
+    <p>Codex has a dial for how hard the model thinks before acting. On <strong>high</strong>, it produced Season 1's only flawless sweep of all three apps. On <strong>low</strong>, it could still build everything — but it fell for the frozen-clock trap and quietly dropped two required tests. (A later low-effort draw came out clean, so the dial shifts your odds; it doesn't guarantee the outcome.) Even at low effort, the explicitly written NaN rule was always honored.</p>
+    <p class="so"><strong>So what?</strong> Extra thinking doesn't add ability — it removes the skipped-double-check mistakes. Written instructions survive even a rushed worker; unwritten expectations don't.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 5</div>
     <h3>Different vendors, same blind spots 👓</h3>
-    <p>Running the whole ladder with OpenAI's Codex as the implementer under a Claude orchestrator worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded category links, the frozen clock at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the vendor.</p>
-    <p class="so"><strong>So what?</strong> Switching models doesn't rescue an ambiguous spec. Fixing the spec does.</p>
+    <p>Running the whole ladder with OpenAI's Codex as the builder under a Claude manager worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded links, the frozen clock at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the brand.</p>
+    <p class="so"><strong>So what?</strong> Switching models doesn't rescue an unclear spec. Fixing the spec does.</p>
   </div>
 
   <h3>The scoreboard (InvoiceDesk, the hardest app)</h3>
   <div class="tablewrap">
     <table>
-      <thead><tr><th>Configuration</th><th class="n">Held-out score</th><th class="n">Serious defects</th><th class="n">Cost</th><th>Verdict</th></tr></thead>
+      <thead><tr><th>Configuration</th><th class="n">Score</th><th class="n">Serious defects</th><th class="n">Cost</th><th>Verdict</th></tr></thead>
       <tbody>
-        <tr><td><span class="medal">🥇</span> Haiku 4.5 main + single Opus 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$1.85–$2.44</td><td><span class="badge good">best value, clean ×2</span></td></tr>
+        <tr><td><span class="medal">🥇</span> Haiku 4.5 main + single Opus 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$1.85–$2.44</td><td><span class="badge good">best value, clean ×4</span></td></tr>
         <tr><td><span class="medal">🥈</span> Sonnet 5 main + single Opus 5</td><td class="n">31/31</td><td class="n">0</td><td class="n">~$3.30</td><td><span class="badge good">clean ×2</span></td></tr>
         <tr><td><span class="medal">🥉</span> Codex CLI (gpt-5.6-sol), high effort</td><td class="n">32/32</td><td class="n">0</td><td class="n">n/a*</td><td><span class="badge good">zero-defect run</span></td></tr>
         <tr><td>Sonnet 5 main + Opus 5 ×4 per-phase</td><td class="n">32/32</td><td class="n">0</td><td class="n">$5.99</td><td><span class="badge good">relay, rescued by Opus</span></td></tr>
         <tr><td>Sonnet 5 main + single Sonnet 5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$2.13</td><td><span class="badge good">solid default</span></td></tr>
-        <tr><td>Haiku 4.5 main + single Haiku 4.5</td><td class="n">32/32</td><td class="n">0</td><td class="n">$0.73</td><td><span class="badge good">budget anchor†</span></td></tr>
+        <tr><td>Haiku 4.5 main + single Haiku 4.5</td><td class="n">32/32 ×2</td><td class="n">0 &amp; 2</td><td class="n">$0.73–$1.14</td><td><span class="badge bad">budget lottery†</span></td></tr>
         <tr><td>Sonnet 5 main + Sonnet 5 ×4 (relay)</td><td class="n">30/31 &amp; 31/32</td><td class="n">1 per draw</td><td class="n">$4.40–$5.15</td><td><span class="badge bad">same route bug, all 4 draws</span></td></tr>
         <tr><td>Opus 5 main + single Haiku 4.5</td><td class="n">31/32</td><td class="n">1</td><td class="n">$4.16</td><td><span class="badge bad">smart manager, stranded review</span></td></tr>
       </tbody>
     </table>
   </div>
-  <p class="foot">Score = held-out pytest suite; some runs predate the NaN amendment and faced the 31-test version. *Codex ran under ChatGPT-subscription auth, which reports tokens (26k–57k per run) but no dollar price — one honest gap in our receipts. †The all-Haiku app was fully correct; its defects were weak <em>tests</em> (asserting a "$" prefix instead of the value) — cheap implementers now fail at test rigor, not app code.</p>
+  <p class="foot">Score = the secret test suite; runs before the NaN rule faced its 31-test version. *Codex ran on a subscription that reports tokens but no dollar price — one honest gap in our receipts. †The all-Haiku cell is a lottery: its Season 1 app was fully correct (only its own tests were weak), while its Season 2 draw crashed after creating an invoice — yet passed every scripted check both times.</p>
 
   <div class="bigidea">
-    <p>The most expensive configuration was also the one that shipped the broken app. In this experiment, <span class="hl">precise specs and held-out tests</span> beat raw spending — every single time.</p>
+    <p>The most expensive configuration was also the one that shipped the broken app. In this experiment, <span class="hl">precise specs and secret tests</span> beat raw spending — every single time.</p>
   </div>
 </section>
 
 <section id="you">
   <h2><span class="step">7</span>Why it matters for you</h2>
-  <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons transfer:</p>
+  <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons carry over:</p>
   <ul class="checks">
-    <li><strong>Say exactly what you want.</strong> The single biggest quality jump in 36 runs came from adding one precise sentence to the spec. Vague prompts get plausible-looking, quietly-wrong code.</li>
-    <li><strong>Don't grade your own homework.</strong> Every implementer's own tests passed — including the broken apps'. Real verification is done by tests the author never saw and can't overfit to.</li>
-    <li><strong>Watch the handoffs.</strong> Whether it's per-phase sub-agents or your group project, the bugs live between the parts. Someone has to look at the whole.</li>
-    <li><strong>Working ≠ correct.</strong> Every broken app here ran fine, demoed fine, and passed its own tests. The defects only surfaced under tests designed to probe the edges.</li>
-    <li><strong>Measure, then believe.</strong> One run is an anecdote; a replicated, blind-graded result is evidence. n=1 rankings are how you fool yourself.</li>
+    <li><strong>Say exactly what you want.</strong> The biggest quality jump in 48 runs came from adding one sentence to the spec. Vague asks get plausible-looking, quietly wrong code.</li>
+    <li><strong>Don't grade your own homework.</strong> Every broken app passed its builder's own tests. Real checking comes from tests the author never saw and can't study for.</li>
+    <li><strong>Watch the handoffs.</strong> Whether it's AI builders or your group project, bugs live between people's parts. Someone has to look at the whole thing.</li>
+    <li><strong>Working ≠ correct.</strong> Every broken app here ran fine and demoed fine. The bugs only showed up under tests built to poke the edges.</li>
+    <li><strong>Measure, then believe.</strong> One run is a story. A repeated, anonymously graded result is evidence.</li>
   </ul>
   <h3>Try it yourself</h3>
-  <p>Take any agent harness — Claude Code, Codex CLI — and give it a small written spec with one trap you know the answer to, like the frozen clock. Write three pytest checks it never sees. Run it, grade it, change <em>one sentence</em> of the spec, and run it again. Congratulations: you're benchmarking.</p>
+  <p>Take any coding agent — Claude Code, Codex — and give it a small written spec with one trap you know the answer to, like the frozen clock. Write three tests it never sees. Run it, grade it, change <em>one sentence</em> of the spec, and run it again. That's benchmarking.</p>
 </section>
 
-<section id="glossary">
-  <h2><span class="step">8</span>Glossary</h2>
-  <div class="glossary">
-    <div class="term"><b>Agent harness</b><p>The scaffolding that lets a model act: file edits, shell, tests, the loop. Claude Code and Codex CLI are harnesses; Sonnet 5 and gpt-5.6-sol are models running inside them.</p></div>
-    <div class="term"><b>Run</b><p>One complete attempt: a configuration gets the spec, builds the app, gets graded.</p></div>
-    <div class="term"><b>Spec</b><p>The written assignment — mission, tech stack, and a phase-by-phase roadmap with a literal test list.</p></div>
-    <div class="term"><b>Orchestrator / main agent</b><p>Spawns and reviews; never implements. The experiment's manager role.</p></div>
-    <div class="term"><b>Sub-agent</b><p>The implementer, spawned as a separate CLI process (<code>claude -p</code> / <code>codex exec</code>).</p></div>
-    <div class="term"><b>Canary</b><p>A requirement planted to detect one specific classic bug — an early-warning tripwire.</p></div>
-    <div class="term"><b>Held-out tests</b><p>The sealed answer key: pytest suites the implementers never see, stripped from their working copy.</p></div>
-    <div class="term"><b>Blind grading</b><p>Scoring shuffled, anonymized code against a fixed rubric, so the grader can't favor a configuration.</p></div>
-    <div class="term"><b>NaN</b><p>"Not a Number" — an IEEE-754 float for which every comparison is False, letting it slip past naive validation.</p></div>
-    <div class="term"><b>Token</b><p>The unit models read, write, and bill in — roughly three-quarters of an English word.</p></div>
-    <div class="term"><b>Reasoning effort</b><p>A dial (low/medium/high) for how much hidden thinking a model does before answering. Codex CLI exposes it per run.</p></div>
-    <div class="term"><b>Replicate</b><p>A repeat run of the same cell. The antidote to being fooled by one lucky draw.</p></div>
-  </div>
-</section>
 
 <footer>
-  <p>Built from a real 48-run benchmark (36 exploratory + 12 confirmatory) (August 2026): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
+  <p>Built from a real 48-run benchmark (August 2026 — 36 original runs plus 12 clean reruns): Claude Sonnet 5, Opus 5, and Haiku 4.5 (via Claude Code) and OpenAI gpt-5.6-sol (via Codex CLI) in orchestrator/implementer configurations, building SpendLog, ExpenseHub, and InvoiceDesk from fixed specs. Full methodology, prompts, per-run records, and grading rubrics live in this repository. Body text is set in Atkinson Hyperlegible, a typeface designed for maximum readability.</p>
 </footer>
 
 </div>
