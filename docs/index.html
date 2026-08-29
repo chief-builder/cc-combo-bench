@@ -439,7 +439,7 @@
     <div class="num">Finding 1</div>
     <h3>The cheap orchestrator lost nothing 💸</h3>
     <p>I swapped the Sonnet 5 manager for <strong>Haiku 4.5</strong> — a model about a third the price — and quality didn't drop at all. In fact, the best setup in all 48 runs paired the cheapest manager with the strongest builder: <strong>Haiku 4.5 managing a single Opus 5</strong>. It earned a clean scorecard in every draw, on every app, at $1.20–$2.44 per build — a third to nearly half cheaper than the same builder under Sonnet 5.</p>
-    <p class="so"><strong>So what?</strong> Quality followed the builder, not the manager. Spend your budget where the actual work happens.</p>
+    <p class="so"><strong>So what?</strong> Quality followed the builder, not the manager — changing the manager's model never changed a single grade. Spend your budget where the actual work happens.</p>
   </div>
 
   <div class="finding">
@@ -454,21 +454,21 @@
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
     <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then I added one sentence to the spec ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
-    <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. One precise sentence beat nine strong models' intuition. Writing the spec well is the highest-leverage work.</p>
+    <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. Nine strong models missed the same unwritten rule; one written sentence fixed all of them at once. The most powerful edit in all 48 runs wasn't a model swap — it was a sentence.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 4</div>
     <h3>Reasoning effort removes carelessness, not inability 🧠</h3>
     <p>Codex has a dial for how hard the model thinks before acting. On <strong>high</strong>, it produced Season 1's only flawless sweep of all three apps. On <strong>low</strong>, it could still build everything — but it fell for the frozen-clock trap and quietly dropped two required tests. (A later low-effort draw came out clean, so the dial shifts your odds; it doesn't guarantee the outcome.) Even at low effort, the explicitly written NaN rule was always honored.</p>
-    <p class="so"><strong>So what?</strong> Extra thinking doesn't add ability — it removes the skipped-double-check mistakes. Written instructions survive even a rushed worker; unwritten expectations don't.</p>
+    <p class="so"><strong>So what?</strong> Extra thinking didn't make the model smarter — it made it less careless, the way slowing down on a test doesn't teach you math but does catch your slips. And written rules survived even the rushed runs; unwritten ones didn't.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 5</div>
     <h3>Different vendors, same blind spots 👓</h3>
     <p>Running the whole ladder with OpenAI's Codex as the builder under a Claude manager worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded links, the frozen clock at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the brand.</p>
-    <p class="so"><strong>So what?</strong> Switching models doesn't rescue an unclear spec. Fixing the spec does.</p>
+    <p class="so"><strong>So what?</strong> When two different companies' models make the same mistake in the same place, the problem isn't the model — it's the assignment. Switching brands won't rescue an unclear spec; rewriting it will.</p>
   </div>
 
   <h3>The scoreboard (InvoiceDesk, the hardest app)</h3>
