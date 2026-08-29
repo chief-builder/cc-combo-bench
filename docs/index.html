@@ -170,8 +170,8 @@
   .finding p { color: var(--ink-2); margin-bottom: 10px; max-width: none; }
   .finding p:last-child { margin-bottom: 0; }
   .finding .so {
-    background: var(--accent-wash); border-radius: 10px; padding: 10px 16px;
-    font-size: 16px; color: var(--ink);
+    background: var(--accent-wash); border-radius: 10px; padding: 14px 18px;
+    font-size: 1.05em; color: var(--ink); line-height: 1.6;
   }
   .finding .so strong { color: var(--accent-dark); }
 
@@ -447,7 +447,7 @@
     <h3>Relay teams drop the baton 🏃</h3>
     <p>On InvoiceDesk, relay teams of Sonnet 5 (a fresh builder per phase) shipped the same broken page in <strong>every draw — five out of five, across both seasons</strong>. Builder 2 registered <code>/invoices/{id}</code>; builder 3 added <code>/invoices/new</code> after it; the route pile-up sprang. Each builder's own work looked fine, its own tests passed, and the manager's code review missed it every time. Only the secret tests caught it.</p>
     <p>Control runs completed the picture. A single Sonnet 5 building alone ordered the routes correctly, and a relay of <strong>Opus 5 builders ran flawlessly</strong> — it read the existing routes before adding its page. So the trap needs both the relay <em>and</em> a mid-tier builder. And pairing the smartest manager (Opus 5) with the cheapest builder didn't help either: its review spotted the bug precisely, but a reviewer who isn't allowed to fix anything can only watch — $4.16 for a broken app.</p>
-    <p class="so"><strong>So what?</strong> Every handoff is an integration seam where bugs hide. Splitting work is a tax: either someone strong owns the seams, or the seams own you.</p>
+    <p class="so"><strong>So what?</strong> Every handoff between workers is a gap where bugs hide. Splitting work always costs something: either someone strong checks how the pieces fit together, or nobody does — and that gap is exactly where this app broke, every single time.</p>
   </div>
 
   <div class="finding">
