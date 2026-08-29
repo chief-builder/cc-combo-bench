@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InvoiceDesk spec — The Great AI Build-Off</title>
+<meta name="description" content="The verbatim spec every agent team received for InvoiceDesk: mission, tech stack, and the phase-by-phase roadmap.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  :root { --paper:#FAF3EA; --card:#FFFDF9; --inset:#F1E7D9; --ink:#2C2013; --ink-2:#6B5A47; --ink-3:#9C8B76;
+    --rule:#E5D8C5; --accent:#BC5215; --accent-dark:#9A430F; --accent-wash:#F6E5D7; --dot:#EADDC8; }
+  @media (prefers-color-scheme: dark) { :root { --paper:#1C1510; --card:#251C14; --inset:#15100B;
+    --ink:#EDE4D7; --ink-2:#B3A38E; --ink-3:#7E6F5C; --rule:#3A2F23; --accent:#E0793C; --accent-dark:#E8935C; --accent-wash:#332417; --dot:#2B2118; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background-color:var(--paper);
+    background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px); background-size:28px 28px;
+    color:var(--ink); font-family:"Atkinson Hyperlegible", system-ui, sans-serif;
+    font-size: clamp(17px, 15px + 0.25vw, 20px); line-height:1.65; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 clamp(18px,4vw,48px) 80px; }
+  header { padding: 44px 0 22px; border-bottom: 4px solid var(--ink); margin-bottom: 28px; }
+  .back { font-family:"Outfit", sans-serif; font-weight:600; font-size:14px; text-decoration:none; color:var(--ink-2);
+    border:1.5px solid var(--rule); border-radius:999px; padding:5px 13px; background:var(--card);
+    display:inline-block; margin-bottom:16px; }
+  .back:hover { border-color: var(--accent); color: var(--accent-dark); }
+  h1 { font-family:"Outfit", sans-serif; font-size: clamp(30px,5vw,44px); font-weight:800; margin:0 0 8px; }
+  h1 .hl { color: var(--accent); }
+  .sub { color: var(--ink-2); margin: 0; }
+  h2 { font-family:"Outfit", sans-serif; font-size: clamp(22px,3vw,28px); font-weight:800; margin: 44px 0 8px; }
+  h2 code { font-family:"JetBrains Mono", monospace; font-size:.7em; background:var(--inset); border:1px solid var(--rule);
+    border-radius:6px; padding:2px 8px; vertical-align: 3px; }
+  pre { background: var(--card); border:1.5px solid var(--rule); border-radius:12px;
+    padding: 20px 24px; overflow-x:auto; font-size:14.5px; line-height:1.6;
+    font-family:"JetBrains Mono", ui-monospace, monospace; white-space: pre-wrap; word-wrap: break-word; }
+  footer { margin-top: 60px; padding-top: 18px; border-top: 4px solid var(--ink); font-size: 14px; color: var(--ink-3); }
+  a { color: var(--accent-dark); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../">&larr; Back to the write-up</a>
+  <h1>The <span class="hl">InvoiceDesk</span> spec</h1>
+  <p class="sub">Tier 3 &middot; the verbatim assignment every agent team received: three files, shown exactly as written. The secret tests are derived from the roadmap's test lists — but they live outside these files, and the agents never see them.</p>
+</header>
+<h2>The mission — what the app is for <code>mission.md</code></h2>
+<pre>Mission
+
+InvoiceDesk is a small invoicing tracker for a one-person business.
+
+&quot;Bill it. Send it. Get paid.&quot;
+
+Built as a learning project for course students exploring AI coding agents, InvoiceDesk demonstrates a real (if tiny) multi-entity application: invoices and the payments recorded against them, a lifecycle the server actually enforces (you can&#x27;t mark an invoice paid until the money has arrived), a billing-stats page with real money math, and a JSON API alongside the HTML pages — still FastAPI, Jinja2 templates, and Bootstrap CSS, still no database and no authentication, everything in memory.
+
+The site: a home page, an invoice board filterable by status, invoice detail pages with payment history and balance due, forms to create invoices and record payments, buttons that move an invoice through its lifecycle (and refuse illegal or premature moves), a stats dashboard, and an API endpoint for anything that would rather skip the HTML.
+</pre>
+<h2>The tech stack — what to build it with <code>tech-stack.md</code></h2>
+<pre># Tech Stack
+
+| Layer | Choice | Version | Notes |
+|-------|--------|---------|-------|
+| Language | Python 3 | — | Managed with requirements.txt |
+| Web framework | fastapi[standard] | 0.115.10 | ASGI, type-driven |
+| Server | Uvicorn | | ASGI server, run via `main.py` |
+| Templates | Jinja2 | | Bundled with FastAPI/Starlette |
+| CSS | Bootstrap 5 | | CDN link, no npm/build step |
+| Data model | `dataclasses.dataclass` | | Invoice: `id`, `client`, `description`, `amount`, `status`, `created_at`; Payment: `invoice_id`, `amount`, `note`, `paid_at` |
+| Storage | In-memory `list`s | | Module-level, no database |
+| API | Plain FastAPI JSON routes | | `/api/...` returning lists of dicts, datetimes as ISO 8601 |
+| Testing | pytest + `TestClient` | 8.3.4 | `starlette.testclient.TestClient`, no running server needed |
+
+No dependencies beyond tier 1 — same `requirements.txt`.
+
+When running Python: you **must** use the virtual environment.
+</pre>
+<h2>The roadmap — the phase-by-phase build plan (with each phase's test list) <code>roadmap.md</code></h2>
+<pre># Roadmap
+
+## Phase 1 — Home Page
+
+- Create `app.py` with the FastAPI application instance
+- Create `templates/` directory
+- Create `templates/base.html` — shared Jinja2 layout with:
+  - HTML5 doctype and `&lt;html lang=&quot;en&quot;&gt;`
+  - `&lt;head&gt;` with charset, viewport meta, Bootstrap 5 CSS CDN link
+  - `&lt;link&gt;` favicon pointing to `https://www.python.org/static/favicon.ico`
+  - A title block (default: &quot;InvoiceDesk&quot;)
+  - A simple navbar with the &quot;InvoiceDesk&quot; brand and links to Home (`/`), Invoices (`/invoices`), and Stats (`/stats`)
+  - A `{% block content %}` for page-specific content
+  - Bootstrap 5 JS bundle CDN at bottom of `&lt;body&gt;`
+- Create `templates/home.html` that extends `base.html` with:
+  - A hero/jumbotron section with the tagline: *&quot;Bill it. Send it. Get paid.&quot;*
+  - A brief welcoming paragraph about the tracker
+- Add the `/` route in `app.py` returning the home template
+- Add a `if __name__ == &quot;__main__&quot;` block to run with `uvicorn.run(&quot;app:app&quot;, reload=True)`
+- Write a smoke test in `tests/test_app.py`:
+  - Import `TestClient` from `starlette.testclient`
+  - `GET /` returns status 200
+  - Response body contains the tagline text
+
+## Phase 2 — Invoice Board + Detail Pages
+
+- Create `models.py` with:
+  - An `Invoice` dataclass — fields: `id: int`, `client: str`, `description: str`, `amount: float`, `status: str` (default `&quot;draft&quot;`), `created_at: datetime` (default `datetime.now(timezone.utc)`; import from `datetime`)
+  - A `Payment` dataclass — fields: `invoice_id: int`, `amount: float`, `note: str`, `paid_at: datetime` (same default)
+  - A module-level constant `STATUSES = [&quot;draft&quot;, &quot;sent&quot;, &quot;paid&quot;]`
+  - A module-level constant `ALLOWED_TRANSITIONS = {&quot;draft&quot;: [&quot;sent&quot;], &quot;sent&quot;: [&quot;paid&quot;], &quot;paid&quot;: []}`
+  - Module-level lists `invoices: list[Invoice]` and `payments: list[Payment]`
+  - Helper functions:
+    - `get_invoice(invoice_id: int) -&gt; Invoice | None`
+    - `payments_for(invoice_id: int) -&gt; list[Payment]`
+    - `paid_total(invoice_id: int) -&gt; float` — the sum of that invoice&#x27;s payment amounts, rounded to 2 decimals
+    - `new_invoice_id() -&gt; int` — `max(existing ids) + 1`, or `1` if empty
+- Populate seed data: 5 invoices with `id` 1..5 covering **all three statuses**, realistic cent amounts, and 4-6 payments spread across at least 2 invoices — seed data must be consistent with the rules below (every `paid` seed invoice&#x27;s payments sum to at least its amount; payments exist only on `sent` or `paid` invoices)
+- Add `GET /invoices` route in `app.py`:
+  - Optional `status` query parameter; when present and in `STATUSES`, show only invoices with that status; when present but NOT in `STATUSES`, raise `HTTPException(status_code=400)`
+  - Return `templates/invoices.html`, invoices sorted newest-first by `created_at`
+- Create `templates/invoices.html` that extends `base.html` with:
+  - A heading: &quot;Invoices&quot;
+  - Filter links: &quot;All&quot; to `/invoices` plus one per status to `/invoices?status={status}`
+  - Loop through invoices and render each as a Bootstrap card showing:
+    - The client name as a link to `/invoices/{id}`
+    - The description and formatted `created_at`
+    - The amount formatted as `$X.XX`
+    - A status badge, colored by status: `draft` → `text-bg-secondary`, `sent` → `text-bg-warning`, `paid` → `text-bg-success`
+    - A line `$P.PP of $A.AA paid` using `paid_total` and the amount, both two decimals
+- Add `GET /invoices/{invoice_id}` route in `app.py`:
+  - Path parameter typed as `int`; unknown id → `HTTPException(status_code=404)`
+  - Return `templates/invoice_detail.html` with the invoice and its payments
+- Create `templates/invoice_detail.html` that extends `base.html` with:
+  - Client as heading, status badge (same color mapping), description, formatted `created_at`, the amount as `$X.XX`
+  - A line reading exactly `Balance due: $X.XX` — the amount minus `paid_total`, two decimals
+  - A payments section listing each payment&#x27;s note, formatted `paid_at`, and amount as `$X.XX`
+  - A &quot;Back to invoices&quot; link to `/invoices`
+- Write tests in `tests/test_app.py`:
+  - `GET /invoices` returns 200 and contains a seed client name
+  - `GET /invoices?status=draft` contains a draft seed invoice and does NOT contain a paid one
+  - `GET /invoices?status=bogus` returns 400
+  - A seed invoice detail page returns 200, contains a seed payment&#x27;s note, and shows the correct `Balance due: $X.XX`
+  - `GET /invoices/999` returns 404
+
+## Phase 3 — Create Invoices, Record Payments, Work the Lifecycle
+
+- Create `templates/invoice_new.html` that extends `base.html` with a form:
+  - `POST` method to `/invoices`
+  - Text input for `client`, textarea for `description`, text input for `amount`, submit button
+  - For each field with a validation error: the `is-invalid` Bootstrap class and an `invalid-feedback` div with the message; all inputs re-render with submitted values preserved (including the raw amount text)
+- Add `GET /invoices/new` route returning the empty form, and a &quot;New invoice&quot; button linking to it from the invoice board
+- Add `POST /invoices` route in `app.py`:
+  - Read `client`, `description`, `amount` from form data (`Form` from `fastapi`), all as strings
+  - Validate: `client` and `description` non-empty after `.strip()`; `amount` must parse as a **finite** number and be strictly greater than 0 (reject `nan`/`inf`/`-inf` — check with `math.isfinite`)
+  - On failure: re-render `invoice_new.html` with status code **422**, errors, preserved input (no redirect)
+  - On success: round the amount to 2 decimals, create an `Invoice` with `new_invoice_id()` and status `&quot;draft&quot;`, append, redirect to `/invoices/{id}` (`RedirectResponse`, status 303)
+- Add a payment form on `templates/invoice_detail.html`:
+  - `POST` method to `/invoices/{id}/payments`; text input for `note`, text input for `amount`, submit button
+- Add `POST /invoices/{invoice_id}/payments` route:
+  - Unknown invoice → 404
+  - If the invoice&#x27;s status is not `&quot;sent&quot;`, raise `HTTPException(status_code=400, detail=f&quot;Cannot record a payment on a {status} invoice&quot;)`
+  - Validate `amount` parses as a **finite** number (reject `nan`/`inf`/`-inf` via `math.isfinite`) and is strictly greater than 0; on failure re-render the detail template with status **422**, the error, and preserved input (`note` is optional and may be empty)
+  - On success: round to 2 decimals, append a `Payment`, redirect to `/invoices/{id}` (status 303)
+- Add the lifecycle to the detail page:
+  - For each status in `ALLOWED_TRANSITIONS[invoice.status]`, render a form button that `POST`s to `/invoices/{id}/status` with hidden input `new_status` (label: &quot;Send invoice&quot; for `sent`, &quot;Mark paid&quot; for `paid`)
+  - A paid invoice shows no transition button
+- Add `POST /invoices/{invoice_id}/status` route:
+  - Read `new_status` from form data; unknown invoice → 404
+  - If `new_status` is not in `ALLOWED_TRANSITIONS[invoice.status]`, raise `HTTPException(status_code=400, detail=f&quot;Cannot move invoice from {invoice.status} to {new_status}&quot;)`
+  - Additionally, moving `sent → paid` requires `paid_total(id) &gt;= amount`; otherwise raise `HTTPException(status_code=400, detail=f&quot;Cannot mark invoice paid: ${paid:.2f} of ${amount:.2f} paid&quot;)`
+  - On success: update `invoice.status`, redirect to `/invoices/{id}` (status 303)
+- Write tests in `tests/test_app.py`:
+  - Valid `POST /invoices` returns 303 to the new detail page; following it shows the submitted client with a `draft` status badge
+  - `POST /invoices` with empty `client` returns 422 and still contains the submitted description
+  - `POST /invoices` with non-numeric `amount` returns 422 and preserves the raw amount text
+  - `POST /invoices/{draft id}/payments` returns 400 (payments only on sent invoices)
+  - `POST /invoices/999/payments` returns 404
+  - Valid transition: `POST /invoices/{draft id}/status` with `new_status=sent` returns 303; detail then shows the `sent` badge
+  - Invalid transitions return 400: `draft → paid` (skipping a step) and any transition on a `paid` invoice
+  - Recording a valid payment on a sent invoice returns 303; the detail page then shows the payment note and the reduced `Balance due: $X.XX`
+  - `POST /invoices/{sent id}/payments` with `amount` of `0` returns 422
+  - `POST /invoices` with `amount` of `nan` returns 422, and `POST /invoices/{sent id}/payments` with `amount` of `inf` returns 422 (both parse via `float()`; only an `isfinite` check catches them)
+  - `POST /invoices/{sent id}/status` with `new_status=paid` while payments total less than the amount returns 400; after payments cover the amount, the same request returns 303 and the detail shows the `paid` badge
+
+## Phase 4 — Stats Page + JSON API
+
+- Add `GET /stats` route in `app.py` and `templates/stats.html` extending `base.html`:
+  - A heading: &quot;Billing Stats&quot;
+  - A Bootstrap card per status showing the count of invoices in that status (all three statuses shown, including zero counts)
+  - A line `Total invoiced: $X.XX` — the sum of all invoice amounts, two decimals
+  - A line `Total collected: $X.XX` — the sum of all payment amounts, two decimals
+  - A line `Outstanding: $X.XX` — total invoiced minus total collected, two decimals
+- Add `GET /api/invoices` route in `app.py`:
+  - Returns JSON: a list with one object per invoice, fields `id`, `client`, `description`, `amount`, `status`, `created_at` (ISO 8601 string via `.isoformat()`), and `paid_total`
+  - Sorted by `id` ascending
+- Write tests in `tests/test_app.py`:
+  - `GET /stats` returns 200 and contains the correctly computed `Total invoiced`, `Total collected`, and `Outstanding` dollar lines
+  - `GET /api/invoices` returns 200 with a JSON content type; the list length matches `len(invoices)`; the object for invoice 1 has all seven fields and the correct `paid_total`; `created_at` parses with `datetime.fromisoformat`
+</pre>
+<footer>
+  <p>These files were the complete, fixed input for every InvoiceDesk run — no run ever received more or less. <a href="../">Back to the write-up &rarr;</a></p>
+</footer>
+</div>
+</body>
+</html>

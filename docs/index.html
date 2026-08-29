@@ -294,21 +294,21 @@
       <div class="lv">1</div>
       <div class="body">
         <h3>SpendLog</h3> <span class="tag">"Every penny, written down."</span>
-        <p>A spending journal. One dataclass, three routes, one form, a running total. 2 phases — the warm-up. <a href="demos/#spendlog">See it running &rarr;</a></p>
+        <p>A spending journal. One dataclass, three routes, one form, a running total. 2 phases — the warm-up. <a href="specs/tier1-spendlog.html">Read the spec</a> &middot; <a href="demos/#spendlog">see it running &rarr;</a></p>
       </div>
     </div>
     <div class="app">
       <div class="lv">2</div>
       <div class="body">
         <h3>ExpenseHub</h3> <span class="tag">"Know where it all goes."</span>
-        <p>An expense browser. Detail pages with 404s, category filtering with recomputed totals, and a form that must return 422 with preserved input on bad data. 3 phases. <a href="demos/#expensehub">See it running &rarr;</a></p>
+        <p>An expense browser. Detail pages with 404s, category filtering with recomputed totals, and a form that must return 422 with preserved input on bad data. 3 phases. <a href="specs/tier2-expensehub.html">Read the spec</a> &middot; <a href="demos/#expensehub">see it running &rarr;</a></p>
       </div>
     </div>
     <div class="app">
       <div class="lv">3</div>
       <div class="body">
         <h3>InvoiceDesk</h3> <span class="tag">"Bill it. Send it. Get paid."</span>
-        <p>An invoice tracker with a state machine: draft → sent → paid, where sent → paid is gated on payments actually covering the invoice amount. Two related entities, billing stats, and a JSON API. 4 phases — the boss level. <a href="demos/#invoicedesk">See it running &rarr;</a></p>
+        <p>An invoice tracker with a state machine: draft → sent → paid, where sent → paid is gated on payments actually covering the invoice amount. Two related entities, billing stats, and a JSON API. 4 phases — the boss level. <a href="specs/tier3-invoicedesk.html">Read the spec</a> &middot; <a href="demos/#invoicedesk">see it running &rarr;</a></p>
       </div>
     </div>
   </div>
@@ -453,7 +453,7 @@
   <div class="finding">
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
-    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then I added one sentence to the spec ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
+    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then I added one sentence to <a href="specs/tier2-expensehub.html">the spec</a> ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
     <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. Nine strong models missed the same unwritten rule; one written sentence fixed all of them at once. The most powerful edit in all 48 runs wasn't a model swap — it was a sentence.</p>
   </div>
 
