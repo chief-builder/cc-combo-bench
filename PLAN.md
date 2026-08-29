@@ -171,6 +171,19 @@ verbatim prompts + exact spawn command, review findings, verification
 output, provider stats (cross-provider), then appended cost stats and
 blind scorecard, and source transcript paths.
 
+## Publication & exam rotation (2026-08-28)
+
+This repo went public (github.com/chief-builder/cc-combo-bench, Pages
+site in docs/) with the acceptance suites, specs, and all graded
+solutions included. All 48 runs were graded before publication, so
+their integrity stands. Standing policy for any FUTURE scored season:
+the published suites are retired as teaching material — a new season
+must write fresh held-out suites (and preferably fresh app specs,
+since the current specs plus dozens of graded solutions are now
+potential training data), keep them out of the public repo until that
+season's grading completes, and publish them with the results.
+Old exams are published; the next term gets a new exam.
+
 ## Season 2 (confirmatory, 2026-08-27)
 
 Season 1 (36 runs) was exploratory: the spec was amended mid-campaign,

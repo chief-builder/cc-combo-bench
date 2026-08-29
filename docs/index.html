@@ -148,14 +148,6 @@
   .app .tag { font-style: italic; color: var(--ink-3); }
   .app p { font-size: 16px; color: var(--ink-2); margin: 6px 0 0; max-width: none; }
 
-  .traps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
-  .trap-card {
-    background: var(--trap-wash); border: 1.5px solid var(--trap); border-radius: 14px;
-    padding: 18px 20px;
-  }
-  .trap-card h3 { margin: 0 0 8px; color: var(--trap); font-size: 17px; }
-  .trap-card p { font-size: 15.5px; margin: 0 0 8px; max-width: none; }
-  .trap-card p:last-child { margin-bottom: 0; }
 
   .finding {
     background: var(--card); border: 1.5px solid var(--rule); border-left: 6px solid var(--accent);
@@ -262,7 +254,6 @@
   <a href="#apps">The 3 apps</a>
   <a href="demos/">App demos 📸</a>
   <a href="#grid">All 48 runs</a>
-  <a href="#traps">The hidden traps</a>
   <a href="#grading">Fair grading</a>
   <a href="#findings">5 big findings</a>
   <a href="#you">Why it matters for you</a>
@@ -399,30 +390,9 @@
   <p><strong>Compared with Season 1:</strong> Haiku&#8202;&rarr;&#8202;Opus stayed clean in all three of its draws, making that configuration 4-for-4 clean at tier 3 across both seasons. The Sonnet relay's route bug has now appeared in every relay draw ever run (5-for-5), while the Opus relay stayed clean in both seasons. The all-Haiku result <em>reverses</em> its clean Season 1 draw — cheap implementers swing between draws, and scripted checks are necessary but not sufficient. Every Season 2 row links both its record and its app.</p>
 </section>
 
-<section id="traps">
-  <h2><span class="step">4</span>The hidden traps</h2>
-  <p>I hid a few trick requirements in each spec — lines that look routine but go wrong if you code them on autopilot. I call them <strong>canaries</strong>. Whether an agent dodges them shows whether it actually read the spec. Three favorites:</p>
-  <div class="traps">
-    <div class="trap-card">
-      <h3>🕰️ The frozen clock</h3>
-      <p>"<code>created_at</code> defaults to the current time." Write <code>datetime.now()</code> as a plain dataclass default and it's evaluated <em>once, at import</em> — every record forever shows app-start time.</p>
-      <p>The correct form is <code>field(default_factory=...)</code>, which runs per instance. The app demos fine and is quietly wrong in production.</p>
-    </div>
-    <div class="trap-card">
-      <h3>🚦 The route pile-up</h3>
-      <p>FastAPI matches routes in registration order. Register <code>/expenses/{id}</code> (an <code>int</code> path param) before <code>/expenses/new</code>, and requests for the form page try to parse <code>"new"</code> as an integer — instant 422.</p>
-      <p>Nothing warns you; only a request to that exact URL exposes it.</p>
-    </div>
-    <div class="trap-card">
-      <h3>🌀 The weird numbers</h3>
-      <p>Python's <code>float()</code> happily parses <code>"nan"</code> and <code>"inf"</code> — and every comparison with NaN is False, so <code>nan &lt;= 0</code> fails to reject it. A NaN amount sails past "must be &gt; 0" and poisons every total.</p>
-      <p>The fix is one call: <code>math.isfinite()</code>.</p>
-    </div>
-  </div>
-</section>
 
 <section id="grading">
-  <h2><span class="step">5</span>Grading it fairly (this is the important part)</h2>
+  <h2><span class="step">4</span>Grading it fairly (this is the important part)</h2>
   <p>If you let an agent grade its own homework, it gives itself an A. So grading works like an exam with a sealed answer key:</p>
   <ul class="checks">
     <li><strong>Secret tests.</strong> Each app has a hidden test suite — 16, 25, and 32 checks — that the builders never see; it's removed from their workspace before the run starts. Passing it is the official score, because you can't study for a test you've never seen.</li>
@@ -433,7 +403,7 @@
 </section>
 
 <section id="findings">
-  <h2><span class="step">6</span>The five big findings</h2>
+  <h2><span class="step">5</span>The five big findings</h2>
 
   <div class="finding">
     <div class="num">Finding 1</div>
@@ -445,7 +415,7 @@
   <div class="finding">
     <div class="num">Finding 2</div>
     <h3>Relay teams drop the baton 🏃</h3>
-    <p>On InvoiceDesk, relay teams of Sonnet 5 (a fresh builder per phase) shipped the same broken page in <strong>every draw — five out of five, across both seasons</strong>. Builder 2 registered <code>/invoices/{id}</code>; builder 3 added <code>/invoices/new</code> after it; the route pile-up sprang. Each builder's own work looked fine, its own tests passed, and the manager's code review missed it every time. Only the secret tests caught it.</p>
+    <p>On InvoiceDesk, relay teams of Sonnet 5 (a fresh builder per phase) shipped the same broken page in <strong>every draw — five out of five, across both seasons</strong>. Builder 2 registered <code>/invoices/{id}</code>; builder 3 added <code>/invoices/new</code> after it — and since the framework matches routes in order, requests for the form page got treated as an invoice ID and broke. Each builder's own work looked fine, its own tests passed, and the manager's code review missed it every time. Only the secret tests caught it.</p>
     <p>Control runs completed the picture. A single Sonnet 5 building alone ordered the routes correctly, and a relay of <strong>Opus 5 builders ran flawlessly</strong> — it read the existing routes before adding its page. So the trap needs both the relay <em>and</em> a mid-tier builder. And pairing the smartest manager (Opus 5) with the cheapest builder didn't help either: its review spotted the bug precisely, but a reviewer who isn't allowed to fix anything can only watch — $4.16 for a broken app.</p>
     <p class="so"><strong>So what?</strong> Every handoff between workers is a gap where bugs hide. Splitting work always costs something: either someone strong checks how the pieces fit together, or nobody does — and that gap is exactly where this app broke, every single time.</p>
   </div>
@@ -453,21 +423,21 @@
   <div class="finding">
     <div class="num">Finding 3</div>
     <h3>If it's not written down, it doesn't happen ✍️</h3>
-    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. Then I added one sentence to <a href="specs/tier2-expensehub.html">the spec</a> ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
+    <p>While the NaN rule was unwritten, <strong>9 of 10</strong> builds checked <code>amount &gt; 0</code> and stopped there — every model, every team shape. (The catch: <code>NaN</code> answers "no" to every comparison, so it slides right past that check.) Then I added one sentence to <a href="specs/tier2-expensehub.html">the spec</a> ("reject NaN and infinity; check with <code>math.isfinite</code>") plus a matching test. <strong>All 22 runs since</strong> — Claude and Codex alike — wrote the guard.</p>
     <p class="so"><strong>So what?</strong> Models build what the spec says, not what you meant. Nine strong models missed the same unwritten rule; one written sentence fixed all of them at once. The most powerful edit in all 48 runs wasn't a model swap — it was a sentence.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 4</div>
     <h3>Reasoning effort removes carelessness, not inability 🧠</h3>
-    <p>Codex has a dial for how hard the model thinks before acting. On <strong>high</strong>, it produced Season 1's only flawless sweep of all three apps. On <strong>low</strong>, it could still build everything — but it fell for the frozen-clock trap and quietly dropped two required tests. (A later low-effort draw came out clean, so the dial shifts your odds; it doesn't guarantee the outcome.) Even at low effort, the explicitly written NaN rule was always honored.</p>
+    <p>Codex has a dial for how hard the model thinks before acting. On <strong>high</strong>, it produced Season 1's only flawless sweep of all three apps. On <strong>low</strong>, it could still build everything — but it shipped a frozen-timestamp bug — every record stamped with the app's startup time — and quietly dropped two required tests. (A later low-effort draw came out clean, so the dial shifts your odds; it doesn't guarantee the outcome.) Even at low effort, the explicitly written NaN rule was always honored.</p>
     <p class="so"><strong>So what?</strong> Extra thinking didn't make the model smarter — it made it less careless, the way slowing down on a test doesn't teach you math but does catch your slips. And written rules survived even the rushed runs; unwritten ones didn't.</p>
   </div>
 
   <div class="finding">
     <div class="num">Finding 5</div>
     <h3>Different vendors, same blind spots 👓</h3>
-    <p>Running the whole ladder with OpenAI's Codex as the builder under a Claude manager worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded links, the frozen clock at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the brand.</p>
+    <p>Running the whole ladder with OpenAI's Codex as the builder under a Claude manager worked flawlessly — and Codex made some of the <em>same</em> mistakes in the same places (unencoded links, the same frozen-timestamp bug at low effort), because the spec's shape invited them. The blind spots belonged to the task, not the brand.</p>
     <p class="so"><strong>So what?</strong> When two different companies' models make the same mistake in the same place, the problem isn't the model — it's the assignment. Switching brands won't rescue an unclear spec; rewriting it will.</p>
   </div>
 
@@ -495,7 +465,7 @@
 </section>
 
 <section id="you">
-  <h2><span class="step">7</span>Why it matters for you</h2>
+  <h2><span class="step">6</span>Why it matters for you</h2>
   <p>You may never run this exact benchmark, but you will build things with AI agents — and with people. The lessons carry over:</p>
   <ul class="checks">
     <li><strong>Say exactly what you want.</strong> The biggest quality jump in 48 runs came from adding one sentence to the spec. Vague asks get plausible-looking, quietly wrong code.</li>
@@ -505,7 +475,7 @@
     <li><strong>Measure, then believe.</strong> One run is a story. A repeated, anonymously graded result is evidence.</li>
   </ul>
   <h3>Try it yourself</h3>
-  <p>Take any coding agent — Claude Code, Codex — and give it a small written spec with one trap you know the answer to, like the frozen clock. Write three tests it never sees. Run it, grade it, change <em>one sentence</em> of the spec, and run it again. That's benchmarking.</p>
+  <p>Take any coding agent — Claude Code, Codex — and give it a small written spec with one trap you know the answer to — say, a timestamp that must be set per record, not once at startup. Write three tests it never sees. Run it, grade it, change <em>one sentence</em> of the spec, and run it again. That's benchmarking.</p>
 </section>
 
 
